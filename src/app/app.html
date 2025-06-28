@@ -3,11 +3,9 @@
 @if (isClicked) {
   @for (u of utlagg; track u.id) {
     <ul class="no-bullets">
-      <li>{{ u.title }}</li>
-      <li>{{ u.description }}</li>
-      <li>{{ u.price }}</li>
-      <li>{{ u.date }}</li>
-      <br>
+      <li>
+        <app-utlagg [utlagg]="u"></app-utlagg>
+      </li>
     </ul>
   }
 }
