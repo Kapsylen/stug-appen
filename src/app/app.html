@@ -1,0 +1,13 @@
+<app-header/>
+<app-utlaggbutton (utlaggEvent)="onClickedUtlagg($event)">Utlägg</app-utlaggbutton>
+@if (isClicked) {
+  @for (u of utlagg; track u.id) {
+    <ul class="no-bullets">
+      <li>{{ u.title }}</li>
+      <li>{{ u.description }}</li>
+      <li>{{ u.price }}</li>
+      <li>{{ u.date }}</li>
+      <br>
+    </ul>
+  }
+}
