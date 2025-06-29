@@ -1,0 +1,21 @@
+<app-card>
+  <article>
+    <h3>Fakturanummer: {{ faktura.invoiceNumber }}</h3>
+    <time>Skapad: {{ faktura.issueDate }}</time>
+    <time>Förfallodatum: {{ faktura.dueDate }}</time>
+    <p>Rubrik: {{ faktura.clientName }}</p>
+    <ul>
+      @for (i of faktura.items; track i.id) {
+        <li>Beskrivning: {{i.description}}</li>
+        <li>Antal: {{i.quantity}}</li>
+        <li>Pris: {{i.price}}</li>
+        <li>Total: {{i.total}}</li>
+      }
+    </ul>
+    <p>Totalsumma: {{faktura.totalAmount}}</p>
+    <p>Status: {{faktura.status}}</p>
+    <button>Ändra</button>
+    <button>Ta bort</button>
+    <button>Betald</button>
+  </article>
+</app-card>

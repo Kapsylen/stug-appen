@@ -1,11 +1,10 @@
 <app-card>
   <article>
-    <h2>{{ utlagg.title }}</h2>
-    <time>{{ utlagg.date }}</time>
-    <p>{{ utlagg.description }}</p>
-    <p>{{ utlagg.price }}</p>
-    <p class="actions">
-      <button>Complete</button>
-    </p>
+    <h3>Rubrik: {{ utlagg.title }}</h3>
+    <time>Utläggsdatum: {{ utlagg.date }}</time>
+    <p>Beskrivning: {{ utlagg.description }}</p>
+    <p>Kostnad: {{ utlagg.price }}</p>
+    <button>Ändra</button>
+    <button>Ta bort</button>
   </article>
 </app-card>
