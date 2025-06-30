@@ -3,8 +3,7 @@ import {CardComponent} from '../../common/card/card.component';
 
 @Component({
   selector: 'app-buttons',
-  imports: [
-    CardComponent],
+  imports: [],
   templateUrl: './buttons.component.html',
   styleUrl: './buttons.component.css'
 })

@@ -6,10 +6,10 @@
     <p>Rubrik: {{ faktura.clientName }}</p>
     <ul>
       @for (i of faktura.items; track i.id) {
-        <li>Beskrivning: {{i.description}}</li>
-        <li>Antal: {{i.quantity}}</li>
-        <li>Pris: {{i.price}}</li>
-        <li>Total: {{i.total}}</li>
+        <p>Beskrivning: {{i.description}}</p>
+        <p>Antal: {{i.quantity}}</p>
+        <p>Pris: {{i.price}}</p>
+        <p>Total: {{i.total}}</p>
       }
     </ul>
     <p>Totalsumma: {{faktura.totalAmount}}</p>

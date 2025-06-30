@@ -19,7 +19,7 @@ import {Arende} from './components/model/arenden';
 
 @Component({
   selector: 'app-root',
-  imports: [HeaderComponent, UtlaggbuttonComponent, UtlaggComponent, FakturabuttonComponent, FakturaComponent, KontakterbuttonComponent, KontakterComponent, ArendenbuttonComponent, ArendenComponent],
+  imports: [UtlaggbuttonComponent, UtlaggComponent, FakturabuttonComponent, FakturaComponent, KontakterbuttonComponent, KontakterComponent, ArendenbuttonComponent, ArendenComponent, HeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

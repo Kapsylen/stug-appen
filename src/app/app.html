@@ -1,22 +1,26 @@
-<app-header/>
-<app-utlaggbutton (utlaggEvent)="onClickedUtlagg()">Utlägg</app-utlaggbutton>
-<app-fakturabutton (fakturaEvent)="onClickedFaktura()">Faktura</app-fakturabutton>
-<app-kontakterbutton (kontakEvent)="onClickKontakter()"Kontakter></app-kontakterbutton>
-<app-arendenbutton (arendenEvent)="onClickedArenden()">Arende</app-arendenbutton>
-@for (u of utlagg; track u.id) {
+<app-header></app-header>
+<div class="buttons">
+  <app-utlaggbutton (utlaggEvent)="onClickedUtlagg()">Utlägg</app-utlaggbutton>
+  <app-fakturabutton (fakturaEvent)="onClickedFaktura()">Faktura</app-fakturabutton>
+  <app-kontakterbutton (kontakEvent)="onClickKontakter()" Kontakter></app-kontakterbutton>
+  <app-arendenbutton (arendenEvent)="onClickedArenden()">Arende</app-arendenbutton>
+</div>
+<ng-container class="cards">
+
+  @for (u of utlagg; track u.id) {
     <ul class="no-bullets">
       <li>
         <app-utlagg [utlagg]="u"></app-utlagg>
       </li>
     </ul>
-}
+  }
 
   @for (f of fakturor; track f.id) {
     <ul class="no-bullets">
       <li>
         <app-faktura [faktura]="f"></app-faktura>
     </ul>
-}
+  }
 
   @for (k of kontakter; track k.id) {
     <ul class="no-bullets">
@@ -33,3 +37,4 @@
       </li>
     </ul>
   }
+</ng-container>
