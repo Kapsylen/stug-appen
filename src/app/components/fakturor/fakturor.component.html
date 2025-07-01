@@ -1,0 +1,17 @@
+<section id="fakturor">
+  <header>
+    <menu>
+      <button>Ny faktura</button>
+    </menu>
+
+  <ul class="no-bullets">
+    @for (f of fakturor; track f.id) {
+      <li>
+        <app-faktura [faktura]="f"/>
+      </li>
+    }
+  </ul>
+  </header>
+</section>
+
+

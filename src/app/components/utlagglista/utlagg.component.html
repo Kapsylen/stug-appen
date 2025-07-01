@@ -1,0 +1,17 @@
+<section id="utlagglista">
+    <header>
+      <menu>
+        <button>Ny kontakt</button>
+      </menu>
+
+      <ul class="no-bullets">
+        @for (u of utlagg; track u.id) {
+          <li>
+            <app-utlagg [utlagg]="u"></app-utlagg>
+          </li>
+        }
+      </ul>
+    </header>
+</section>
+
+

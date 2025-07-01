@@ -16,27 +16,6 @@
     height: 100%;
   }
 
-.no-bullets, .no-bullets li {
-  list-style-type:none;
-}
-
-.buttons {
-  display: flex;
-  width: 90%;
-  max-width: 52rem;
-  margin: 0 auto 2rem auto;
-  text-align: center;
-
-  background: linear-gradient(
-    to bottom,
-    grey,
-    lightgrey
-  );
-  padding: 1rem;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
-}
 
 button:hover,
 button:active,
@@ -46,7 +25,3 @@ button:active,
   color: black;
 }
 
-.cards {
-  display: flex;
-  flex-direction: row;
-}

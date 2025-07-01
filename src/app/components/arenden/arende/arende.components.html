@@ -1,0 +1,32 @@
+<app-card>
+  <article>
+    <h3>Rubrik: {{ arende.title }}</h3>
+    <p>Beskrivning: {{ arende.description }}</p>
+    <p>Typ: {{ arende.type }}</p>
+    <p>Prioritet: {{ arende.priority }}</p>
+    <p>Status: {{ arende.status }}</p>
+    <p>Skapad av: {{ arende.reportedBy }}</p>
+    <p>Tilldelad: {{ arende.assignedTo }}</p>
+    <p>Plats: {{ arende.location }}</p>
+    <p>Uppskattad kostnad: {{ arende.estimatedCost }}</p>
+    <p>Faktisk kostnad: {{ arende.actualCost }}</p>
+    <p>Startdatum: {{ arende.startTime }}</p>
+    <p>Lösning: {{ arende.resolution }}</p>
+    <p>Beroende partners: {{ arende.requiresContractor }}</p>
+    <p>Kontraktsinformation: {{ arende.contractorInfo }}</p>
+    <ul>
+      @for (u of arende.updates; track u.id) {
+        <p>Påbörjat: {{ u.timestamp }}</p>
+        <p>Beskrivning: {{ u.message }}</p>
+        <p>Uppdaterad: {{ u.updatedBy }}</p>
+        <p>Status: {{ u.status }}</p>
+      }
+    </ul>
+    <p>Skapad: {{ arende.createdAt }}</p>
+    <p>Status: {{ arende.status }}</p>
+
+    <button>Ändra</button>
+    <button>Ta bort</button>
+    <button>Löst</button>
+  </article>
+</app-card>

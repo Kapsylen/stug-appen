@@ -1,4 +1,4 @@
-#arenden {
+#fakturor {
   display: flex;
   width: 90%;
   max-width: 50rem;
@@ -59,3 +59,4 @@ ul {
   max-height: 50vh;
   overflow: auto;
 }
+

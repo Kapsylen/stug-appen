@@ -6,14 +6,14 @@
     <p>Rubrik: {{ faktura.clientName }}</p>
     <ul>
       @for (i of faktura.items; track i.id) {
-        <p>Beskrivning: {{i.description}}</p>
-        <p>Antal: {{i.quantity}}</p>
-        <p>Pris: {{i.price}}</p>
-        <p>Total: {{i.total}}</p>
+        <p>Beskrivning: {{ i.description }}</p>
+        <p>Antal: {{ i.quantity }}</p>
+        <p>Pris: {{ i.price }}</p>
+        <p>Total: {{ i.total }}</p>
       }
     </ul>
-    <p>Totalsumma: {{faktura.totalAmount}}</p>
-    <p>Status: {{faktura.status}}</p>
+    <p>Totalsumma: {{ faktura.totalAmount }}</p>
+    <p>Status: {{ faktura.status }}</p>
     <button>Ändra</button>
     <button>Ta bort</button>
     <button>Betald</button>

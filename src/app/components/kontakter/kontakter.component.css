@@ -1,0 +1,50 @@
+#kontakter {
+  display: flex;
+  width: 90%;
+  max-width: 50rem;
+  margin: 0 auto auto;
+
+  text-align: center;
+  background: linear-gradient(
+    to bottom,
+    grey,
+    lightgrey
+  );
+  padding: 1rem;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+h2 {
+  margin: 0;
+  font-size: 0.9rem;
+  width: 60%;
+  text-wrap: balance;
+}
+
+menu {
+  margin: 0;
+  padding: 0;
+}
+
+menu button {
+  font: inherit;
+  cursor: pointer;
+  background-color: lightgrey;
+  border-radius: 4px;
+  border: none;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+menu button:hover,
+menu button:active {
+  background-color: #a565dd
+}

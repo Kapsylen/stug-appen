@@ -11,6 +11,6 @@ export class FakturabuttonComponent {
   @Output() fakturaEvent = new EventEmitter();
 
   onClickFakturaEvent() {
-    this.fakturaEvent.emit();
+    this.fakturaEvent.emit(true);
   }
 }
