@@ -8,8 +8,11 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class ArendenbuttonComponent {
   @Output() arendenEvent = new EventEmitter<boolean>();
+  @Output() isClicked = false;
+
 
   onClickedArenden() {
+    this.isClicked = true;
     this.arendenEvent.emit(true);
   }
 }

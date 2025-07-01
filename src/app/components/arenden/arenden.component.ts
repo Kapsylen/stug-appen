@@ -1,9 +1,6 @@
-import {Component, Input} from '@angular/core';
-import {CardComponent} from '../../common/card/card.component';
-import {Arende} from '../model/arenden';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ArendeComponents} from './arende/arende.components';
 import {DUMMY_ARENDEN} from '../../../assets/arenden_data';
-import {ArendenbuttonComponent} from '../buttons/arendenbutton/arendenbutton.component';
 
 @Component({
   selector: 'app-arenden',
