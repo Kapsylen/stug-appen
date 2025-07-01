@@ -1,18 +1,17 @@
 <section id="kontakter">
-  <ul class="no-bullets">
-    <header>
-      <menu>
-        <button>Ny kontakt</button>
-      </menu>
-    </header>
-    @for (k of kontakter; track k.id) {
-      <ul class="no-bullets">
+  <header>
+    <menu>
+      <button>Ny kontakt</button>
+    </menu>
+
+    <ul class="no-bullets">
+      @for (k of kontakter; track k.id) {
         <li>
           <app-kontakt [kontakt]="k"></app-kontakt>
         </li>
-      </ul>
-    }
-  </ul>
+      }
+    </ul>
+  </header>
 </section>
 
 

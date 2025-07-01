@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {UtlaggComponents} from './utlagg/utlagg.components';
-import {DUMMY_UTLAGG} from '../../../assets/utlagg_data';
+import {DataService} from '../../service/data.service';
 
 @Component({
   selector: 'app-utlagglista',
@@ -10,7 +10,9 @@ import {DUMMY_UTLAGG} from '../../../assets/utlagg_data';
 })
 export class UtlaggComponent {
 
-  get utlagg() {
-    return DUMMY_UTLAGG;
+  constructor(private dataService: DataService) {}
+
+  get getUtlagg() {
+    return this.dataService.getUtlagg();
   }
 }

@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Faktura} from '../../model/faktura';
-import {CardComponent} from '../../../common/card/card.component';
+import {CardComponent} from '../../common/card/card.component';
 
 @Component({
   selector: 'app-faktura',

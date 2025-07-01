@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component} from '@angular/core';
 import {ArendeComponents} from './arende/arende.components';
-import {DUMMY_ARENDEN} from '../../../assets/arenden_data';
+import {DataService} from '../../service/data.service';
 
 @Component({
   selector: 'app-arenden',
@@ -9,7 +9,10 @@ import {DUMMY_ARENDEN} from '../../../assets/arenden_data';
   styleUrl: './arenden.component.css'
 })
 export class ArendenComponent {
-  get arenden() {
-    return DUMMY_ARENDEN;
-  }
+
+  constructor(private dataService: DataService) {}
+
+    get getArenden() {
+      return this.dataService.getArenden();
+    }
 }
