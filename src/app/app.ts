@@ -26,59 +26,51 @@ import {DUMMY_ARENDEN} from '../assets/arenden_data';
 })
 export class App {
 
+  constructor(private dataService: DataService) {}
+
   isUtlaggClicked = false;
   isFakturaClicked = false;
   isKontakterClicked = false;
   isArendenClicked = false;
 
-  utlagg : Utlagg[] = [];
+  utlagg: Utlagg[] = [];
   fakturor: Faktura[] = [];
   kontakter: Kontakt[] = [];
   arenden: Arende[] = [];
 
 
-  onClickedUtlagg($event: boolean) {
-    if($event) {
-      this.clearDisplayedData();
-      this.utlagg = DUMMY_UTLAGG;
-      this.isUtlaggClicked = true;
-    }
+  onClickedUtlagg() {
+    this.dataService.clearDisplayedData();
+    this.resetClickedButtons();
+    this.utlagg = this.dataService.getUtlagg();
+    this.isUtlaggClicked = true;
   }
 
-  onClickedFaktura($event: boolean) {
-    if($event) {
-      this.clearDisplayedData();
-      this.fakturor = DUMMY_FAKTUROR;
-      this.isFakturaClicked = true;
-    }
+  onClickedFaktura() {
+    this.dataService.clearDisplayedData();
+    this.resetClickedButtons();
+    this.fakturor = this.dataService.getFakturor();
+    this.isFakturaClicked = true;
   }
 
-  onClickedKontakter($event: boolean) {
-    if($event) {
-      this.clearDisplayedData();
-      this.kontakter = DUMMY_KONTAKTER;
-      this.isKontakterClicked = true;
-    }
-  }
-  onClickedArenden($event: boolean) {
-    if($event) {
-      this.clearDisplayedData();
-      this.arenden = DUMMY_ARENDEN;
-      this.isArendenClicked = true;
-    }
+  onClickedKontakter() {
+    this.dataService.clearDisplayedData();
+    this.resetClickedButtons();
+    this.kontakter = this.dataService.getKontakter();
+    this.isKontakterClicked = true;
   }
 
+  onClickedArenden() {
+    this.dataService.clearDisplayedData();
+    this.resetClickedButtons();
+    this.arenden = this.dataService.getArenden();
+    this.isArendenClicked = true;
+  }
 
-  private clearDisplayedData() {
-    if(this.utlagg.length > 0 || this.fakturor.length > 0 || this.kontakter.length > 0 || this.arenden.length > 0) {
-      this.isUtlaggClicked = false;
-      this.isFakturaClicked = false;
-      this.isKontakterClicked = false;
-      this.isArendenClicked = false;
-      this.utlagg = [];
-      this.fakturor = [];
-      this.kontakter = [];
-      this.arenden = [];
-    }
+   private resetClickedButtons() {
+    this.isUtlaggClicked = false;
+    this.isFakturaClicked = false;
+    this.isKontakterClicked = false;
+    this.isArendenClicked = false;
   }
 }

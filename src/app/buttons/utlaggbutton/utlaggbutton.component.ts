@@ -8,9 +8,9 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class UtlaggbuttonComponent {
 
-  @Output() utlaggEvent = new EventEmitter<boolean>();
+  @Output() utlaggEvent = new EventEmitter();
 
   onClickedUtlaggEvent() {
-    this.utlaggEvent.emit(true);
+    this.utlaggEvent.emit();
   }
 }

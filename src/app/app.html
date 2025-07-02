@@ -1,10 +1,10 @@
 <app-header></app-header>
 <main>
   <div id="bar-buttons">
-    <app-utlaggbutton (utlaggEvent)="onClickedUtlagg($event)">Utlägg</app-utlaggbutton>
-    <app-fakturabutton (fakturaEvent)="onClickedFaktura($event)">Faktura</app-fakturabutton>
-    <app-kontakterbutton (kontaktEvent)="onClickedKontakter($event)">Kontakter></app-kontakterbutton>
-    <app-arendenbutton (arendenEvent)="onClickedArenden($event)">Arende</app-arendenbutton>
+    <app-utlaggbutton (utlaggEvent)="onClickedUtlagg()">Utlägg</app-utlaggbutton>
+    <app-fakturabutton (fakturaEvent)="onClickedFaktura()">Faktura</app-fakturabutton>
+    <app-kontakterbutton (kontaktEvent)="onClickedKontakter()">Kontakter></app-kontakterbutton>
+    <app-arendenbutton (arendenEvent)="onClickedArenden()">Arende</app-arendenbutton>
   </div>
   @if (isArendenClicked) {
     <app-arenden/>

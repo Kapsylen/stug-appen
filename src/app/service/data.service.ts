@@ -17,33 +17,35 @@ export class DataService {
   private utlagg : Utlagg[] = [];
 
   getArenden() {
-    this.clearData();
+    this.clearDisplayedData();
     this.arenden = DUMMY_ARENDEN;
     return this.arenden;
   }
 
   getFakturor() {
-    this.clearData();
+    this.clearDisplayedData();
     this.fakturor = DUMMY_FAKTUROR;
     return this.fakturor;
   }
 
   getKontakter() {
-    this.clearData();
+    this.clearDisplayedData();
     this.kontakter = DUMMY_KONTAKTER;
     return this.kontakter;
   }
 
   getUtlagg() {
-    this.clearData();
+    this.clearDisplayedData();
     this.utlagg = DUMMY_UTLAGG;
     return this.utlagg;
   }
 
-  clearData() {
-    this.arenden = [];
-    this.fakturor = [];
-    this.kontakter = [];
-    this.utlagg = [];
+  clearDisplayedData() {
+    if (this.utlagg.length > 0 || this.fakturor.length > 0 || this.kontakter.length > 0 || this.arenden.length > 0) {
+      this.utlagg = [];
+      this.fakturor = [];
+      this.kontakter = [];
+      this.arenden = [];
+    }
   }
 }

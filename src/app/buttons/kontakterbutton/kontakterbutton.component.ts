@@ -8,9 +8,9 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class KontakterbuttonComponent {
 
-  @Output() kontaktEvent = new EventEmitter<boolean>();
+  @Output() kontaktEvent = new EventEmitter();
 
   onClickedKontakter() {
-    this.kontaktEvent.emit(true);
+    this.kontaktEvent.emit();
   }
 }
