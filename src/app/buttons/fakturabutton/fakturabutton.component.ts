@@ -8,7 +8,7 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class FakturabuttonComponent {
 
-  @Output() fakturaEvent = new EventEmitter();
+  @Output() fakturaEvent = new EventEmitter<boolean>();
 
   onClickFakturaEvent() {
     this.fakturaEvent.emit(true);
