@@ -1,6 +1,7 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {Faktura} from '../../model/faktura';
 import {CardComponent} from '../../common/card/card.component';
+import {FakturaService} from '../../../service/faktura.service';
 
 @Component({
   selector: 'app-faktura',
@@ -12,4 +13,17 @@ import {CardComponent} from '../../common/card/card.component';
 })
 export class FakturaComponents {
   @Input({required: true}) faktura!: Faktura;
+  fakturaService = inject(FakturaService);
+
+  onDeleteFaktura() {
+    this.fakturaService.deleteFakturor(this.faktura.id);
+  }
+
+  onEditFaktura() {
+    console.log(this.faktura);
+  }
+
+  onPaidFaktura() {
+    console.log(this.faktura);
+  }
 }

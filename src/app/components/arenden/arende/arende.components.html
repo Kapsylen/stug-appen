@@ -25,8 +25,8 @@
     <p>Skapad: {{ arende.createdAt }}</p>
     <p>Status: {{ arende.status }}</p>
 
-    <button>Ändra</button>
-    <button>Ta bort</button>
-    <button>Löst</button>
+    <button (click)="onEditArende()">Ändra</button>
+    <button (click)="onDeleteArende()">Ta bort</button>
+    <button (click)="onResolved()">Löst</button>
   </article>
 </app-card>

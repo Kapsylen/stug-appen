@@ -1,6 +1,7 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {Utlagg} from '../../model/utlagg';
 import {CardComponent} from '../../common/card/card.component';
+import {UtlaggService} from '../../../service/utlagg.service';
 
 @Component({
   selector: 'app-utlagg',
@@ -12,4 +13,14 @@ import {CardComponent} from '../../common/card/card.component';
 })
 export class UtlaggComponents {
   @Input({required: true}) utlagg!: Utlagg;
+  private utlaggService = inject(UtlaggService)
+
+  onEditUtlagg() {
+
+  }
+
+  onDeleteUtlagg() {
+    this.utlaggService.deleteUtlagg(this.utlagg.id);
+    console.log(this.utlagg);
+  }
 }

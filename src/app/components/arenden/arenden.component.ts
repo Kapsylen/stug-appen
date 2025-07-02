@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ArendeComponents} from './arende/arende.components';
-import {DataService} from '../../service/data.service';
+import {ArendeService} from '../../service/arende.service';
 
 @Component({
   selector: 'app-arenden',
@@ -10,9 +10,9 @@ import {DataService} from '../../service/data.service';
 })
 export class ArendenComponent {
 
-  constructor(private dataService: DataService) {}
+  constructor(private arendeService: ArendeService) {}
 
     get getArenden() {
-      return this.dataService.getArenden();
+      return this.arendeService.getArenden();
     }
 }

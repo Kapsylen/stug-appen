@@ -8,7 +8,7 @@
     <p>Adress: {{kontakt.address}}</p>
     <p>Anteckningar: {{kontakt.notes}}</p>
     <p>Status: {{kontakt.status}}</p>
-    <button>Ändra</button>
-    <button>Ta bort</button>
+    <button (click)="onEditKontakt()">Ändra</button>
+    <button (click)="onDeleteKontakt()">Ta bort</button>
   </article>
 </app-card>

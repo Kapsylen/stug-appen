@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Kontakt} from '../model/kontakt';
 import {KontaktComponents} from './kontakt/kontakt.components';
-import {DataService} from '../../service/data.service';
+import {KontaktService} from '../../service/kontakt.service';
 
 @Component({
   selector: 'app-kontakter',
@@ -11,9 +11,9 @@ import {DataService} from '../../service/data.service';
 })
 export class KontakterComponent {
 
-  constructor(private dataService: DataService) {}
+  constructor(private kontaktService: KontaktService) {}
 
   get kontakter(): Kontakt[] {
-    return this.dataService.getKontakter();
+    return this.kontaktService.getKontakter();
   }
 }

@@ -4,8 +4,6 @@
   width: 90%;
   max-width: 52rem;
   margin: 0 auto auto;
-
-
   text-align: center;
   background: linear-gradient(
     to bottom,
@@ -17,7 +15,6 @@
 }
 
 button {
-  background-color: lightgrey;
   border: none;
   border-radius: 4px;
   color: black;
@@ -27,6 +24,12 @@ button {
   display: inline-block;
   font-size: 12px;
   margin: 4px 2px;
+  width: fit-content;
+}
+
+button:hover,
+button:active {
+  background-color: darkgrey;
 }
 
 .no-bullets {

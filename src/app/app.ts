@@ -8,15 +8,14 @@ import {ArendenbuttonComponent} from './buttons/arendenbutton/arendenbutton.comp
 import {FakturorComponent} from './components/fakturor/fakturor.component';
 import {UtlaggComponent} from './components/utlagglista/utlagg.component';
 import {ArendenComponent} from './components/arenden/arenden.component';
-import {DataService} from './service/data.service';
 import {Utlagg} from './components/model/utlagg';
 import {Faktura} from './components/model/faktura';
 import {Kontakt} from './components/model/kontakt';
 import {Arende} from './components/model/arenden';
-import {DUMMY_UTLAGG} from '../assets/utlagg_data';
-import {DUMMY_FAKTUROR} from '../assets/fakturor_data';
-import {DUMMY_KONTAKTER} from '../assets/kontakter_data';
-import {DUMMY_ARENDEN} from '../assets/arenden_data';
+import {UtlaggService} from './service/utlagg.service';
+import {KontaktService} from './service/kontakt.service';
+import {ArendeService} from './service/arende.service';
+import {FakturaService} from './service/faktura.service';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +25,7 @@ import {DUMMY_ARENDEN} from '../assets/arenden_data';
 })
 export class App {
 
-  constructor(private dataService: DataService) {}
+  constructor(private utlaggService: UtlaggService, private fakturaServic: FakturaService, private kontakterService: KontaktService, private arendeService: ArendeService) {}
 
   isUtlaggClicked = false;
   isFakturaClicked = false;
@@ -40,30 +39,26 @@ export class App {
 
 
   onClickedUtlagg() {
-    this.dataService.clearDisplayedData();
     this.resetClickedButtons();
-    this.utlagg = this.dataService.getUtlagg();
+    this.utlagg = this.utlaggService.getUtlagg();
     this.isUtlaggClicked = true;
   }
 
-  onClickedFaktura() {
-    this.dataService.clearDisplayedData();
+  onClickedFakturor() {
     this.resetClickedButtons();
-    this.fakturor = this.dataService.getFakturor();
+    this.fakturor = this.fakturaServic.getFakturor();
     this.isFakturaClicked = true;
   }
 
   onClickedKontakter() {
-    this.dataService.clearDisplayedData();
     this.resetClickedButtons();
-    this.kontakter = this.dataService.getKontakter();
+    this.kontakter = this.kontakterService.getKontakter();
     this.isKontakterClicked = true;
   }
 
   onClickedArenden() {
-    this.dataService.clearDisplayedData();
     this.resetClickedButtons();
-    this.arenden = this.dataService.getArenden();
+    this.arenden = this.arendeService.getArenden();
     this.isArendenClicked = true;
   }
 

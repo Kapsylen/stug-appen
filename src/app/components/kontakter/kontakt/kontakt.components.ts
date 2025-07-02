@@ -1,6 +1,7 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {CardComponent} from '../../common/card/card.component';
 import {Kontakt} from '../../model/kontakt';
+import {KontaktService} from '../../../service/kontakt.service';
 
 @Component({
   selector: 'app-kontakt',
@@ -12,4 +13,13 @@ import {Kontakt} from '../../model/kontakt';
 })
 export class KontaktComponents {
   @Input() kontakt!: Kontakt;
+  kontakerService = inject(KontaktService);
+
+  onDeleteKontakt() {
+    this.kontakerService.deleteKontakter(this.kontakt.id);
+  }
+
+  onEditKontakt() {
+    console.log(this.kontakt);
+  }
 }

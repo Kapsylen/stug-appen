@@ -4,7 +4,7 @@
     <time>Utläggsdatum: {{ utlagg.date }}</time>
     <p>Beskrivning: {{ utlagg.description }}</p>
     <p>Kostnad: {{ utlagg.price }}</p>
-    <button>Ändra</button>
-    <button>Ta bort</button>
+  <button (click)="onEditUtlagg()">Ändra</button>
+  <button (click)="onDeleteUtlagg()">Ta bort</button>
   </article>
 </app-card>

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FakturaComponents} from './faktura/faktura.components';
-import {DataService} from '../../service/data.service';
+import {FakturaService} from '../../service/faktura.service';
 
 @Component({
   selector: 'app-fakturor',
@@ -12,10 +12,10 @@ import {DataService} from '../../service/data.service';
 })
 export class FakturorComponent {
 
-  constructor(private dataService: DataService) {}
+  constructor(private fakturaService: FakturaService) {}
 
   get fakturor() {
-   return this.dataService.getFakturor();
+   return this.fakturaService.getFakturor();
   }
 
 }

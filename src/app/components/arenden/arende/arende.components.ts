@@ -1,6 +1,7 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {Arende} from '../../model/arenden';
 import {CardComponent} from '../../common/card/card.component';
+import {ArendeService} from '../../../service/arende.service';
 
 @Component({
   selector: 'app-arende',
@@ -12,4 +13,17 @@ import {CardComponent} from '../../common/card/card.component';
 })
 export class ArendeComponents {
   @Input() arende!: Arende;
+  arendeService = inject(ArendeService);
+
+  onDeleteArende() {
+    this.arendeService.deleteArenden(this.arende.id);
+  }
+
+  onEditArende() {
+    console.log(this.arende);
+  }
+
+  onResolved() {
+    console.log(this.arende);
+  }
 }

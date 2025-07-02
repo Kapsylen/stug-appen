@@ -14,8 +14,8 @@
     </ul>
     <p>Totalsumma: {{ faktura.totalAmount }}</p>
     <p>Status: {{ faktura.status }}</p>
-    <button>Ändra</button>
-    <button>Ta bort</button>
-    <button>Betald</button>
+    <button (click)="onEditFaktura()">Ändra</button>
+    <button (click)="onDeleteFaktura()">Ta bort</button>
+    <button (click)="onPaidFaktura()">Betald</button>
   </article>
 </app-card>
