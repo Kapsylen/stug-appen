@@ -16,3 +16,8 @@ time {
   text-align: right;
   margin: 0;
 }
+
+
+label {
+  font-weight: bold;
+}

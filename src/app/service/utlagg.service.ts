@@ -1,5 +1,5 @@
 import {afterNextRender, Injectable} from '@angular/core';
-import {Utlagg} from '../components/model/utlagg';
+import {NewUtlagg, Utlagg} from '../components/model/utlagg';
 
 @Injectable({providedIn: 'root'})
 export class UtlaggService {
@@ -65,5 +65,16 @@ export class UtlaggService {
 
   saveUtlagg() {
     localStorage.setItem('utlagg', JSON.stringify(this.utlagg));
+  }
+
+  addUtlagg(newUtlagg: NewUtlagg) {
+    this.utlagg.unshift({
+      id: new Date().getTime().valueOf(),
+      title: newUtlagg.title,
+      description: newUtlagg.description,
+      date: newUtlagg.date,
+      price: newUtlagg.price
+    });
+    this.saveUtlagg();
   }
 }

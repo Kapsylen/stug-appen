@@ -1,17 +1,21 @@
-<section id="utlagglista">
-    <header>
-      <menu>
-        <button>Ny kontakt</button>
-      </menu>
+@if (isAddingUtlagg) {
+  <app-new-utlagg (close)="onCloseAddUtlagg()"/>
+}
 
-      <ul class="no-bullets">
-        @for (u of getUtlagg; track u.id) {
-          <li>
-            <app-utlagg [utlagg]="u"></app-utlagg>
-          </li>
-        }
-      </ul>
-    </header>
+<section id="utlagglista">
+  <header>
+    <menu>
+      <button (click)="onStartAddUtlagg()">Nytt utlägg</button>
+    </menu>
+  </header>
+
+  <ul class="no-bullets">
+    @for (u of getUtlagg; track u.id) {
+      <li>
+        <app-utlagg [utlagg]="u"></app-utlagg>
+      </li>
+    }
+  </ul>
 </section>
 
 

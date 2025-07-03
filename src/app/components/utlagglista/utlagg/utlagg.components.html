@@ -1,9 +1,9 @@
 <app-card>
   <article>
-    <h3>Rubrik: {{ utlagg.title }}</h3>
-    <time>Utläggsdatum: {{ utlagg.date }}</time>
-    <p>Beskrivning: {{ utlagg.description }}</p>
-    <p>Kostnad: {{ utlagg.price }}</p>
+    <h3>{{ utlagg.title }}</h3>
+    <time><label>Utläggsdatum:</label> {{ utlagg.date }}</time>
+    <p><label>Beskrivning:</label> {{ utlagg.description }}</p>
+    <p><label>Kostnad:</label> {{ utlagg.price }}</p>
   <button (click)="onEditUtlagg()">Ändra</button>
   <button (click)="onDeleteUtlagg()">Ta bort</button>
   </article>

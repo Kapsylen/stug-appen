@@ -27,6 +27,10 @@ button {
   width: fit-content;
 }
 
+label {
+  font-weight: bold;
+}
+
 button:hover,
 button:active {
   background-color: darkgrey;

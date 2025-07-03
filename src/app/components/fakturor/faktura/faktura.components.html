@@ -1,19 +1,19 @@
 <app-card>
   <article>
-    <h3>Fakturanummer: {{ faktura.invoiceNumber }}</h3>
-    <time>Skapad: {{ faktura.issueDate }}</time>
-    <time>Förfallodatum: {{ faktura.dueDate }}</time>
-    <p>Rubrik: {{ faktura.clientName }}</p>
+    <h3><label>Fakturanummer:</label> {{ faktura.invoiceNumber }}</h3>
+    <time><label>Skapad:</label> {{ faktura.issueDate }}</time>
+    <time><label>Förfallodatum:</label> {{ faktura.dueDate }}</time>
+    <p><label>Rubrik:</label> {{ faktura.clientName }}</p>
     <ul>
       @for (i of faktura.items; track i.id) {
-        <p>Beskrivning: {{ i.description }}</p>
-        <p>Antal: {{ i.quantity }}</p>
-        <p>Pris: {{ i.price }}</p>
-        <p>Total: {{ i.total }}</p>
+        <p><label>Beskrivning:</label> {{ i.description }}</p>
+        <p><label>Antal:</label> {{ i.quantity }}</p>
+        <p><label>Pris:</label> {{ i.price }}</p>
+        <p><label>Total:</label> {{ i.total }}</p>
       }
     </ul>
-    <p>Totalsumma: {{ faktura.totalAmount }}</p>
-    <p>Status: {{ faktura.status }}</p>
+    <p><label>Totalsumma:</label> {{ faktura.totalAmount }}</p>
+    <p><label>Status:</label> {{ faktura.status }}</p>
     <button (click)="onEditFaktura()">Ändra</button>
     <button (click)="onDeleteFaktura()">Ta bort</button>
     <button (click)="onPaidFaktura()">Betald</button>
