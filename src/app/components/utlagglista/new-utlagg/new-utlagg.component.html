@@ -1,6 +1,6 @@
 <div class="backdrop" (click)="onCancel()"></div>
 <dialog open>
-  <h2>Lägg till utlägg</h2>
+  <h2>Nytt utlägg</h2>
   <form (ngSubmit)="onSubmit()">
     <p>
       <label for="title">Rubrik</label>
@@ -23,8 +23,8 @@
     </p>
 
     <p class="actions">
-      <button type="button" (click)="onCancel()">Avsluta</button>
       <button type="submit">Spara</button>
+      <button type="button" (click)="onCancel()">Stäng</button>
     </p>
   </form>
 </dialog>

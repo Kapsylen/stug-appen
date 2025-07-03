@@ -1,0 +1,55 @@
+<div class="backdrop" (click)="onCancel()"></div>
+<dialog open>
+  <h2>Ny faktura</h2>
+  <form (ngSubmit)="onSubmit()">
+    <p>
+      <label for="customerName">Kund</label>
+      <input type="text" id="customerName" name="customerName" [(ngModel)]="enteredCustomerName"/>
+    </p>
+
+    <p>
+      <label for="createdAt">Skapad</label>
+      <input type="date" id="createdAt" name="createdAt" [(ngModel)]="enteredCreatedAt"/>
+    </p>
+
+    <p>
+      <label for="dueDate">Förfallodatum</label>
+      <input type="date" id="dueDate" name="dueDate" [(ngModel)]="enteredDueDate"/>
+    </p>
+
+    <p>
+      <label for="description">Beskrivning</label>
+      <textarea type= text id="description" rows="5" name="description" [(ngModel)]="enteredDescription"></textarea>
+    </p>
+
+    <p>
+      <label for="quantity">Antal</label>
+      <input type="number" id="quantity" name="quantity" [(ngModel)]="enteredQuantity"/>
+    </p>
+
+    <p>
+      <label for="price">Kostnad</label>
+      <input type="number" id="price" name="price" [(ngModel)]="enteredPrice"/>
+    </p>
+
+    <p>
+      <label for="total">Summa</label>
+      <input type="number" id="total" name="total" [(ngModel)]="enteredTotal"/>
+    </p>
+
+    <p>
+      <label for="totalAmount">Total amount</label>
+      <input type="number" id="totalAmount" name="totalAmount" [(ngModel)]="enteredTotalAmount"/>
+    </p>
+
+    <p>
+      <label for="status">Status</label>
+      <input type="text" id="status" name="status" [(ngModel)]="enteredStatus"/>
+    </p>
+
+    <p class="actions">
+      <button type="submit">Spara</button>
+      <button type="button" (click)="onCancel()">Stäng</button>
+    </p>
+  </form>
+</dialog>

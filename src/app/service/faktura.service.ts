@@ -1,5 +1,5 @@
 import {afterNextRender, Injectable} from '@angular/core';
-import {Faktura} from '../components/model/faktura';
+import {Faktura, NewFaktura} from '../components/model/faktura';
 import {DUMMY_FAKTUROR} from '../../assets/fakturor_data';
 
 @Injectable({providedIn: 'root'})
@@ -149,5 +149,25 @@ export class FakturaService {
 
   saveFakturor() {
     localStorage.setItem('fakturor', JSON.stringify(this.fakturor));
+  }
+
+  addFaktura(newFakturor: NewFaktura) {
+    this.fakturor.unshift({
+      id: new Date().getTime().valueOf(),
+      invoiceNumber: newFakturor.invoiceNumber,
+      clientName: newFakturor.clientName,
+      issueDate: newFakturor.issueDate,
+      dueDate: newFakturor.dueDate,
+      items: [{
+        id: new Date().getTime().valueOf(),
+        description: newFakturor.items[0].description,
+        quantity: newFakturor.items[0].quantity,
+        price: newFakturor.items[0].price,
+        total: newFakturor.items[0].total
+      }],
+      totalAmount: newFakturor.totalAmount,
+      status: newFakturor.status
+    });
+    this.saveFakturor();
   }
 }
