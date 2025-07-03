@@ -1,5 +1,5 @@
 import {afterNextRender, Injectable} from '@angular/core';
-import {Kontakt} from '../components/model/kontakt';
+import {Kontakt, NewKontakt} from '../components/model/kontakt';
 
 @Injectable({providedIn: 'root'})
 export class KontaktService {
@@ -102,7 +102,7 @@ export class KontaktService {
       if (kontakter) {
         this.kontakter = JSON.parse(kontakter);
       } else {
-        localStorage.setItem('utlagg', JSON.stringify(this.kontakter));
+        localStorage.setItem('kontakter', JSON.stringify(this.kontakter));
       }
     });
   }
@@ -118,6 +118,21 @@ export class KontaktService {
   }
 
   saveKontakter() {
-    localStorage.setItem('fakturor', JSON.stringify(this.kontakter));
+    localStorage.setItem('kontakter', JSON.stringify(this.kontakter));
+  }
+
+  addKontak(kontak: NewKontakt) {
+    this.kontakter.unshift({
+      id: new Date().getTime().valueOf(),
+      name: kontak.name,
+      company: kontak.company,
+      category: kontak.category,
+      phone: kontak.phone,
+      email: kontak.email,
+      address: kontak.address,
+      notes: kontak.notes,
+      status: kontak.status
+    });
+    this.saveKontakter();
   }
 }

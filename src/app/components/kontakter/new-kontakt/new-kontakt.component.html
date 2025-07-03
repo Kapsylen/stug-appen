@@ -1,0 +1,50 @@
+<div class="backdrop" (click)="onCancel()"></div>
+<dialog open>
+  <h2>Ny kontakt</h2>
+  <form (ngSubmit)="onSubmit()">
+    <p>
+      <label for="name">Namn</label>
+      <input type="text" id="name" name="name" [(ngModel)]="enteredName"/>
+    </p>
+
+    <p>
+      <label for="company">Företag</label>
+      <input type="text" id="company" name="company" [(ngModel)]="enteredCompany"/>
+    </p>
+
+    <p>
+      <label for="category">Kategori</label>
+      <input type="text" id="category" name="category" [(ngModel)]="enteredCategory"/>
+    </p>
+
+    <p>
+      <label for="phone">Telefon</label>
+      <input type= text id="phone" name="phone" [(ngModel)]="enteredPhone"/>
+    </p>
+
+    <p>
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email" [(ngModel)]="enteredEmail"/>
+    </p>
+
+    <p>
+      <label for="address">Adress</label>
+      <input type="text" id="address" name="address" [(ngModel)]="enteredAddress"/>
+    </p>
+
+    <p>
+      <label for="notes">Anteckningar</label>
+      <input type="text" id="notes" name="notes" [(ngModel)]="enteredNotes"/>
+    </p>
+
+    <p>
+      <label for="status">Status</label>
+      <input type="text" id="status" name="status" [(ngModel)]="enteredStatus"/>
+    <p>
+
+    <p class="actions">
+      <button type="submit">Spara</button>
+      <button type="button" (click)="onCancel()">Stäng</button>
+    </p>
+  </form>
+</dialog>

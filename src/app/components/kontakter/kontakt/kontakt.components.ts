@@ -2,11 +2,12 @@ import {Component, inject, Input} from '@angular/core';
 import {CardComponent} from '../../common/card/card.component';
 import {Kontakt} from '../../model/kontakt';
 import {KontaktService} from '../../../service/kontakt.service';
+import {NewKontaktComponent} from '../new-kontakt/new-kontakt.component';
 
 @Component({
   selector: 'app-kontakt',
   imports: [
-    CardComponent
+    CardComponent,
   ],
   templateUrl: './kontakt.components.html',
   styleUrl: './kontakt.components.css'

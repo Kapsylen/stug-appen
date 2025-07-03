@@ -1,0 +1,130 @@
+<div class="backdrop" (click)="onCancel()"></div>
+<dialog open>
+  <h2>Ny faktura</h2>
+  <form (ngSubmit)="onSubmit()">
+    <p>
+      <label for="name">Namn</label>
+      <input type="text" id="name" name="name" [(ngModel)]="enteredName"/>
+    </p>
+
+    <p>
+      <label for="description">Beskrivning</label>
+      <input type="text" id="description" name="description" [(ngModel)]="enteredDescription"/>
+    </p>
+
+    <p>
+      <label for="type">Typ</label>
+      <select name="type" id="type" [(ngModel)]="enteredType">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+    </p>
+
+    <p>
+      <label for="priority">Prioritet</label>
+      <input type="text" id="priority" name="priority" [(ngModel)]="enteredPriority"/>
+    </p>
+
+    <p>
+      <label for="status">Status</label>
+      <input type="text" id="status" name="status" [(ngModel)]="enteredStatus"/>
+    </p>
+
+    <p>
+      <label for="reportedBy">Rapported av</label>
+      <input type="text" id="reportedBy" name="reportedBy" [(ngModel)]="enteredReportedBy"/>
+    </p>
+
+    <p>
+      <label for="assignedTo">Tilldelad</label>
+      <input type="text" id="assignedTo" name="assignedTo" [(ngModel)]="enteredAssignedTo"/>
+    </p>
+
+    <p>
+      <label for="location">Plats</label>
+      <input type="text" id="location" name="location" [(ngModel)]="enteredLocation"/>
+    </p>
+
+    <p>
+      <label for="estimatedCost">Uppskattad kostnad</label>
+      <input type="text" id="estimatedCost" name="estimatedCost" [(ngModel)]="enteredEstimatedCost"/>
+    </p>
+
+    <p>
+      <label for="actualCost">Faktisk kostnad</label>
+      <input type="text" id="actualCost" name="actualCost" [(ngModel)]="enteredActualCost"/>
+    </p>
+
+    <p>
+      <label for="startTime">Starttid</label>
+      <input type="date" id="startTime" name="startTime" [(ngModel)]="enteredStartTime"/>
+    </p>
+
+    <p>
+      <label for="resolvedTime">Datum färdigställt</label>
+      <input type="date" id="resolvedTime" name="resolvedTime" [(ngModel)]="enteredResolvedTime"/>
+    </p>
+
+    <p>
+      <label for="resolution">Lösning</label>
+      <input type="text" id="resolution" name="resolution" [(ngModel)]="enteredResolution"/>
+    </p>
+
+    <p>
+      <label for="requiresContractor">Kräver medgivande</label>
+      <input type="text" id="requiresContractor" name="requiresContractor" [(ngModel)]="enteredRequiresContractor"/>
+    </p>
+
+    <p>
+      <label for="contractorInfo">Medgivandeinformation</label>
+      <input type="text" id="contractorInfo" name="contractorInfo" [(ngModel)]="enteredContractorInfo"/>
+    </p>
+
+    <p>
+      <label for="statusTime">Statustid</label>
+      <input type="text" id="statusTime" name="statusTime" [(ngModel)]="enteredStatusTime"/>
+    </p>
+
+    <p>
+      <label for="message">Meddelande</label>
+      <input type="text" id="message" name="message" [(ngModel)]="enteredMessage"/>
+    </p>
+
+    <p>
+      <label for="updatedBy">Uppdaterad av</label>
+      <input type="text" id="updatedBy" name="updatedBy" [(ngModel)]="enteredUpdatedBy"/>
+    </p>
+
+    <p>
+      <label for="issueStatus">Ärendestatus</label>
+      <input type="text" id="issueStatus" name="issueStatus" [(ngModel)]="enteredIssueStatus"/>
+    </p>
+
+    <p>
+      <label for="updates">Uppdateringar</label>
+      <input type="text" id="updates" name="updates" [(ngModel)]="enteredUpdates"/>
+    </p>
+
+    <p>
+      <label for="tags">Taggar</label>
+      <input type="text" id="tags" name="tags" [(ngModel)]="enteredTags"/>
+    </p>
+
+    <p>
+      <label for="createdAt">Skapad</label>
+      <input type="date" id="createdAt" name="createdAt" [(ngModel)]="enteredCreatedAt"/>
+    </p>
+
+    <p>
+      <label for="updatedAt">Uppdaterad</label>
+      <input type="date" id="updatedAt" name="updatedAt" [(ngModel)]="enteredUpdatedAt"/>
+    </p>
+
+    <p class="actions">
+      <button type="submit">Spara</button>
+      <button type="button" (click)="onCancel()">Stäng</button>
+    </p>
+  </form>
+</dialog>

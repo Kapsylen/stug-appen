@@ -7,16 +7,16 @@ export interface ArendeStatus {
   timestamp: string;
   message: string;
   updatedBy: string;
-  status: Status;
+  status: string;
 }
 
 export interface Arende {
   id: number;
   title: string;
   description: string;
-  type: Typ;
-  priority: Prioritet;
-  status: Status;
+  type: string;
+  priority: string;
+  status: string;
   reportedBy: string;
   assignedTo: string;
   location: string;
@@ -25,9 +25,38 @@ export interface Arende {
   startTime: string;
   resolvedTime?: string;
   resolution?: string;
-  requiresContractor: boolean;
+  requiresContractor: string;
   contractorInfo?: string;
   updates: ArendeStatus[];
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NewArendeStatus {
+  timestamp: string;
+  message: string;
+  updatedBy: string;
+  status: string;
+}
+
+export interface NewArende {
+  title: string;
+  description: string;
+  type: string;
+  priority: string;
+  status: string;
+  reportedBy: string;
+  assignedTo: string;
+  location: string;
+  estimatedCost?: string;
+  actualCost?: string;
+  startTime: string;
+  resolvedTime?: string;
+  resolution?: string;
+  requiresContractor: string;
+  contractorInfo?: string;
+  updates: NewArendeStatus[];
   tags: string[];
   createdAt: string;
   updatedAt: string;

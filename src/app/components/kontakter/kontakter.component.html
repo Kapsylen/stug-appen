@@ -1,7 +1,11 @@
+@if (isAddingKontakt) {
+  <app-new-kontakt (close)="onCloseAddKontakt()"/>
+}
+
 <section id="kontakter">
   <header>
     <menu>
-      <button>Ny kontakt</button>
+      <button (click)="onStartAddKontakt()">Ny kontakt</button>
     </menu>
 
     <ul class="no-bullets">

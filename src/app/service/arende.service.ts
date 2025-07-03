@@ -1,4 +1,4 @@
-import {Arende} from '../components/model/arenden';
+import {Arende, NewArende} from '../components/model/arenden';
 import {afterNextRender, Injectable} from '@angular/core';
 
 @Injectable({providedIn: 'root'})
@@ -20,7 +20,7 @@ export class ArendeService {
       startTime: "2025-06-20T08:15:00",
       resolvedTime: "2025-06-21T14:30:00",
       resolution: "Replaced damaged pipe and repaired floor",
-      requiresContractor: true,
+      requiresContractor: "true",
       contractorInfo: "Plumber AB, Tel: 070-123-4567",
       updates: [
         {
@@ -54,7 +54,7 @@ export class ArendeService {
       location: "Entire Cottage",
       estimatedCost: "8000",
       startTime: "2025-06-24T17:00:00",
-      requiresContractor: true,
+      requiresContractor: "true",
       contractorInfo: "Heating Expert SE, Tel: 070-987-6543",
       updates: [
         {
@@ -84,7 +84,7 @@ export class ArendeService {
       startTime: "2025-06-15T10:00:00",
       resolvedTime: "2025-06-16T15:00:00",
       resolution: "Nest safely removed and entry point sealed",
-      requiresContractor: true,
+      requiresContractor: "true",
       contractorInfo: "Pest Control AB, Tel: 070-555-1234",
       updates: [
         {
@@ -117,7 +117,7 @@ export class ArendeService {
       assignedTo: "",
       location: "Roof - South Side",
       startTime: "2025-06-25T07:00:00",
-      requiresContractor: true,
+      requiresContractor: "true",
       updates: [],
       tags: ["roof", "storm-damage", "urgent"],
       createdAt: "2025-06-25T07:00:00",
@@ -138,7 +138,7 @@ export class ArendeService {
       startTime: "2025-06-10T13:00:00",
       resolvedTime: "2025-06-10T15:30:00",
       resolution: "Replaced lock mechanism",
-      requiresContractor: false,
+      requiresContractor: "false",
       updates: [
         {
           id: 1,
@@ -176,7 +176,41 @@ export class ArendeService {
   }
 
   saveArenden() {
-    localStorage.setItem('fakturor', JSON.stringify(this.arenden));
+    localStorage.setItem('arenden', JSON.stringify(this.arenden));
+  }
+
+  addNewArende(newArend: NewArende) {
+    this.arenden.unshift(
+      {
+        id: new Date().getTime().valueOf(),
+        title: newArend.title,
+        description: newArend.description,
+        type: newArend.type,
+        priority: newArend.priority,
+        status: newArend.status,
+        reportedBy: newArend.reportedBy,
+        assignedTo: newArend.assignedTo,
+        location: newArend.location,
+        estimatedCost: newArend.estimatedCost,
+        actualCost: newArend.actualCost,
+        startTime: newArend.startTime,
+        resolvedTime: newArend.resolvedTime,
+        resolution: newArend.resolution,
+        requiresContractor: newArend.requiresContractor,
+        contractorInfo: newArend.contractorInfo,
+        updates: [{
+            id: new Date().getTime().valueOf(),
+            timestamp: newArend.updates[0].timestamp,
+            message: newArend.updates[0].message,
+            updatedBy: newArend.updates[0].updatedBy,
+            status: newArend.updates[0].status
+          }],
+        tags: newArend.tags,
+        createdAt: newArend.createdAt,
+        updatedAt: newArend.updatedAt
+      }
+    );
+    this.saveArenden();
   }
 }
 

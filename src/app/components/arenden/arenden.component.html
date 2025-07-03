@@ -1,7 +1,10 @@
+@if(isAddingArende) {
+  <app-new-arende (close)="onCloseAddArende()"/>
+}
 <section id="arenden">
     <header>
       <menu>
-        <button>Nytt ärende</button>
+        <button (click)="onAddArende()">Nytt ärende</button>
       </menu>
 
       <ul class="no-bullets">
