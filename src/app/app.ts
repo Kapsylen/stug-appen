@@ -8,10 +8,10 @@ import {ArendenbuttonComponent} from './buttons/arendenbutton/arendenbutton.comp
 import {FakturorComponent} from './components/fakturor/fakturor.component';
 import {UtlaggComponent} from './components/utlagglista/utlagg.component';
 import {ArendenComponent} from './components/arenden/arenden.component';
-import {Utlagg} from './components/model/utlagg';
-import {Faktura} from './components/model/faktura';
-import {Kontakt} from './components/model/kontakt';
-import {Arende} from './components/model/arenden';
+import {Utlagg} from './model/utlagg';
+import {Faktura} from './model/faktura';
+import {Kontakt} from './model/kontakt';
+import {Arende} from './model/arenden';
 import {UtlaggService} from './service/utlagg.service';
 import {KontaktService} from './service/kontakt.service';
 import {ArendeService} from './service/arende.service';

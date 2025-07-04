@@ -1,4 +1,4 @@
-import {Kontakt} from '../app/components/model/kontakt';
+import {Kontakt} from '../app/model/kontakt';
 
 export const DUMMY_KONTAKTER: Kontakt[] = [
   {

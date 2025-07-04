@@ -1,5 +1,5 @@
 import {afterNextRender, Injectable} from '@angular/core';
-import {NewUtlagg, Utlagg} from '../components/model/utlagg';
+import {NewUtlagg, Utlagg} from '../model/utlagg';
 
 @Injectable({providedIn: 'root'})
 export class UtlaggService {

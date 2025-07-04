@@ -1,6 +1,6 @@
 
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {Utlagg} from '../components/model/utlagg';
+import {Utlagg} from '../model/utlagg';
 
 @Component({
   selector: 'app-header',

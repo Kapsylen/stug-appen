@@ -1,4 +1,4 @@
-import {Utlagg} from '../app/components/model/utlagg';
+import {Utlagg} from '../app/model/utlagg';
 
 export const DUMMY_UTLAGG: Utlagg[] = [
   {

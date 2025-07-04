@@ -1,5 +1,5 @@
 import {Component, inject, Input} from '@angular/core';
-import {Faktura} from '../../model/faktura';
+import {Faktura} from '../../../model/faktura';
 import {CardComponent} from '../../common/card/card.component';
 import {FakturaService} from '../../../service/faktura.service';
 

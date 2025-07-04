@@ -1,5 +1,5 @@
 import {afterNextRender, Injectable} from '@angular/core';
-import {Faktura, NewFaktura} from '../components/model/faktura';
+import {Faktura, NewFaktura} from '../model/faktura';
 import {DUMMY_FAKTUROR} from '../../assets/fakturor_data';
 
 @Injectable({providedIn: 'root'})

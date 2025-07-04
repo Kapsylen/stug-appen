@@ -1,4 +1,4 @@
-import {Arende} from '../app/components/model/arenden';
+import {Arende} from '../app/model/arenden';
 
 export const DUMMY_ARENDEN: Arende[] = [
   {

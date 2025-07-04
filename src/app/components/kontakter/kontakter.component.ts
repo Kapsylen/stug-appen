@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Kontakt} from '../model/kontakt';
+import {Kontakt} from '../../model/kontakt';
 import {KontaktComponents} from './kontakt/kontakt.components';
 import {KontaktService} from '../../service/kontakt.service';
 import {NewKontaktComponent} from './new-kontakt/new-kontakt.component';

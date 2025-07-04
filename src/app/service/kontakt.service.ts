@@ -1,5 +1,5 @@
 import {afterNextRender, Injectable} from '@angular/core';
-import {Kontakt, NewKontakt} from '../components/model/kontakt';
+import {Kontakt, NewKontakt} from '../model/kontakt';
 
 @Injectable({providedIn: 'root'})
 export class KontaktService {

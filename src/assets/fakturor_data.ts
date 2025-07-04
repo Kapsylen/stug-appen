@@ -1,4 +1,4 @@
-import {Faktura} from '../app/components/model/faktura';
+import {Faktura} from '../app/model/faktura';
 
 export const DUMMY_FAKTUROR: Faktura[] = [
   {

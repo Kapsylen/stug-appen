@@ -1,4 +1,4 @@
-import {Arende, NewArende} from '../components/model/arenden';
+import {Arende, NewArende} from '../model/arenden';
 import {afterNextRender, Injectable} from '@angular/core';
 
 @Injectable({providedIn: 'root'})

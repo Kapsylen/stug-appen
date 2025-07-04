@@ -1,5 +1,5 @@
 import {Component, inject, Input} from '@angular/core';
-import {Arende} from '../../model/arenden';
+import {Arende} from '../../../model/arenden';
 import {CardComponent} from '../../common/card/card.component';
 import {ArendeService} from '../../../service/arende.service';
 
