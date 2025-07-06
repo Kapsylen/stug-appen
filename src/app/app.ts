@@ -19,7 +19,16 @@ import {FakturaService} from './service/faktura.service';
 
 @Component({
   selector: 'app-root',
-  imports: [KontakterComponent, HeaderComponent, UtlaggbuttonComponent, FakturabuttonComponent, KontakterbuttonComponent, ArendenbuttonComponent, FakturorComponent, UtlaggComponent, ArendenComponent],
+  imports: [KontakterComponent,
+    HeaderComponent,
+    UtlaggbuttonComponent,
+    FakturabuttonComponent,
+    KontakterbuttonComponent,
+    ArendenbuttonComponent,
+    FakturorComponent,
+    UtlaggComponent,
+    ArendenComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -38,9 +47,9 @@ export class App {
   arenden: Arende[] = [];
 
 
-  onClickedUtlagg() {
+  async onClickedUtlagg() {
     this.resetClickedButtons();
-    this.utlagg = this.utlaggService.getUtlagg();
+    this.utlagg = await this.utlaggService.getUtlagg();
     this.isUtlaggClicked = true;
   }
 

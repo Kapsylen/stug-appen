@@ -1,10 +1,14 @@
-import {afterNextRender, Injectable} from '@angular/core';
+import {afterNextRender, Injectable } from '@angular/core';
 import {NewUtlagg, Utlagg} from '../model/utlagg';
+import {HttpClient} from '@angular/common/http';
+import {firstValueFrom} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class UtlaggService {
 
-  private utlagg: Utlagg[] = [
+  utlagg : Utlagg[] = [];
+
+/*  private utlagg: Utlagg[] = [
     {
       id: 1,
       title: "Painting",
@@ -40,41 +44,41 @@ export class UtlaggService {
       date: "2025-06-25",
       price: "4200SEK"
     }
-  ];
+  ];*/
 
-  constructor() {
-    afterNextRender(() => {
+  constructor(private httpClient: HttpClient) {
+    afterNextRender(async () => {
       const utlagg = localStorage.getItem('utlagg');
       if (utlagg) {
         this.utlagg = JSON.parse(utlagg);
       } else {
+        this.utlagg = await this.getUtlagg();
         localStorage.setItem('utlagg', JSON.stringify(this.utlagg));
       }
     });
   }
 
-  getUtlagg() {
-    return this.utlagg;
+  async getUtlagg() : Promise<Utlagg[]> {
+    const response = await firstValueFrom(
+      this.httpClient.get<Utlagg[]>('http://localhost:8080/v1/utlagg', {
+        observe: 'response'
+      })
+    );
+    return response.body ?? [];
+
   }
 
-  deleteUtlagg(id: number) {
-    this.utlagg = this.utlagg.filter(utlagg => utlagg.id !== id);
+  deleteUtlagg(id: string) {
+    this.httpClient.delete('http://localhost:8080/v1/utlagg' + id);
     console.log(this.utlagg);
-    this.saveUtlagg()
   }
 
-  saveUtlagg() {
+  saveUtlagg(newUtlagg: NewUtlagg) {
+    this.httpClient.post<Utlagg>('http://localhost:8080/v1/utlagg', newUtlagg)
+      .subscribe({
+        next : (newUtlaggData) => this.utlagg.unshift(newUtlaggData)
+      });
+
     localStorage.setItem('utlagg', JSON.stringify(this.utlagg));
-  }
-
-  addUtlagg(newUtlagg: NewUtlagg) {
-    this.utlagg.unshift({
-      id: new Date().getTime().valueOf(),
-      title: newUtlagg.title,
-      description: newUtlagg.description,
-      date: newUtlagg.date,
-      price: newUtlagg.price
-    });
-    this.saveUtlagg();
   }
 }

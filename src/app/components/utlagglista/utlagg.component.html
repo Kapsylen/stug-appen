@@ -10,7 +10,7 @@
   </header>
 
   <ul class="no-bullets">
-    @for (u of getUtlagg; track u.id) {
+    @for (u of getUtlagg | async; track u.id) {
       <li>
         <app-utlagg [utlagg]="u"></app-utlagg>
       </li>

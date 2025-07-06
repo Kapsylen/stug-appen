@@ -24,7 +24,7 @@ export class NewUtlaggComponent {
   }
 
   onSubmit()  {
-    this.utlaggService.addUtlagg(
+    this.utlaggService.saveUtlagg(
       {
         title: this.enteredTitle,
         description: this.enteredDescription,
