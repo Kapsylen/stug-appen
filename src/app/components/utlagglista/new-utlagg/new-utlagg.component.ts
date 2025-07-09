@@ -13,7 +13,7 @@ import {FormsModule} from '@angular/forms';
 export class NewUtlaggComponent {
   @Output () close = new EventEmitter<void>();
   enteredTitle = '';
-  enteredDate = '';
+  enteredOutlayDate = '';
   enteredDescription = '';
   enteredPrice = '';
 
@@ -28,7 +28,7 @@ export class NewUtlaggComponent {
       {
         title: this.enteredTitle,
         description: this.enteredDescription,
-        date: this.enteredDate,
+        outlayDate: this.enteredOutlayDate,
         price: this.enteredPrice,
       },
     );
