@@ -2,6 +2,7 @@ package stugapi.presentation.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import stugapi.application.service.UtlaggService;
 import stugapi.presentation.dto.UtlaggDto;
@@ -17,6 +18,7 @@ public class UtlaggController {
   private final UtlaggService utlaggService;
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   public UtlaggDto saveUtlagg(@RequestBody UtlaggDto utlaggDto) {
     log.info("Create utlägg: {}", utlaggDto);
     return UtlaggDto.utlaggDtoBuilder(utlaggService.save(utlaggDto))
@@ -24,6 +26,7 @@ public class UtlaggController {
   }
 
   @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteUtlagg(@PathVariable String id) {
     utlaggService.delete(id);
   }
@@ -51,6 +54,7 @@ public class UtlaggController {
   }
 
   @DeleteMapping
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteAllUtlagg() {
       utlaggService.deleteAll();
   }
