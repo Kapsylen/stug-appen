@@ -1,14 +1,14 @@
 package stugapi.infrastructure.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import stugapi.application.domain.model.Utlagg;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +20,7 @@ import java.util.UUID;
 public class UtlaggEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   UUID id;
   String title;
   String description;
@@ -28,7 +29,6 @@ public class UtlaggEntity {
 
   public static UtlaggEntityBuilder fromUtlagg(Utlagg utlagg) {
     return UtlaggEntity.builder()
-      .id(UUID.fromString(utlagg.id()))
       .title(utlagg.title())
       .description(utlagg.description())
       .createDate(utlagg.createDate())

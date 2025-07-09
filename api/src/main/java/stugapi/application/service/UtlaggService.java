@@ -16,9 +16,12 @@ public class UtlaggService {
 
   private final UtlaggRepository utlaggRepository;
 
-  public void save(UtlaggDto utlaggDto) {
+  public Utlagg save(UtlaggDto utlaggDto) {
     Utlagg utlagg = Utlagg.fromUtlaggDto(utlaggDto).build();
-    utlaggRepository.save(UtlaggEntity.fromUtlagg(utlagg).build());
+    return Utlagg.fromUtlaggEntity(utlaggRepository
+        .save(UtlaggEntity.fromUtlagg(utlagg)
+          .build()))
+      .build();
   }
 
   public void delete(String id) {
@@ -51,5 +54,9 @@ public class UtlaggService {
         .fromUtlaggEntity(u)
         .build())
       .toList();
+  }
+
+  public void deleteAll() {
+    utlaggRepository.deleteAll();
   }
 }

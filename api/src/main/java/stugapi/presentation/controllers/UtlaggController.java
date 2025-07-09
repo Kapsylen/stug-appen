@@ -15,8 +15,9 @@ public class UtlaggController {
   private final UtlaggService utlaggService;
 
   @PostMapping
-  public void saveUtlagg(@RequestBody UtlaggDto utlaggDto) {
-    utlaggService.save(utlaggDto);
+  public UtlaggDto saveUtlagg(@RequestBody UtlaggDto utlaggDto) {
+    return UtlaggDto.utlaggDtoBuilder(utlaggService.save(utlaggDto))
+      .build();
   }
 
   @DeleteMapping("/{id}")
@@ -38,11 +39,16 @@ public class UtlaggController {
       .build();
   }
 
-  @GetMapping()
+  @GetMapping
   public List<UtlaggDto> getAllUtlagg() {
     return utlaggService.findAll()
       .stream()
       .map(UtlaggDto::fromUtlagg)
       .toList();
+  }
+
+  @DeleteMapping
+  public void deleteAllUtlagg() {
+      utlaggService.deleteAll();
   }
 }

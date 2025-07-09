@@ -49,9 +49,10 @@ export class App {
 
   async onClickedUtlagg() {
     this.resetClickedButtons();
-    this.utlagg = await this.utlaggService.getUtlagg();
+
     this.isUtlaggClicked = true;
   }
+
 
   onClickedFakturor() {
     this.resetClickedButtons();
