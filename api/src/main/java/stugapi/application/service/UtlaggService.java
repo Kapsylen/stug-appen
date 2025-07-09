@@ -1,6 +1,7 @@
 package stugapi.application.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import stugapi.application.domain.model.Utlagg;
 import stugapi.infrastructure.entities.UtlaggEntity;
@@ -12,11 +13,13 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class UtlaggService {
 
   private final UtlaggRepository utlaggRepository;
 
   public Utlagg save(UtlaggDto utlaggDto) {
+    log.info("Create utlägg: {}", utlaggDto);
     Utlagg utlagg = Utlagg.fromUtlaggDto(utlaggDto).build();
     return Utlagg.fromUtlaggEntity(utlaggRepository
         .save(UtlaggEntity.fromUtlagg(utlagg)
@@ -35,7 +38,7 @@ public class UtlaggService {
 
     return utlagg.title(updateUtlagg.title())
       .description(updateUtlagg.description())
-      .createDate(updateUtlagg.createDate())
+      .outlayDate(updateUtlagg.outlayDate())
       .price(updateUtlagg.price())
       .build();
   }

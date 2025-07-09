@@ -1,6 +1,7 @@
 package stugapi.presentation.controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 import stugapi.application.service.UtlaggService;
 import stugapi.presentation.dto.UtlaggDto;
@@ -10,12 +11,14 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/utlagg")
 @AllArgsConstructor
+@Log4j2
 public class UtlaggController {
 
   private final UtlaggService utlaggService;
 
   @PostMapping
   public UtlaggDto saveUtlagg(@RequestBody UtlaggDto utlaggDto) {
+    log.info("Create utlägg: {}", utlaggDto);
     return UtlaggDto.utlaggDtoBuilder(utlaggService.save(utlaggDto))
       .build();
   }

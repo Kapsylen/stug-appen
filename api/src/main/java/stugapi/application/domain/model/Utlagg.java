@@ -9,7 +9,7 @@ public record Utlagg (
   String id,
   String title,
   String description,
-  String createDate,
+  String outlayDate,
   String price
 ){
   public static UtlaggBuilder fromUtlaggEntity(UtlaggEntity utlagg) {
@@ -17,7 +17,7 @@ public record Utlagg (
       .id(utlagg.getId().toString())
       .title(utlagg.getTitle())
       .description(utlagg.getDescription())
-      .createDate(utlagg.getCreateDate())
+      .outlayDate(utlagg.getOutlayDate())
       .price(utlagg.getPrice());
   }
 
@@ -25,7 +25,7 @@ public record Utlagg (
     return Utlagg.builder()
       .title(utlaggDto.title())
       .description(utlaggDto.description())
-      .createDate(utlaggDto.createDate())
+      .outlayDate(utlaggDto.outlayDate())
       .price(utlaggDto.price());
   }
 }
