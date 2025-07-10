@@ -18,7 +18,7 @@ public class UtlaggController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public UtlaggDto saveUtlagg(@RequestBody UtlaggDto utlaggDto) {
-    return UtlaggDto.utlaggDtoBuilder(utlaggService.save(utlaggDto))
+    return UtlaggDto.toUtlaggDtoBuilder(utlaggService.saveUtlagg(utlaggDto))
       .build();
   }
 
@@ -31,14 +31,14 @@ public class UtlaggController {
   @GetMapping("/{id}")
   public UtlaggDto getUtlagg(@PathVariable String id) {
     return UtlaggDto
-      .utlaggDtoBuilder(utlaggService.find(id))
+      .toUtlaggDtoBuilder(utlaggService.find(id))
       .build();
   }
 
   @PutMapping("/{id}")
   public UtlaggDto updateUtlagg(@PathVariable String id, @RequestBody UtlaggDto updateUtlagg) {
     return UtlaggDto
-      .utlaggDtoBuilder(utlaggService.update(updateUtlagg, id))
+      .toUtlaggDtoBuilder(utlaggService.update(updateUtlagg, id))
       .build();
   }
 

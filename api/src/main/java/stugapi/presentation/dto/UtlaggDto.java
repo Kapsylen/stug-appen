@@ -11,7 +11,7 @@ public record UtlaggDto(
   String outlayDate,
   String price
 ) {
-  public static UtlaggDtoBuilder utlaggDtoBuilder(Utlagg utlagg) {
+  public static UtlaggDtoBuilder toUtlaggDtoBuilder(Utlagg utlagg) {
     return UtlaggDto.builder()
       .id(utlagg.id())
       .title(utlagg.title())
@@ -21,6 +21,6 @@ public record UtlaggDto(
   }
 
   public static UtlaggDto fromUtlagg(Utlagg utlagg) {
-    return UtlaggDto.utlaggDtoBuilder(utlagg).build();
+    return UtlaggDto.toUtlaggDtoBuilder(utlagg).build();
   }
 }

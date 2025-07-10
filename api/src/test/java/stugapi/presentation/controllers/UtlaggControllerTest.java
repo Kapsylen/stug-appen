@@ -51,7 +51,7 @@ public class UtlaggControllerTest {
       .price("1000")
       .build();
 
-    given(utlaggService.save(inputUtlagg)).willReturn(Utlagg.fromUtlaggDto(outputUtlagg).build());
+    given(utlaggService.saveUtlagg(inputUtlagg)).willReturn(Utlagg.fromUtlaggDto(outputUtlagg).build());
 
     mvc.perform(MockMvcRequestBuilders
       .post("/api/v1/utlagg")
@@ -64,7 +64,7 @@ public class UtlaggControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate))
       .andExpect(MockMvcResultMatchers.jsonPath("price").value("1000"));
 
-    verify(utlaggService).save(inputUtlagg);
+    verify(utlaggService).saveUtlagg(inputUtlagg);
   }
 
   @Test
