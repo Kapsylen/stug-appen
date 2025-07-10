@@ -49,7 +49,7 @@ public class UtlaggService {
    * @return The updated Utlagg domain object
    * @throws RuntimeException if the Utlagg with the provided id is not found
    */
-  public Utlagg update(UtlaggDto updateUtlagg, String id) {
+  public Utlagg update(String id, UtlaggDto updateUtlagg) {
     var utlaggBuilder = Utlagg.fromUtlaggEntity(utlaggRepository
       .findById(UUID.fromString(id))
       .orElseThrow(RuntimeException::new));

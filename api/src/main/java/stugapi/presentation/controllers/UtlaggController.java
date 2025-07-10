@@ -38,7 +38,7 @@ public class UtlaggController {
   @PutMapping("/{id}")
   public UtlaggDto updateUtlagg(@PathVariable String id, @RequestBody UtlaggDto updateUtlagg) {
     return UtlaggDto
-      .toUtlaggDtoBuilder(utlaggService.update(updateUtlagg, id))
+      .toUtlaggDtoBuilder(utlaggService.update(id, updateUtlagg))
       .build();
   }
 

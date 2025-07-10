@@ -43,7 +43,7 @@ public class UtlaggControllerTest {
       .price("1000")
       .build();
 
-    var outputUtlagg = UtlaggDto.builder()
+    var outputUtlagg = Utlagg.builder()
       .id(UUID.randomUUID().toString())
       .title("Test title")
       .description("Test description")
@@ -51,7 +51,7 @@ public class UtlaggControllerTest {
       .price("1000")
       .build();
 
-    given(utlaggService.saveUtlagg(inputUtlagg)).willReturn(Utlagg.fromUtlaggDto(outputUtlagg).build());
+    given(utlaggService.saveUtlagg(inputUtlagg)).willReturn(outputUtlagg);
 
     mvc.perform(MockMvcRequestBuilders
       .post("/api/v1/utlagg")
@@ -92,7 +92,6 @@ public class UtlaggControllerTest {
 
     mvc.perform(MockMvcRequestBuilders
       .get("/api/v1/utlagg/{id}", id)
-
       .accept(MediaType.APPLICATION_JSON)
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
@@ -173,10 +172,10 @@ public class UtlaggControllerTest {
       .price("2000")
       .build();
 
-    given(utlaggService.update(inputUtlagg, id)).willReturn(outputUtlagg);
+    given(utlaggService.update(id, inputUtlagg)).willReturn(outputUtlagg);
 
     mvc.perform(MockMvcRequestBuilders
-      .put("/api/v1/utlagg/{id}", id, inputUtlagg)
+      .put("/api/v1/utlagg/{id}", id)
         .content(mapper.writeValueAsBytes(inputUtlagg))
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON))
@@ -186,5 +185,7 @@ public class UtlaggControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("description").value("Test description"))
       .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate))
       .andExpect(MockMvcResultMatchers.jsonPath("price").value("2000"));
+
+    verify(utlaggService).update(id, inputUtlagg);
   }
 }

@@ -1,6 +1,7 @@
 package stugapi.presentation.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import stugapi.application.service.FakturaService;
 import stugapi.presentation.dto.FakturaDto;
@@ -17,19 +18,21 @@ public class FakturaController {
   private final FakturaService fakturaService;
 
   @PostMapping
-  public FakturaDto createFaktura(FakturaDto fakturaDto) {
+  @ResponseStatus(HttpStatus.CREATED)
+  public FakturaDto createFaktura(@RequestBody FakturaDto fakturaDto) {
     return toFakturaDtoBuilder(fakturaService.saveFaktura(fakturaDto))
       .build();
   }
 
   @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteFaktura(String id) {
     fakturaService.delete(id);
   }
 
   @PutMapping("/{id}")
   public FakturaDto updateFaktura(@PathVariable String id, @RequestBody FakturaDto updateFaktura) {
-    return toFakturaDtoBuilder(fakturaService.update(updateFaktura, id))
+    return toFakturaDtoBuilder(fakturaService.update(id, updateFaktura))
       .build();
   }
 

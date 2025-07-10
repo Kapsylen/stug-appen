@@ -56,7 +56,7 @@ public class FakturaService {
    * @param id the ID of the Faktura to update
    * @return the updated Faktura object
    */
-  public Faktura update(FakturaDto updateFaktura, String id) {
+  public Faktura update(String id, FakturaDto updateFaktura) {
     FakturaBuilder fakturaBuilder = fromFakturaEntity(fakturaRepository
       .findById(UUID.fromString(id))
       .orElseThrow(RuntimeException::new));
