@@ -34,7 +34,8 @@ public record KontaktDto(
       .name(kontakt.name())
       .company(kontakt.company())
       .category(kontakt.category())
-      .phone(kontakt.category())
+      .phone(kontakt.phone())
+      .email(kontakt.email())
       .address(kontakt.address())
       .notes(kontakt.notes())
       .status(kontakt.status().name());

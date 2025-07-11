@@ -40,17 +40,17 @@ class FakturaControllerTest {
       .issueDate("2021-01-01")
       .dueDate("2021-01-31")
       .totalAmount("1000")
-      .status("Paid")
+      .status("paid")
       .build();
 
     Faktura output = Faktura.builder()
       .id(UUID.randomUUID().toString())
-      .invoiceNumber("Test invoice number")
-      .clientName("Test client name")
-      .issueDate("2021-01-01")
-      .dueDate("2021-01-31")
-      .totalAmount("1000")
-      .status(FakturaStatus.PAID)
+      .invoiceNumber(input.invoiceNumber())
+      .clientName(input.clientName())
+      .issueDate(input.issueDate())
+      .dueDate(input.dueDate())
+      .totalAmount(input.totalAmount())
+      .status(input.status() == null ? FakturaStatus.PAID : FakturaStatus.valueOf(input.status().toUpperCase()))
       .build();
 
     given(fakturaService.saveFaktura(input)).willReturn(output);
@@ -168,16 +168,16 @@ class FakturaControllerTest {
       .issueDate("2021-01-01")
       .dueDate("2021-01-31")
       .totalAmount("1000")
-      .status("Sent")
+      .status("SENT")
       .build();
 
     var outputUpdatedFakura = Faktura.builder()
       .id(UUID.randomUUID().toString())
-      .invoiceNumber("Test invoice number")
-      .clientName("Test client name")
-      .issueDate("2021-01-01")
-      .dueDate("2021-01-31")
-      .totalAmount("1000")
+      .invoiceNumber(inputUpdateFaktura.invoiceNumber())
+      .clientName(inputUpdateFaktura.clientName())
+      .issueDate(inputUpdateFaktura.issueDate())
+      .dueDate(inputUpdateFaktura.dueDate())
+      .totalAmount(inputUpdateFaktura.totalAmount())
       .status(FakturaStatus.SENT)
       .build();
 

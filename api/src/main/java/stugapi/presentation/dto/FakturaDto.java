@@ -42,7 +42,11 @@ public record FakturaDto(
       .clientName(faktura.clientName())
       .issueDate(faktura.issueDate())
       .dueDate(faktura.dueDate())
-      .items(faktura.items().stream().map(FakturaEnhetDto::toFaktureEnhet).toList())
+      .items(faktura.items() != null
+        ? faktura.items().stream()
+        .map(FakturaEnhetDto::toFaktureEnhet)
+        .toList()
+        : List.of())
       .totalAmount(faktura.totalAmount())
       .status(faktura.status().toString());
   }
