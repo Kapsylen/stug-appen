@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import stugapi.application.domain.model.Faktura;
+import stugapi.application.domain.model.FakturaEnhet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,24 +46,14 @@ public class FakturaEntity {
     @Enumerated(EnumType.STRING)
     private FakturaStatus status;
 
-  public static FakturaEntityBuilder fromFaktura(Faktura faktura) {
-    return FakturaEntity.builder()
-      .invoiceNumber(faktura.invoiceNumber())
-      .clientName(faktura.clientName())
-      .issueDate(faktura.issueDate())
-      .dueDate(faktura.dueDate())
-      .totalAmount(faktura.totalAmount())
-      .status(faktura.status());
-  }
-
-  // Helper method to manage bidirectional relationship
-    public void addItem(FakturaEnhetEntity item) {
-        items.add(item);
-        item.setFaktura(this);
-    }
-
-    public void removeItem(FakturaEnhetEntity item) {
-        items.remove(item);
-        item.setFaktura(null);
+    public static FakturaEntityBuilder fromFaktura(Faktura faktura) {
+        return FakturaEntity.builder()
+                .invoiceNumber(faktura.invoiceNumber())
+                .clientName(faktura.clientName())
+                .issueDate(faktura.issueDate())
+                .dueDate(faktura.dueDate())
+                .items(faktura.items().stream().map(FakturaEnhetEntity::toFakturaEnhetEntity).toList())
+                .totalAmount(faktura.totalAmount())
+                .status(faktura.status());
     }
 }

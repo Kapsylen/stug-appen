@@ -11,6 +11,11 @@ import stugapi.presentation.dto.UtlaggDto;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service class for managing operations related to `Utlagg`.
+ * Provides methods to create, read, update, and delete `Utlagg` records,
+ * as well as methods to handle bulk operations on the repository.
+ */
 @Service
 @AllArgsConstructor
 @Log4j2

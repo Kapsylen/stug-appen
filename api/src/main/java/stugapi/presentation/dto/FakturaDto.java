@@ -2,9 +2,28 @@ package stugapi.presentation.dto;
 
 import lombok.Builder;
 import stugapi.application.domain.model.Faktura;
+import stugapi.application.domain.model.FakturaEnhet;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Represents a data transfer object for an invoice (Faktura).
+ * This class encapsulates the details of an invoice and includes functionality
+ * to convert a domain model Faktura to a FakturaDto.
+ *
+ * Fields:
+ * - id: Unique identifier of the invoice.
+ * - invoiceNumber: Invoice number associated with the invoice.
+ * - clientName: Name of the client related to the invoice.
+ * - issueDate: Date when the invoice was issued.
+ * - dueDate: Due date of the invoice.
+ * - items: List of items (FakturaEnhetDto) associated with the invoice.
+ * - totalAmount: Total amount of the invoice.
+ * - status: The current status of the invoice as a string.
+ *
+ * This record uses the Lombok @Builder annotation to facilitate object creation.
+ */
 @Builder
 public record FakturaDto(
     String id,
@@ -23,6 +42,7 @@ public record FakturaDto(
       .clientName(faktura.clientName())
       .issueDate(faktura.issueDate())
       .dueDate(faktura.dueDate())
+      .items(faktura.items().stream().map(FakturaEnhetDto::toFaktureEnhet).toList())
       .totalAmount(faktura.totalAmount())
       .status(faktura.status().toString());
   }

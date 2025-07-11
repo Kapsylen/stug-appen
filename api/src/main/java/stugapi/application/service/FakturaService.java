@@ -1,12 +1,10 @@
 package stugapi.application.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import stugapi.application.domain.model.Faktura;
 import stugapi.application.domain.model.Faktura.FakturaBuilder;
 import stugapi.infrastructure.entities.FakturaEntity;
-import stugapi.infrastructure.entities.UtlaggEntity;
 import stugapi.infrastructure.repositories.FakturaRepository;
 import stugapi.presentation.dto.FakturaDto;
 
@@ -17,9 +15,13 @@ import static stugapi.application.domain.model.Faktura.fromFakturaDto;
 import static stugapi.application.domain.model.Faktura.fromFakturaEntity;
 import static stugapi.infrastructure.entities.FakturaEntity.fromFaktura;
 
+/**
+ * The FakturaService class provides methods for managing `Faktura` entities.
+ * This includes operations such as creating, updating, retrieving, and deleting invoices.
+ * The service acts as a layer between the domain model and the persistence layer.
+ */
 @Service
 @AllArgsConstructor
-@Log4j2
 public class FakturaService {
 
   private final FakturaRepository fakturaRepository;
