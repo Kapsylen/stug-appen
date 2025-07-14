@@ -116,7 +116,7 @@ public class KontakControllerTest {
   }
 
   @Test
-  public void whenDeleteKontakt_thenDeleteKontakt() throws Exception {
+  public void whenDeleteKontakt_thenNoContentIsReturned() throws Exception {
     var id = UUID.randomUUID().toString();
     mvc.perform(MockMvcRequestBuilders
       .delete("/api/v1/kontakt/{id}", id)

@@ -57,5 +57,4 @@ public class KontaktEntity {
                 .notes(kontakt.notes())
                 .status(Status.valueOf(kontakt.status().name()));
     }
-
 }

@@ -17,7 +17,7 @@ public class KontaktController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public KontaktDto createKontakt(@RequestBody  KontaktDto kontaktDto) {
+  public KontaktDto createKontakt(@RequestBody KontaktDto kontaktDto) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.saveKontakt(kontaktDto))
       .build();
   }
@@ -32,11 +32,6 @@ public class KontaktController {
   public KontaktDto getKontakt(@PathVariable String id) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.find(id))
       .build();
-  }
-  @DeleteMapping
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteAllKontakt() {
-    kontaktService.deleteAll();
   }
 
   @PutMapping("/{id}")
@@ -53,5 +48,9 @@ public class KontaktController {
       .toList();
   }
 
-
+  @DeleteMapping
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteAllKontakt() {
+    kontaktService.deleteAll();
+  }
 }

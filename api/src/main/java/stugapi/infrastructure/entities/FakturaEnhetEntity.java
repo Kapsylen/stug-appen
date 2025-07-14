@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import stugapi.application.domain.model.FakturaEnhet;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity

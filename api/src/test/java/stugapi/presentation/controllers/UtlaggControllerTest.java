@@ -141,7 +141,7 @@ public class UtlaggControllerTest {
   }
 
   @Test
-  public void whenDeleteAllUtlagg_thenDeleteAllUtlagg() throws Exception {
+  public void whenDeleteAllUtlagg_thenNoContentIsReturned() throws Exception {
     mvc.perform(MockMvcRequestBuilders
       .delete("/api/v1/utlagg")
       .contentType(MediaType.APPLICATION_JSON)

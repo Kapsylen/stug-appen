@@ -1,6 +1,5 @@
 package stugapi.presentation.dto;
 
-import ch.qos.logback.classic.spi.LoggingEventVO;
 import lombok.Builder;
 import stugapi.application.domain.model.Kontakt;
 
@@ -19,7 +18,7 @@ import stugapi.application.domain.model.Kontakt;
  */
 @Builder
 public record KontaktDto(
-    Long id,
+    String id,
     String name,
     String company,
     String category,

@@ -8,6 +8,8 @@ import stugapi.presentation.dto.UtlaggDto;
 
 import java.util.List;
 
+import static stugapi.presentation.dto.UtlaggDto.toUtlaggDtoBuilder;
+
 @RestController
 @RequestMapping("api/v1/utlagg")
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class UtlaggController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public UtlaggDto saveUtlagg(@RequestBody UtlaggDto utlaggDto) {
-    return UtlaggDto.toUtlaggDtoBuilder(utlaggService.saveUtlagg(utlaggDto))
+    return toUtlaggDtoBuilder(utlaggService.saveUtlagg(utlaggDto))
       .build();
   }
 
@@ -30,15 +32,13 @@ public class UtlaggController {
 
   @GetMapping("/{id}")
   public UtlaggDto getUtlagg(@PathVariable String id) {
-    return UtlaggDto
-      .toUtlaggDtoBuilder(utlaggService.find(id))
+    return toUtlaggDtoBuilder(utlaggService.find(id))
       .build();
   }
 
   @PutMapping("/{id}")
   public UtlaggDto updateUtlagg(@PathVariable String id, @RequestBody UtlaggDto updateUtlagg) {
-    return UtlaggDto
-      .toUtlaggDtoBuilder(utlaggService.update(id, updateUtlagg))
+    return toUtlaggDtoBuilder(utlaggService.update(id, updateUtlagg))
       .build();
   }
 
@@ -53,6 +53,6 @@ public class UtlaggController {
   @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteAllUtlagg() {
-      utlaggService.deleteAll();
+    utlaggService.deleteAll();
   }
 }

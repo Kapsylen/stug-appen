@@ -2,7 +2,7 @@ package stugapi.application.domain.model;
 
 import lombok.Builder;
 import stugapi.infrastructure.entities.FakturaEntity;
-import stugapi.infrastructure.entities.FakturaStatus;
+import stugapi.infrastructure.entities.enums.FakturaStatus;
 import stugapi.presentation.dto.FakturaDto;
 
 import java.util.List;
@@ -24,7 +24,11 @@ public record Faktura(
                 .clientName(fakturaDto.clientName())
                 .issueDate(fakturaDto.issueDate())
                 .dueDate(fakturaDto.dueDate())
-                .items(fakturaDto.items().stream().map(FakturaEnhet::toFakturaEnhet).toList())
+                .items(fakturaDto.items() != null ? fakturaDto.items()
+                  .stream()
+                  .map(FakturaEnhet::toFakturaEnhet)
+                  .toList() : List.of()
+                )
                 .totalAmount(fakturaDto.totalAmount())
                 .status(FakturaStatus.valueOf(fakturaDto.status()));
     }

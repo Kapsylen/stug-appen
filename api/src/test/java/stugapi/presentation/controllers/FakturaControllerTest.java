@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import stugapi.application.domain.model.Faktura;
 import stugapi.application.service.FakturaService;
-import stugapi.infrastructure.entities.FakturaStatus;
+import stugapi.infrastructure.entities.enums.FakturaStatus;
 import stugapi.presentation.dto.FakturaDto;
 
 import java.util.List;
@@ -148,7 +148,7 @@ class FakturaControllerTest {
   }
 
   @Test
-  public void whenDeleteAllFaktura_thenDeleteAllFaktura() throws Exception {
+  public void whenDeleteAllFaktura_thenNoContentIsReturned() throws Exception {
     var id = UUID.randomUUID().toString();
     mvc.perform(MockMvcRequestBuilders
       .delete("/api/v1/faktura/{id}", id)

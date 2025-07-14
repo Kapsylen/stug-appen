@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import stugapi.application.domain.model.Faktura;
-import stugapi.application.domain.model.FakturaEnhet;
+import stugapi.infrastructure.entities.enums.FakturaStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,8 @@ public class FakturaEntity {
                 .clientName(faktura.clientName())
                 .issueDate(faktura.issueDate())
                 .dueDate(faktura.dueDate())
-                .items(faktura.items().stream().map(FakturaEnhetEntity::toFakturaEnhetEntity).toList())
+                .items(faktura.items() != null
+                  ? faktura.items().stream().map(FakturaEnhetEntity::toFakturaEnhetEntity).toList(): List.of())
                 .totalAmount(faktura.totalAmount())
                 .status(faktura.status());
     }
