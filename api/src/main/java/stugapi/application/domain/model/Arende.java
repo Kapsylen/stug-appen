@@ -55,7 +55,7 @@ public record Arende(
       .contractorInfo(arendeDto.contractorInfo())
       .updates(arendeDto.updates().stream().map(ArendeStatus::toArendeStatus).toList())
       .tags(arendeDto.tags())
-      .createdAt(parseDateTime(arendeDto.createdAt()))
+      .createdAt(LocalDateTime.now())
       .updatedAt(parseDateTime(arendeDto.updatedAt()));
   }
 
@@ -64,6 +64,7 @@ public record Arende(
       .id(arendeEntity.getId().toString())
       .title(arendeEntity.getTitle())
       .description(arendeEntity.getDescription())
+      .type(arendeEntity.getType())
       .priority(arendeEntity.getPriority())
       .status(arendeEntity.getStatus())
       .reportedBy(arendeEntity.getReportedBy())
@@ -76,6 +77,8 @@ public record Arende(
       .resolution(arendeEntity.getResolution())
       .requiresContractor(arendeEntity.isRequiresContractor())
       .contractorInfo(arendeEntity.getContractorInfo())
+      .createdAt(arendeEntity.getCreatedAt())
+      .updatedAt(arendeEntity.getUpdatedAt())
       .updates(arendeEntity.getUpdates().stream().map(ArendeStatus::toArendeStatus).toList())
       .tags(arendeEntity.getTags());
   }

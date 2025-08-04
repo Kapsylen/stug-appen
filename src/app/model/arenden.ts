@@ -3,7 +3,7 @@ export type Status = 'new' | 'investigating' | 'in_progress' | 'resolved' | 'clo
 export type Typ = 'maintenance' | 'damage' | 'utility' | 'security' | 'pest' | 'weather' | 'other';
 
 export interface ArendeStatus {
-  id: number;
+  id: string;
   timestamp: string;
   message: string;
   updatedBy: string;
@@ -11,7 +11,7 @@ export interface ArendeStatus {
 }
 
 export interface Arende {
-  id: number;
+  id: string;
   title: string;
   description: string;
   type: string;

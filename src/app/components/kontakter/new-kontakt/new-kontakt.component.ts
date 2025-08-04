@@ -24,7 +24,7 @@ export class NewKontaktComponent {
   enteredStatus = ''
 
   onSubmit() {
-    this.kontakterService.addKontak({
+    this.kontakterService.saveKontakt({
       name: this.enteredName,
       company: this.enteredCompany,
       category: this.enteredCategory,

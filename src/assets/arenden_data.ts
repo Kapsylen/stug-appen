@@ -2,7 +2,7 @@ import {Arende} from '../app/model/arenden';
 
 export const DUMMY_ARENDEN: Arende[] = [
   {
-    id: 1,
+    id: "1",
     title: "Water Leak in Bathroom",
     description: "Water leaking from pipe under sink, causing floor damage",
     type: "damage",
@@ -20,14 +20,14 @@ export const DUMMY_ARENDEN: Arende[] = [
     contractorInfo: "Plumber AB, Tel: 070-123-4567",
     updates: [
       {
-        id: 1,
+        id: "1",
         timestamp: "2025-06-20T09:00:00",
         message: "Plumber contacted, arriving tomorrow morning",
         updatedBy: "Lars Andersson",
         status: "in_progress"
       },
       {
-        id: 2,
+        id: "2",
         timestamp: "2025-06-21T14:30:00",
         message: "Repair completed, water pressure tested",
         updatedBy: "Plumber AB",
@@ -39,7 +39,7 @@ export const DUMMY_ARENDEN: Arende[] = [
     updatedAt: "2025-06-21T14:30:00"
   },
   {
-    id: 2,
+    id: "2",
     title: "Heating System Failure",
     description: "No heat output from radiators, temperature dropping",
     type: "utility",
@@ -54,7 +54,7 @@ export const DUMMY_ARENDEN: Arende[] = [
     contractorInfo: "Heating Expert SE, Tel: 070-987-6543",
     updates: [
       {
-        id: 1,
+        id: "1",
         timestamp: "2025-06-24T17:30:00",
         message: "Emergency call placed to heating specialist",
         updatedBy: "Maria Svensson",
@@ -66,7 +66,7 @@ export const DUMMY_ARENDEN: Arende[] = [
     updatedAt: "2025-06-24T17:30:00"
   },
   {
-    id: 3,
+    id: "3",
     title: "Wasp Nest in Attic",
     description: "Large wasp nest discovered in attic space",
     type: "pest",
@@ -84,14 +84,14 @@ export const DUMMY_ARENDEN: Arende[] = [
     contractorInfo: "Pest Control AB, Tel: 070-555-1234",
     updates: [
       {
-        id: 1,
+        id: "1",
         timestamp: "2025-06-15T11:00:00",
         message: "Pest control scheduled for tomorrow",
         updatedBy: "Erik Nilsson",
         status: "in_progress"
       },
       {
-        id: 2,
+        id: "2",
         timestamp: "2025-06-16T15:00:00",
         message: "Nest removed and preventive measures applied",
         updatedBy: "Pest Control AB",
@@ -103,7 +103,7 @@ export const DUMMY_ARENDEN: Arende[] = [
     updatedAt: "2025-06-16T15:00:00"
   },
   {
-    id: 4,
+    id: "4",
     title: "Storm Damage to Roof",
     description: "Several shingles blown off during storm, minor leaking",
     type: "weather",
@@ -120,7 +120,7 @@ export const DUMMY_ARENDEN: Arende[] = [
     updatedAt: "2025-06-25T07:00:00"
   },
   {
-    id: 5,
+    id: "5",
     title: "Broken Window Lock",
     description: "Kitchen window lock mechanism not functioning",
     type: "security",
@@ -137,7 +137,7 @@ export const DUMMY_ARENDEN: Arende[] = [
     requiresContractor: "false",
     updates: [
       {
-        id: 1,
+        id: "1",
         timestamp: "2025-06-10T15:30:00",
         message: "New lock installed and tested",
         updatedBy: "Handyman Services",

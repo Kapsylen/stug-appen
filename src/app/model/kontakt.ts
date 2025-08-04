@@ -1,5 +1,5 @@
 export type Kontakt = {
-  id: number;
+  id: string;
   name: string;
   company: string;
   category: string;

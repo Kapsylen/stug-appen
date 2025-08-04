@@ -9,7 +9,7 @@
     </menu>
 
     <ul class="no-bullets">
-      @for (k of kontakter; track k.id) {
+      @for (k of kontakter(); track k.id) {
         <li>
           <app-kontakt [kontakt]="k"></app-kontakt>
         </li>

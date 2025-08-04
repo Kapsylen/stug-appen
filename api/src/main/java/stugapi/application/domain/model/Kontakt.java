@@ -25,7 +25,6 @@ public record Kontakt(
      */
     public static KontaktBuilder fromKontaktDto(KontaktDto kontaktDto) {
         return Kontakt.builder()
-            .id(kontaktDto.id())
             .name(kontaktDto.name())
             .company(kontaktDto.company())
             .category(kontaktDto.category())
@@ -38,6 +37,7 @@ public record Kontakt(
 
   public static KontaktBuilder fromKontaktEntity(KontaktEntity kontaktEntity) {
     return Kontakt.builder()
+      .id(kontaktEntity.getId().toString())
       .company(kontaktEntity.getCompany())
       .category(kontaktEntity.getCategory())
       .phone(kontaktEntity.getPhone())

@@ -20,7 +20,7 @@ export class ArendeComponents {
   }
 
   onEditArende() {
-    console.log(this.arende);
+    this.arendeService.editArende(this.arende);
   }
 
   onResolved() {

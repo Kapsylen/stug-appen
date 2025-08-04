@@ -19,7 +19,7 @@
 
     <p>
       <label for="phone">Telefon</label>
-      <input type= text id="phone" name="phone" [(ngModel)]="enteredPhone"/>
+      <input type=text id="phone" name="phone" [(ngModel)]="enteredPhone"/>
     </p>
 
     <p>
@@ -39,7 +39,10 @@
 
     <p>
       <label for="status">Status</label>
-      <input type="text" id="status" name="status" [(ngModel)]="enteredStatus"/>
+      <select name="status" id="status" [(ngModel)]="enteredStatus">
+        <option value="ACTIVE">Active</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
     <p>
 
     <p class="actions">

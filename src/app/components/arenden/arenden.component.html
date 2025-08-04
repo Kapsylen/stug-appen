@@ -8,7 +8,7 @@
       </menu>
 
       <ul class="no-bullets">
-        @for (a of getArenden; track a.id) {
+        @for (a of arenden(); track a.id) {
           <li>
             <app-arende [arende]="a"></app-arende>
           </li>

@@ -27,7 +27,6 @@ export class FakturaService {
       })
     .subscribe({
         next: (fakturorData) => {
-          console.log('Fakturor fetched: ' + fakturorData);
           this.fakturor.set(fakturorData);
         }
       });
@@ -39,18 +38,15 @@ export class FakturaService {
 
   getFakturor() {
     return this.fakturor
-
   }
 
   deleteFakturor(id: string) {
     this.httpClient.delete(this.baseUrl + '/' + id).subscribe();
     this.fakturor.update(fakturorList => fakturorList?.filter(f => f.id !== id));
-    localStorage.setItem('fakturor', JSON.stringify(this.fakturor()));
     console.log('Fakturor deleted successfully');
   }
 
   saveFaktura(newFakture: NewFaktura) {
-    console.log(newFakture);
     this.httpClient.post<Faktura>(this.baseUrl, newFakture)
       .subscribe({
         next: (newFakturorData) => {
@@ -59,11 +55,6 @@ export class FakturaService {
             ...(fakturorList ?? []),
             newFakturorData
           ]);
-          const currentFakturor = this.fakturor();
-          if (currentFakturor) {
-            localStorage.setItem('fakturor', JSON.stringify(currentFakturor));
-          }
-          console.log('Fakturor saved:', newFakturorData);
         },
         error: (error) => {
           console.error('Failed to save fakturor:', error);

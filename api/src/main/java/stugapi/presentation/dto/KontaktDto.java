@@ -30,6 +30,7 @@ public record KontaktDto(
 ) {
   public static KontaktDtoBuilder toKontaktDtoBuilder(Kontakt kontakt) {
     return KontaktDto.builder()
+      .id(kontakt.id())
       .name(kontakt.name())
       .company(kontakt.company())
       .category(kontakt.category())

@@ -17,7 +17,7 @@ export class KontaktComponents {
   kontakerService = inject(KontaktService);
 
   onDeleteKontakt() {
-    this.kontakerService.deleteKontakter(this.kontakt.id);
+    this.kontakerService.deleteKontakt(this.kontakt.id);
   }
 
   onEditKontakt() {

@@ -1,216 +1,74 @@
 import {Arende, NewArende} from '../model/arenden';
-import {afterNextRender, Injectable} from '@angular/core';
+import {afterNextRender, DestroyRef, inject, Injectable, signal} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({providedIn: 'root'})
 export class ArendeService {
 
-  private arenden: Arende[] = [
-    {
-      id: 1,
-      title: "Water Leak in Bathroom",
-      description: "Water leaking from pipe under sink, causing floor damage",
-      type: "damage",
-      priority: "high",
-      status: "resolved",
-      reportedBy: "Lars Andersson",
-      assignedTo: "Plumber AB",
-      location: "Main Bathroom",
-      estimatedCost: "5000",
-      actualCost: "4500",
-      startTime: "2025-06-20T08:15:00",
-      resolvedTime: "2025-06-21T14:30:00",
-      resolution: "Replaced damaged pipe and repaired floor",
-      requiresContractor: "true",
-      contractorInfo: "Plumber AB, Tel: 070-123-4567",
-      updates: [
-        {
-          id: 1,
-          timestamp: "2025-06-20T09:00:00",
-          message: "Plumber contacted, arriving tomorrow morning",
-          updatedBy: "Lars Andersson",
-          status: "in_progress"
-        },
-        {
-          id: 2,
-          timestamp: "2025-06-21T14:30:00",
-          message: "Repair completed, water pressure tested",
-          updatedBy: "Plumber AB",
-          status: "resolved"
-        }
-      ],
-      tags: ["plumbing", "water-damage", "bathroom"],
-      createdAt: "2025-06-20T08:15:00",
-      updatedAt: "2025-06-21T14:30:00"
-    },
-    {
-      id: 2,
-      title: "Heating System Failure",
-      description: "No heat output from radiators, temperature dropping",
-      type: "utility",
-      priority: "critical",
-      status: "in_progress",
-      reportedBy: "Maria Svensson",
-      assignedTo: "Heating Expert SE",
-      location: "Entire Cottage",
-      estimatedCost: "8000",
-      startTime: "2025-06-24T17:00:00",
-      requiresContractor: "true",
-      contractorInfo: "Heating Expert SE, Tel: 070-987-6543",
-      updates: [
-        {
-          id: 1,
-          timestamp: "2025-06-24T17:30:00",
-          message: "Emergency call placed to heating specialist",
-          updatedBy: "Maria Svensson",
-          status: "investigating"
-        }
-      ],
-      tags: ["heating", "urgent", "winter"],
-      createdAt: "2025-06-24T17:00:00",
-      updatedAt: "2025-06-24T17:30:00"
-    },
-    {
-      id: 3,
-      title: "Wasp Nest in Attic",
-      description: "Large wasp nest discovered in attic space",
-      type: "pest",
-      priority: "medium",
-      status: "resolved",
-      reportedBy: "Erik Nilsson",
-      assignedTo: "Pest Control AB",
-      location: "Attic",
-      estimatedCost: "2500",
-      actualCost: "2500",
-      startTime: "2025-06-15T10:00:00",
-      resolvedTime: "2025-06-16T15:00:00",
-      resolution: "Nest safely removed and entry point sealed",
-      requiresContractor: "true",
-      contractorInfo: "Pest Control AB, Tel: 070-555-1234",
-      updates: [
-        {
-          id: 1,
-          timestamp: "2025-06-15T11:00:00",
-          message: "Pest control scheduled for tomorrow",
-          updatedBy: "Erik Nilsson",
-          status: "in_progress"
-        },
-        {
-          id: 2,
-          timestamp: "2025-06-16T15:00:00",
-          message: "Nest removed and preventive measures applied",
-          updatedBy: "Pest Control AB",
-          status: "resolved"
-        }
-      ],
-      tags: ["pest", "wasps", "attic"],
-      createdAt: "2025-06-15T10:00:00",
-      updatedAt: "2025-06-16T15:00:00"
-    },
-    {
-      id: 4,
-      title: "Storm Damage to Roof",
-      description: "Several shingles blown off during storm, minor leaking",
-      type: "weather",
-      priority: "high",
-      status: "new",
-      reportedBy: "Anna Berg",
-      assignedTo: "",
-      location: "Roof - South Side",
-      startTime: "2025-06-25T07:00:00",
-      requiresContractor: "true",
-      updates: [],
-      tags: ["roof", "storm-damage", "urgent"],
-      createdAt: "2025-06-25T07:00:00",
-      updatedAt: "2025-06-25T07:00:00"
-    },
-    {
-      id: 5,
-      title: "Broken Window Lock",
-      description: "Kitchen window lock mechanism not functioning",
-      type: "security",
-      priority: "medium",
-      status: "closed",
-      reportedBy: "Johan Lindberg",
-      assignedTo: "Handyman Services",
-      location: "Kitchen Window",
-      estimatedCost: "1200",
-      actualCost: "1000",
-      startTime: "2025-06-10T13:00:00",
-      resolvedTime: "2025-06-10T15:30:00",
-      resolution: "Replaced lock mechanism",
-      requiresContractor: "false",
-      updates: [
-        {
-          id: 1,
-          timestamp: "2025-06-10T15:30:00",
-          message: "New lock installed and tested",
-          updatedBy: "Handyman Services",
-          status: "closed"
-        }
-      ],
-      tags: ["security", "window", "repair"],
-      createdAt: "2025-06-10T13:00:00",
-      updatedAt: "2025-06-10T15:30:00"
-    }
-  ];
+  private arenden = signal<Arende[] | undefined>(undefined);
+  private baseUrl = 'http://localhost:8080/api/v1/arende';
+  private destroyRef =inject(DestroyRef);
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     afterNextRender(() => {
-      const arenden = localStorage.getItem('arenden');
-      if (arenden) {
-        this.arenden = JSON.parse(arenden);
-      } else {
-        localStorage.setItem('arenden', JSON.stringify(this.arenden));
+      try {
+        this.fetchArende();
+      } catch (e) {
+        console.error('Failed to parse arenden data from localStorage:', e);
       }
     });
   }
 
+  fetchArende() {
+    const subscription = this.httpClient
+      .get<Arende[]>(this.baseUrl, {
+        observe: 'body',
+        responseType: 'json'
+      })
+      .subscribe({
+        next: (arendenData) => {
+          this.arenden.set(arendenData);
+        }
+      });
+
+    this.destroyRef.onDestroy(() => {
+      subscription.unsubscribe();
+    });
+  }
+
+  deleteArenden(id: string) {
+    this.httpClient.delete(this.baseUrl + '/' + id).subscribe();
+    this.arenden.update(arendeData => arendeData?.filter(a => a.id !== id));
+    console.log('Arenden deleted successfully');
+  }
+
+  saveArende(newArende: NewArende) {
+    this.httpClient.post<Arende>(this.baseUrl, newArende)
+      .subscribe({
+        next: (newArendeData) => {
+          console.log({...newArendeData});
+          this.arenden.update(arendenList => [
+            ...(arendenList ?? []),
+            newArendeData
+          ])
+        },
+        error: (error) => {
+          console.error('Failed to save arenden:', error);
+        }
+      })
+  }
+
+  editArende(arende: Arende) {
+    this.httpClient.put(this.baseUrl + '/' + arende.id, arende)
+      .subscribe({
+        next: (arendeData) => {
+          console.log('Arenden updated: ' + arendeData);
+        }
+      });
+  }
+
   getArenden() {
     return this.arenden;
-  }
-
-  deleteArenden(id: number) {
-    this.arenden = this.arenden.filter(arende => arende.id !== id);
-    console.log(this.arenden);
-    this.saveArenden()
-  }
-
-  saveArenden() {
-    localStorage.setItem('arenden', JSON.stringify(this.arenden));
-  }
-
-  addNewArende(newArend: NewArende) {
-    this.arenden.unshift(
-      {
-        id: new Date().getTime().valueOf(),
-        title: newArend.title,
-        description: newArend.description,
-        type: newArend.type,
-        priority: newArend.priority,
-        status: newArend.status,
-        reportedBy: newArend.reportedBy,
-        assignedTo: newArend.assignedTo,
-        location: newArend.location,
-        estimatedCost: newArend.estimatedCost,
-        actualCost: newArend.actualCost,
-        startTime: newArend.startTime,
-        resolvedTime: newArend.resolvedTime,
-        resolution: newArend.resolution,
-        requiresContractor: newArend.requiresContractor,
-        contractorInfo: newArend.contractorInfo,
-        updates: [{
-            id: new Date().getTime().valueOf(),
-            timestamp: newArend.updates[0].timestamp,
-            message: newArend.updates[0].message,
-            updatedBy: newArend.updates[0].updatedBy,
-            status: newArend.updates[0].status
-          }],
-        tags: newArend.tags,
-        createdAt: newArend.createdAt,
-        updatedAt: newArend.updatedAt
-      }
-    );
-    this.saveArenden();
   }
 }
 

@@ -41,7 +41,7 @@ export class NewArendeComponent {
 
 
   onSubmit() {
-    this.arendenService.addNewArende({
+    this.arendenService.saveArende({
       title: this.enteredName,
       description: this.enteredDescription,
       type: this.enteredType,

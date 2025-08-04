@@ -16,7 +16,7 @@ export class KontakterComponent {
 
   constructor(private kontaktService: KontaktService) {}
 
-  get kontakter(): Kontakt[] {
+  get kontakter() {
     return this.kontaktService.getKontakter();
   }
 

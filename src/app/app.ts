@@ -60,13 +60,11 @@ export class App {
 
   onClickedKontakter() {
     this.resetClickedButtons();
-    this.kontakter = this.kontakterService.getKontakter();
     this.isKontakterClicked = true;
   }
 
   onClickedArenden() {
     this.resetClickedButtons();
-    this.arenden = this.arendeService.getArenden();
     this.isArendenClicked = true;
   }
 

@@ -1,6 +1,7 @@
 package stugapi.presentation.controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import stugapi.application.service.ArendeService;
@@ -13,6 +14,7 @@ import static stugapi.presentation.dto.ArendeDto.toArendeDtoBuilder;
 @RestController
 @RequestMapping("api/v1/arende")
 @AllArgsConstructor
+@Slf4j
 public class ArendeController {
 
   private final ArendeService arendeService;
@@ -20,6 +22,7 @@ public class ArendeController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public ArendeDto createArende(@RequestBody ArendeDto arendeDto) {
+    log.info("createArende {}", arendeDto);
     return toArendeDtoBuilder(arendeService.saveArende(arendeDto))
       .build();
   }

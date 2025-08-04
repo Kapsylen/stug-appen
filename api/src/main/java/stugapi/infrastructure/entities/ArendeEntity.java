@@ -96,7 +96,7 @@ public class ArendeEntity {
 
   public static ArendeEntityBuilder fromArende(Arende arende) {
     return ArendeEntity.builder()
-      .type(arende.type())
+      .title(arende.title())
       .description(arende.description())
       .type(arende.type())
       .priority(arende.priority())

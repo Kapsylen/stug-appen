@@ -2,7 +2,7 @@ import {Kontakt} from '../app/model/kontakt';
 
 export const DUMMY_KONTAKTER: Kontakt[] = [
   {
-    id: 1,
+    id: "1",
     name: "Erik Andersson",
     company: "Andersson's Electrical Solutions",
     category: "Electrician",
@@ -13,7 +13,7 @@ export const DUMMY_KONTAKTER: Kontakt[] = [
     status: "active"
   },
   {
-    id: 2,
+    id: "2",
     name: "Maria Johansson",
     company: "Modern Plumbing AB",
     category: "Plumber",
@@ -24,7 +24,7 @@ export const DUMMY_KONTAKTER: Kontakt[] = [
     status: "active"
   },
   {
-    id: 3,
+    id: "3",
     name: "Lars Nilsson",
     company: "Nilsson Carpentry & Design",
     category: "Carpenter",
@@ -35,7 +35,7 @@ export const DUMMY_KONTAKTER: Kontakt[] = [
     status: "active"
   },
   {
-    id: 4,
+    id: "4",
     name: "Anna Lindström",
     company: "Färg & Form Måleri",
     category: "Painter",
@@ -46,7 +46,7 @@ export const DUMMY_KONTAKTER: Kontakt[] = [
     status: "active"
   },
   {
-    id: 5,
+    id: "5",
     name: "Karl Bergström",
     company: "Bergström's HVAC",
     category: "HVAC",
@@ -57,7 +57,7 @@ export const DUMMY_KONTAKTER: Kontakt[] = [
     status: "active"
   },
   {
-    id: 6,
+    id: "6",
     name: "Gustav Holm",
     company: "Holm Masonry & Stone",
     category: "Mason",
@@ -68,7 +68,7 @@ export const DUMMY_KONTAKTER: Kontakt[] = [
     status: "active"
   },
   {
-    id: 7,
+    id: "7",
     name: "Sofia Ekström",
     company: "Ekström Glass & Windows",
     category: "Glazier",
@@ -79,7 +79,7 @@ export const DUMMY_KONTAKTER: Kontakt[] = [
     status: "active"
   },
   {
-    id: 8,
+    id: "8",
     name: "Henrik Söderberg",
     company: "Söderberg Roofing",
     category: "Roofer",

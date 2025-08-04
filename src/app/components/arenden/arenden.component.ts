@@ -15,8 +15,8 @@ export class ArendenComponent {
 
   isAddingArende = false;
 
-    get getArenden() {
-      return this.arendeService.getArenden();
+    get arenden() {
+       return this.arendeService.getArenden();
     }
 
   onCloseAddArende() {
