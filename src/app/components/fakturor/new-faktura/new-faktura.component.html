@@ -44,7 +44,12 @@
 
     <p>
       <label for="status">Status</label>
-      <input type="text" id="status" name="status" [(ngModel)]="enteredStatus"/>
+      <select name="status" id="status" [(ngModel)]="enteredStatus">
+        <option value="PAID">Paid</option>
+        <option value="OVERDUE">Overdue</option>
+        <option value="SENT">Sent</option>
+        <option value="DRAFT">Draft</option>
+      </select>
     </p>
 
     <p class="actions">

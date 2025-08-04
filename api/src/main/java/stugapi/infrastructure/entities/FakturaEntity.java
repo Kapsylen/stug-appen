@@ -8,9 +8,12 @@ import lombok.AllArgsConstructor;
 import stugapi.application.domain.model.Faktura;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static stugapi.infrastructure.entities.FakturaEnhetEntity.toFakturaEnhetEntity;
 
 @Entity
 @Table(name = "fakturor")
@@ -36,7 +39,8 @@ public class FakturaEntity {
     @Column(name = "due_date", nullable = false)
     private String dueDate;
 
-    @OneToMany(mappedBy = "faktura", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "item_id", referencedColumnName = "id")
     private List<FakturaEnhetEntity> items = new ArrayList<>();
 
     @Column(name = "total_amount", nullable = false)
@@ -48,7 +52,7 @@ public class FakturaEntity {
 
     public static FakturaEntityBuilder fromFaktura(Faktura faktura) {
         return FakturaEntity.builder()
-                .invoiceNumber(faktura.invoiceNumber())
+                .invoiceNumber("Invoice-number-" + LocalDateTime.now())
                 .clientName(faktura.clientName())
                 .issueDate(faktura.issueDate())
                 .dueDate(faktura.dueDate())

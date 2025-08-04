@@ -13,9 +13,7 @@ import {FakturaService} from '../../../service/faktura.service';
 export class NewFakturaComponent {
 
   @Output() close = new EventEmitter<void>();
-
-  fakturaService = inject(FakturaService);
-
+  private fakturaService = inject(FakturaService);
   enteredCustomerName = '';
   enteredCreatedAt = '';
   enteredDueDate = '';
@@ -28,20 +26,21 @@ export class NewFakturaComponent {
 
 
   onSubmit() {
-    this.fakturaService.addFaktura({
-      invoiceNumber: 'invoice-' + new Date().getTime().toString(),
-      clientName: this.enteredCustomerName,
-      issueDate: this.enteredCreatedAt,
-      dueDate: this.enteredDueDate,
-      items: [{
-        description: this.enteredDescription,
-        quantity: this.enteredQuantity,
-        price: this.enteredPrice,
-        total: this.enteredTotal
-      }],
-      totalAmount: this.enteredTotalAmount,
-      status: this.enteredStatus
-    });
+    this.fakturaService.saveFaktura(
+      {
+        invoiceNumber: '',
+        clientName: this.enteredCustomerName,
+        issueDate: this.enteredCreatedAt,
+        dueDate: this.enteredDueDate,
+        items: [{
+          description: this.enteredDescription,
+          quantity: this.enteredQuantity,
+          price: this.enteredPrice,
+          total: this.enteredTotal
+        }],
+        totalAmount: this.enteredTotalAmount,
+        status: this.enteredStatus
+      });
     this.close.emit();
   }
 

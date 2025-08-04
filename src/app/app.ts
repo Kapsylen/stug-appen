@@ -49,14 +49,12 @@ export class App {
 
   async onClickedUtlagg() {
     this.resetClickedButtons();
-
     this.isUtlaggClicked = true;
   }
 
 
   onClickedFakturor() {
     this.resetClickedButtons();
-    this.fakturor = this.fakturaServic.getFakturor();
     this.isFakturaClicked = true;
   }
 

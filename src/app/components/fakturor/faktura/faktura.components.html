@@ -1,8 +1,8 @@
 <app-card>
   <article>
     <h3><label>Fakturanummer:</label> {{ faktura.invoiceNumber }}</h3>
-    <time><label>Skapad:</label> {{ faktura.issueDate }}</time>
-    <time><label>Förfallodatum:</label> {{ faktura.dueDate }}</time>
+    <label>Skapad:</label> <time>{{ faktura.issueDate }}</time>
+    <label>Förfallodatum:</label><time> {{ faktura.dueDate }}</time>
     <p><label>Rubrik:</label> {{ faktura.clientName }}</p>
     <ul>
       @for (i of faktura.items; track i.id) {

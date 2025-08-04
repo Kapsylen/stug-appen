@@ -18,7 +18,7 @@ export class UtlaggService {
           this.utlagg.set(parsedData);
         } catch (e) {
           console.error('Failed to parse utlagg data from localStorage:', e);
-          this.fetchUtlagg();  // Fallback to fetching from server
+          this.fetchUtlagg();
         }
 
       } else {
@@ -29,7 +29,7 @@ export class UtlaggService {
 
   fetchUtlagg() {
     const subscription = this.httpClient
-      .get<Utlagg[]>('http://localhost:8080/api/v1/utlagg', {
+      .get<Utlagg[]>(this.baseUrl, {
         observe: 'body',
         responseType: 'json'
       })
@@ -86,6 +86,7 @@ export class UtlaggService {
       .subscribe({
         next: (utlaggData) => {
           console.log('Utlagg updated: ' + utlaggData);
+        // TBD
         //  this.utlagg = this.utlagg.map(u => u.id === utlaggData.id ? utlaggData : u);
         }
       });

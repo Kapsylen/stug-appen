@@ -10,9 +10,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import stugapi.application.domain.model.Faktura;
+import stugapi.application.domain.model.FakturaEnhet;
 import stugapi.application.service.FakturaService;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
 import stugapi.presentation.dto.FakturaDto;
+import stugapi.presentation.dto.FakturaEnhetDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +41,14 @@ class FakturaControllerTest {
       .clientName("Test client name")
       .issueDate("2021-01-01")
       .dueDate("2021-01-31")
+      .items(List.of(
+        FakturaEnhetDto.builder()
+          .description("Test description")
+          .price("1000")
+          .quantity("1")
+          .total("1")
+          .build()
+      ))
       .totalAmount("1000")
       .status("paid")
       .build();
@@ -49,6 +59,15 @@ class FakturaControllerTest {
       .clientName(input.clientName())
       .issueDate(input.issueDate())
       .dueDate(input.dueDate())
+      .items(List.of(
+        FakturaEnhet.builder()
+          .id(UUID.randomUUID().toString())
+          .description(input.items().get(0).description())
+          .price(input.items().get(0).price())
+          .quantity(input.items().get(0).quantity())
+          .total(input.items().get(0).total())
+          .build()
+      ))
       .totalAmount(input.totalAmount())
       .status(input.status() == null ? FakturaStatus.PAID : FakturaStatus.valueOf(input.status().toUpperCase()))
       .build();
@@ -65,6 +84,11 @@ class FakturaControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.clientName").value("Test client name"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").value("2021-01-01"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.dueDate").value("2021-01-31"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.items[0].id").isNotEmpty())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.items[0].description").value("Test description"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.items[0].price").value("1000"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.items[0].quantity").value("1"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.items[0].total").value("1"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.totalAmount").value("1000"));
 
     verify(fakturaService).saveFaktura(input);

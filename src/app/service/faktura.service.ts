@@ -1,173 +1,85 @@
-import {afterNextRender, Injectable} from '@angular/core';
+import {afterNextRender, DestroyRef, inject, Injectable, signal} from '@angular/core';
 import {Faktura, NewFaktura} from '../model/faktura';
-import {DUMMY_FAKTUROR} from '../../assets/fakturor_data';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({providedIn: 'root'})
 export class FakturaService {
 
-  private fakturor: Faktura[] = [
-    {
-      id: 1,
-      invoiceNumber: "STG-2025-001",
-      clientName: "Summer Family Rentals",
-      issueDate: "2025-06-01",
-      dueDate: "2025-06-15",
-      items: [
-        {
-          id: 1,
-          description: "Cottage Rental - High Season (2 weeks)",
-          quantity: "14",
-          price: "1200",
-          total: "16800"
-        },
-        {
-          id: 2,
-          description: "Final Cleaning Service",
-          quantity: "1",
-          price: "1500",
-          total: "1500"
-        }
-      ],
-      totalAmount: "18300",
-      status: "paid"
-    },
-    {
-      id: 2,
-      invoiceNumber: "STG-2025-002",
-      clientName: "Nordic Cottage Management",
-      issueDate: "2025-04-15",
-      dueDate: "2025-05-15",
-      items: [
-        {
-          id: 1,
-          description: "Roof Repair and Maintenance",
-          quantity: "1",
-          price: "25000",
-          total: "25000"
-        },
-        {
-          id: 2,
-          description: "Gutter Cleaning",
-          quantity: "1",
-          price: "2800",
-          total: "2800"
-        }
-      ],
-      totalAmount: "27800",
-      status: "sent"
-    },
-    {
-      id: 3,
-      invoiceNumber: "STG-2025-003",
-      clientName: "Weekend Getaway Group",
-      issueDate: "2025-05-20",
-      dueDate: "2025-06-03",
-      items: [
-        {
-          id: 1,
-          description: "Cottage Rental - Weekend Package",
-          quantity: "3",
-          price: "1500",
-          total: "4500"
-        },
-        {
-          id: 2,
-          description: "Firewood Supply",
-          quantity: "2",
-          price: "400",
-          total: "800"
-        }
-      ],
-      totalAmount: "5300",
-      status: "draft"
-    },
-    {
-      id: 4,
-      invoiceNumber: "STG-2025-004",
-      clientName: "Lakeside Properties AB",
-      issueDate: "2025-03-01",
-      dueDate: "2025-04-01",
-      items: [
-        {
-          id: 1,
-          description: "Annual Property Insurance",
-          quantity: "1",
-          price: "12000",
-          total: "12000"
-        }
-      ],
-      totalAmount: "12000",
-      status: "overdue"
-    },
-    {
-      id: 5,
-      invoiceNumber: "STG-2025-005",
-      clientName: "Green Garden Services",
-      issueDate: "2025-05-01",
-      dueDate: "2025-05-15",
-      items: [
-        {
-          id: 1,
-          description: "Spring Garden Preparation",
-          quantity: "1",
-          price: "4500",
-          total: "4500"
-        },
-        {
-          id: 2,
-          description: "Tree Trimming Service",
-          quantity: "4",
-          price: "800",
-          total: "3200"
-        }
-      ],
-      totalAmount: "7700",
-      status: "paid"
-    }
-  ];
+  private fakturor =  signal<Faktura[] | undefined>(undefined);
+  private baseUrl = 'http://localhost:8080/api/v1/faktura';
+  private destroyRef = inject(DestroyRef);
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     afterNextRender(() => {
-      const fakturor = localStorage.getItem('fakturor');
-      if (fakturor) {
-        this.fakturor = JSON.parse(fakturor);
-      } else {
-        localStorage.setItem('fakturor', JSON.stringify(this.fakturor));
-      }
+        try {
+          this.fetchFakturor()
+        } catch (e) {
+          console.error('Failed to parse fakturor data from localStorage:', e);
+        }
+    });
+  }
+
+  fetchFakturor() {
+    const subscription = this.httpClient
+      .get<Faktura[]>(this.baseUrl, {
+        observe: 'body',
+        responseType: 'json'
+      })
+    .subscribe({
+        next: (fakturorData) => {
+          console.log('Fakturor fetched: ' + fakturorData);
+          this.fakturor.set(fakturorData);
+        }
+      });
+
+    this.destroyRef.onDestroy(() => {
+      subscription.unsubscribe();
     });
   }
 
   getFakturor() {
-    return this.fakturor;
+    return this.fakturor
+
   }
 
-  deleteFakturor(id: number) {
-    this.fakturor = this.fakturor.filter(utlagg => utlagg.id !== id);
-    console.log(this.fakturor);
-    this.saveFakturor()
+  deleteFakturor(id: string) {
+    this.httpClient.delete(this.baseUrl + '/' + id).subscribe();
+    this.fakturor.update(fakturorList => fakturorList?.filter(f => f.id !== id));
+    localStorage.setItem('fakturor', JSON.stringify(this.fakturor()));
+    console.log('Fakturor deleted successfully');
   }
 
-  saveFakturor() {
-    localStorage.setItem('fakturor', JSON.stringify(this.fakturor));
+  saveFaktura(newFakture: NewFaktura) {
+    console.log(newFakture);
+    this.httpClient.post<Faktura>(this.baseUrl, newFakture)
+      .subscribe({
+        next: (newFakturorData) => {
+          console.log({...newFakturorData});
+          this.fakturor.update(fakturorList => [
+            ...(fakturorList ?? []),
+            newFakturorData
+          ]);
+          const currentFakturor = this.fakturor();
+          if (currentFakturor) {
+            localStorage.setItem('fakturor', JSON.stringify(currentFakturor));
+          }
+          console.log('Fakturor saved:', newFakturorData);
+        },
+        error: (error) => {
+          console.error('Failed to save fakturor:', error);
+          // Handle error appropriately
+        }
+      })
   }
 
-  addFaktura(newFakturor: NewFaktura) {
-    this.fakturor.unshift({
-      id: new Date().getTime().valueOf(),
-      invoiceNumber: newFakturor.invoiceNumber,
-      clientName: newFakturor.clientName,
-      issueDate: newFakturor.issueDate,
-      dueDate: newFakturor.dueDate,
-      items: [{
-        id: new Date().getTime().valueOf(),
-        description: newFakturor.items[0].description,
-        quantity: newFakturor.items[0].quantity,
-        price: newFakturor.items[0].price,
-        total: newFakturor.items[0].total
-      }],
-      totalAmount: newFakturor.totalAmount,
-      status: newFakturor.status
-    });
-    this.saveFakturor();
+  editFaktura(faktura: Faktura) {
+    this.httpClient.put<Faktura>(this.baseUrl + '/' + faktura.id, faktura)
+      .subscribe({
+        next: (fakturaData) => {
+          console.log('Fakturor updated: ' + fakturaData);
+        // TBD
+        //  this.fakturor = this.fakturor.map(f => f.id === fakturaData.id ? fakturaData : f);
+        }
+      });
   }
 }

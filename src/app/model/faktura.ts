@@ -1,5 +1,5 @@
 export interface FakturaEnhet {
-  id: number;
+  id: string;
   description: string;
   quantity: string;
   price: string;
@@ -7,7 +7,7 @@ export interface FakturaEnhet {
 }
 
 export interface Faktura {
-  id: number;
+  id: string;
   invoiceNumber: string;
   clientName: string;
   issueDate: string;

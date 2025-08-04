@@ -9,7 +9,7 @@
   </header>
 
   <ul class="no-bullets">
-    @for (f of fakturor; track f.id) {
+    @for (f of fakturor(); track f.id) {
       <li>
         <app-faktura [faktura]="f"/>
       </li>

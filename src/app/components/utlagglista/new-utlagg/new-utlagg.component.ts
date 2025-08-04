@@ -12,16 +12,12 @@ import {FormsModule} from '@angular/forms';
 })
 export class NewUtlaggComponent {
   @Output () close = new EventEmitter<void>();
+  private utlaggService  = inject(UtlaggService);
   enteredTitle = '';
   enteredOutlayDate = '';
   enteredDescription = '';
   enteredPrice = '';
 
-  private utlaggService  = inject(UtlaggService);
-
-  onCancel() {
-    this.close.emit();
-  }
 
   onSubmit()  {
     this.utlaggService.saveUtlagg(
@@ -32,6 +28,10 @@ export class NewUtlaggComponent {
         price: this.enteredPrice,
       },
     );
+    this.close.emit();
+  }
+
+  onCancel() {
     this.close.emit();
   }
 }

@@ -20,7 +20,7 @@ export class FakturaComponents {
   }
 
   onEditFaktura() {
-    console.log(this.faktura);
+   this.fakturaService.editFaktura(this.faktura);
   }
 
   onPaidFaktura() {

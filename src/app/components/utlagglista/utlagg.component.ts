@@ -15,7 +15,7 @@ export class UtlaggComponent {
 
   constructor(private utlaggService: UtlaggService) {}
 
-  get getUtlagg() {
+  get utlagg() {
     return this.utlaggService.getUtlagg();
   }
 
