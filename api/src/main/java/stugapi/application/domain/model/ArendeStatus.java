@@ -6,6 +6,8 @@ import stugapi.presentation.dto.ArendeStatusDto;
 
 import java.time.LocalDateTime;
 
+import static stugapi.utility.TimeUtility.parseDateTime;
+
 @Builder
 public record ArendeStatus(
     String id,
@@ -17,7 +19,7 @@ public record ArendeStatus(
   public static ArendeStatus toArendeStatus(ArendeStatusDto arendeStatusDto) {
     return ArendeStatus.builder()
       .id(arendeStatusDto.id())
-      .timestamp(arendeStatusDto.timestamp())
+      .timestamp(parseDateTime(arendeStatusDto.timestamp() != null ? arendeStatusDto.timestamp().toString() : LocalDateTime.now().toString()))
       .message(arendeStatusDto.message())
       .updatedBy(arendeStatusDto.updatedBy())
       .status(arendeStatusDto.status())

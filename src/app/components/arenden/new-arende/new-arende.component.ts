@@ -15,6 +15,7 @@ export class NewArendeComponent {
   @Output() close = new EventEmitter<void>();
   arendenService = inject(ArendeService);
 
+
   enteredName = '';
   enteredDescription = '';
   enteredType = ''
@@ -28,7 +29,7 @@ export class NewArendeComponent {
   enteredStartTime = '';
   enteredResolvedTime = '';
   enteredResolution = '';
-  enteredRequiresContractor = '';
+  enteredRequiresContractor = false;
   enteredContractorInfo = '';
   enteredUpdates = '';
   enteredTags = '';

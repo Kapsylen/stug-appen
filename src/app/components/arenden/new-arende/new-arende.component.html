@@ -1,6 +1,6 @@
 <div class="backdrop" (click)="onCancel()"></div>
 <dialog open>
-  <h2>Ny faktura</h2>
+  <h2>Nytt Ärende</h2>
   <form (ngSubmit)="onSubmit()">
     <p>
       <label for="name">Namn</label>
@@ -15,21 +15,35 @@
     <p>
       <label for="type">Typ</label>
       <select name="type" id="type" [(ngModel)]="enteredType">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-        <option value="critical">Critical</option>
+        <option value="MAINTENANCE">Maintenance</option>
+        <option value="DAMAGE">Damage</option>
+        <option value="UTILITY">Utility</option>
+        <option value="SECURITY">Security</option>
+        <option value="PEST">Pest</option>
+        <option value="WEATHER">Weather</option>
+        <option value="OTHER">Other</option>
       </select>
     </p>
 
     <p>
       <label for="priority">Prioritet</label>
-      <input type="text" id="priority" name="priority" [(ngModel)]="enteredPriority"/>
+      <select name="type" id="type" [(ngModel)]="enteredPriority">
+        <option value="LOW">Low</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="HIGH">High</option>
+        <option value="CRITICAL">Critical</option>
+      </select>
     </p>
 
     <p>
-      <label for="status">Status</label>
-      <input type="text" id="status" name="status" [(ngModel)]="enteredStatus"/>
+      <label for="status">Ärendestatus</label>
+      <select name="type" id="type" [(ngModel)]="enteredStatus">
+        <option value="NEW">New</option>
+        <option value="INVESTIGATING">Investigation</option>
+        <option value="IN_PROGRESS">In progress</option>
+        <option value="RESOLVED">Resolved</option>
+        <option value="CLOSED">Closed</option>
+      </select>
     </p>
 
     <p>
@@ -59,7 +73,7 @@
 
     <p>
       <label for="startTime">Starttid</label>
-      <input type="date" id="startTime" name="startTime" [(ngModel)]="enteredStartTime"/>
+      <input type="datetime-local" id="startTime" name="startTime" [(ngModel)]="enteredStartTime"/>
     </p>
 
     <p>
@@ -74,17 +88,12 @@
 
     <p>
       <label for="requiresContractor">Kräver medgivande</label>
-      <input type="text" id="requiresContractor" name="requiresContractor" [(ngModel)]="enteredRequiresContractor"/>
+      <input type="checkbox" id="requiresContractor" name="requiresContractor" [(ngModel)]="enteredRequiresContractor"/>
     </p>
 
     <p>
       <label for="contractorInfo">Medgivandeinformation</label>
       <input type="text" id="contractorInfo" name="contractorInfo" [(ngModel)]="enteredContractorInfo"/>
-    </p>
-
-    <p>
-      <label for="statusTime">Statustid</label>
-      <input type="text" id="statusTime" name="statusTime" [(ngModel)]="enteredStatusTime"/>
     </p>
 
     <p>
@@ -98,11 +107,6 @@
     </p>
 
     <p>
-      <label for="issueStatus">Ärendestatus</label>
-      <input type="text" id="issueStatus" name="issueStatus" [(ngModel)]="enteredIssueStatus"/>
-    </p>
-
-    <p>
       <label for="updates">Uppdateringar</label>
       <input type="text" id="updates" name="updates" [(ngModel)]="enteredUpdates"/>
     </p>
@@ -110,16 +114,6 @@
     <p>
       <label for="tags">Taggar</label>
       <input type="text" id="tags" name="tags" [(ngModel)]="enteredTags"/>
-    </p>
-
-    <p>
-      <label for="createdAt">Skapad</label>
-      <input type="date" id="createdAt" name="createdAt" [(ngModel)]="enteredCreatedAt"/>
-    </p>
-
-    <p>
-      <label for="updatedAt">Uppdaterad</label>
-      <input type="date" id="updatedAt" name="updatedAt" [(ngModel)]="enteredUpdatedAt"/>
     </p>
 
     <p class="actions">

@@ -25,7 +25,7 @@ export interface Arende {
   startTime: string;
   resolvedTime?: string;
   resolution?: string;
-  requiresContractor: string;
+  requiresContractor: boolean;
   contractorInfo?: string;
   updates: ArendeStatus[];
   tags: string[];
@@ -54,7 +54,7 @@ export interface NewArende {
   startTime: string;
   resolvedTime?: string;
   resolution?: string;
-  requiresContractor: string;
+  requiresContractor: boolean;
   contractorInfo?: string;
   updates: NewArendeStatus[];
   tags: string[];

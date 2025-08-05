@@ -48,15 +48,15 @@ public record Arende(
       .location(arendeDto.location())
       .estimatedCost(arendeDto.estimatedCost())
       .actualCost(arendeDto.actualCost())
-      .startTime(parseDateTime(arendeDto.startTime()))
-      .resolvedTime(parseDateTime(arendeDto.resolvedTime()))
+      .startTime(parseDateTime(arendeDto.startTime() != null ? arendeDto.startTime() : LocalDateTime.now().toString()))
+      .resolvedTime(parseDateTime(arendeDto.resolvedTime() != null ? arendeDto.resolvedTime() : LocalDateTime.now().toString()))
       .resolution(arendeDto.resolution())
       .requiresContractor(arendeDto.requiresContractor())
       .contractorInfo(arendeDto.contractorInfo())
       .updates(arendeDto.updates().stream().map(ArendeStatus::toArendeStatus).toList())
       .tags(arendeDto.tags())
       .createdAt(LocalDateTime.now())
-      .updatedAt(parseDateTime(arendeDto.updatedAt()));
+      .updatedAt(LocalDateTime.now());
   }
 
   public static ArendeBuilder fromArendeEntity(ArendeEntity arendeEntity) {
