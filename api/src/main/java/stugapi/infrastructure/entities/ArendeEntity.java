@@ -96,6 +96,7 @@ public class ArendeEntity {
 
   public static ArendeEntityBuilder fromArende(Arende arende) {
     return ArendeEntity.builder()
+      .id(arende.id() != null ? UUID.fromString(arende.id()) : null)
       .title(arende.title())
       .description(arende.description())
       .type(arende.type())

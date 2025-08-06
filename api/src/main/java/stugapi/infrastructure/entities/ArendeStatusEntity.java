@@ -35,6 +35,7 @@ public class ArendeStatusEntity {
 
   public static ArendeStatusEntity toArendeStatusEntity(ArendeStatus arendeStatus) {
     return ArendeStatusEntity.builder()
+      .id(arendeStatus.id() != null ? UUID.fromString(arendeStatus.id()) : null)
       .timestamp(arendeStatus.timestamp())
       .message(arendeStatus.message())
       .updatedBy(arendeStatus.updatedBy())

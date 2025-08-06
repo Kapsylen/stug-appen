@@ -6,11 +6,12 @@ import stugapi.infrastructure.entities.enums.Prioritet;
 import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
 import stugapi.presentation.dto.ArendeDto;
+import stugapi.utility.TimeUtility;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static stugapi.utility.TimeUtility.parseDateTime;
+import static stugapi.utility.TimeUtility.isNullOrEmpty;
 
 @Builder
 public record Arende(
@@ -38,6 +39,7 @@ public record Arende(
 
   public static ArendeBuilder fromArendeDto(ArendeDto arendeDto) {
     return Arende.builder()
+      .id(arendeDto.id())
       .title(arendeDto.title())
       .description(arendeDto.description())
       .type(Typ.valueOf(arendeDto.type()))
@@ -48,14 +50,14 @@ public record Arende(
       .location(arendeDto.location())
       .estimatedCost(arendeDto.estimatedCost())
       .actualCost(arendeDto.actualCost())
-      .startTime(parseDateTime(arendeDto.startTime() != null ? arendeDto.startTime() : LocalDateTime.now().toString()))
-      .resolvedTime(parseDateTime(arendeDto.resolvedTime() != null ? arendeDto.resolvedTime() : LocalDateTime.now().toString()))
+      .startTime(isNullOrEmpty(arendeDto.startTime()) ? LocalDateTime.now() : TimeUtility.parseDateTime(arendeDto.startTime()))
+      .resolvedTime(TimeUtility.parseDateTime(arendeDto.resolvedTime()))
       .resolution(arendeDto.resolution())
       .requiresContractor(arendeDto.requiresContractor())
       .contractorInfo(arendeDto.contractorInfo())
       .updates(arendeDto.updates().stream().map(ArendeStatus::toArendeStatus).toList())
       .tags(arendeDto.tags())
-      .createdAt(LocalDateTime.now())
+      .createdAt(arendeDto.createdAt() != null ? TimeUtility.parseDateTime(arendeDto.createdAt()) : LocalDateTime.now())
       .updatedAt(LocalDateTime.now());
   }
 
@@ -70,7 +72,7 @@ public record Arende(
       .reportedBy(arendeEntity.getReportedBy())
       .assignedTo(arendeEntity.getAssignedTo())
       .location(arendeEntity.getLocation())
-      .estimatedCost(arendeEntity.getLocation())
+      .estimatedCost(arendeEntity.getEstimatedCost())
       .actualCost(arendeEntity.getActualCost())
       .startTime(arendeEntity.getStartTime())
       .resolvedTime(arendeEntity.getResolvedTime())

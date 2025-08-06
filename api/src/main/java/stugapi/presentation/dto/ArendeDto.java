@@ -3,6 +3,7 @@ package stugapi.presentation.dto;
 import lombok.Builder;
 import stugapi.application.domain.model.Arende;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -41,8 +42,8 @@ public record ArendeDto(
       .location(arende.location())
       .estimatedCost(arende.estimatedCost())
       .actualCost(arende.actualCost())
-      .startTime(arende.startTime().toString())
-      .resolvedTime(arende.resolvedTime().toString())
+      .startTime(arende.startTime() != null ? arende.startTime().toString() : LocalDateTime.now().toString())
+      .resolvedTime(arende.resolvedTime() != null ? arende.resolvedTime().toString() : null)
       .resolution(arende.resolution())
       .requiresContractor(arende.requiresContractor())
       .contractorInfo(arende.contractorInfo())
@@ -52,7 +53,7 @@ public record ArendeDto(
       .tags(arende.tags() != null ? arende.tags() : List.of()
       )
       .tags(arende.tags())
-      .createdAt(arende.createdAt().toString())
-      .updatedAt(arende.updatedAt().toString());
+      .createdAt(arende.createdAt() != null ? arende.createdAt().toString() : LocalDateTime.now().toString())
+      .updatedAt(arende.updatedAt() != null ? arende.updatedAt().toString() : LocalDateTime.now().toString());
   }
 }

@@ -40,10 +40,12 @@ public class ArendeService {
    * @return the saved Arende object after mapping and persistence
    */
   public Arende saveArende(ArendeDto arendeDto) {
+    ArendeEntity arendeEntity = fromArende(
+      fromArendeDto(arendeDto).build())
+      .build();
+
     return fromArendeEntity(arendeRepository
-      .save(fromArende(fromArendeDto(arendeDto)
-        .build())
-        .build()))
+      .save(arendeEntity))
       .build();
   }
 

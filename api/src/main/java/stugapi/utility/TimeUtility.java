@@ -13,4 +13,8 @@ public class TimeUtility {
       return null; // Or throw an exception depending on requirements
     }
   }
+
+  public static boolean isNullOrEmpty(String startTime) {
+    return startTime == null || startTime.isEmpty();
+  }
 }
