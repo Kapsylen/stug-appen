@@ -42,7 +42,6 @@ public class ArendeControllerTest {
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt = LocalDateTime.now().plusDays(7);
     LocalDateTime resolvedTime = LocalDateTime.now().plusDays(7);
-    LocalDateTime startTime = createdAt;
 
     ArendeDto input = ArendeDto.builder()
       .title("Test title")
@@ -54,14 +53,14 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(startTime.toString())
+      .startTime(createdAt.toString())
       .resolvedTime(resolvedTime.toString())
       .resolution("resolution")
       .requiresContractor(true)
       .contractorInfo("contructorinfo")
       .updates(List.of(ArendeStatusDto.builder().message("INVESTIGATING").build(), ArendeStatusDto.builder().message("CLOSED").build()))
       .tags(List.of("", ""))
-      .createdAt(startTime.toString())
+      .createdAt(createdAt.toString())
       .updatedAt(updatedAt.toString())
       .build();
 
@@ -75,7 +74,7 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(startTime)
+      .startTime(createdAt)
       .resolvedTime(resolvedTime)
       .resolution("resolution")
       .requiresContractor(true)
@@ -103,7 +102,7 @@ public class ArendeControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.assignedTo").value("tester"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.location").value("location"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.estimatedCost").value("5000"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.startTime").value(startTime.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.startTime").value(createdAt.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.resolvedTime").value(resolvedTime.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.resolution").value("resolution"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.requiresContractor").value(true))
@@ -277,7 +276,7 @@ public class ArendeControllerTest {
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt = LocalDateTime.now().plusDays(7);
     LocalDateTime resolvedTime = LocalDateTime.now().plusDays(7);
-    LocalDateTime startTime = createdAt;
+    //LocalDateTime startTime = createdAt;
 
     Arende output = Arende.builder()
       .id(id1)
@@ -290,7 +289,7 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(startTime)
+      .startTime(createdAt)
       .resolvedTime(resolvedTime)
       .resolution("resolution")
       .requiresContractor(true)
@@ -312,7 +311,7 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(startTime)
+      .startTime(createdAt)
       .resolvedTime(resolvedTime)
       .resolution("resolution")
       .requiresContractor(true)
@@ -339,7 +338,7 @@ public class ArendeControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].assignedTo").value("tester"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].location").value("location"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].estimatedCost").value("5000"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[0].startTime").value(startTime.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[0].startTime").value(createdAt.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].resolvedTime").value(resolvedTime.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].resolution").value("resolution"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].requiresContractor").value(true))
@@ -359,7 +358,7 @@ public class ArendeControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].assignedTo").value("tester"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].location").value("location"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].estimatedCost").value("5000"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[1].startTime").value(startTime.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[1].startTime").value(createdAt.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].resolvedTime").value(resolvedTime.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].resolution").value("resolution"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].requiresContractor").value(true))

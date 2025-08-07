@@ -11,6 +11,7 @@ import stugapi.utility.TimeUtility;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static stugapi.application.domain.model.ArendeStatus.toArendeStatus;
 import static stugapi.utility.TimeUtility.isNullOrEmpty;
 
 @Builder
@@ -50,14 +51,14 @@ public record Arende(
       .location(arendeDto.location())
       .estimatedCost(arendeDto.estimatedCost())
       .actualCost(arendeDto.actualCost())
-      .startTime(isNullOrEmpty(arendeDto.startTime()) ? LocalDateTime.now() : TimeUtility.parseDateTime(arendeDto.startTime()))
-      .resolvedTime(TimeUtility.parseDateTime(arendeDto.resolvedTime()))
+      .startTime(isNullOrEmpty(arendeDto.startTime()) ? LocalDateTime.now() : TimeUtility.parseDate(arendeDto.startTime()))
+      .resolvedTime(isNullOrEmpty(arendeDto.resolvedTime()) ? null : TimeUtility.parseDate(arendeDto.resolvedTime()))
       .resolution(arendeDto.resolution())
       .requiresContractor(arendeDto.requiresContractor())
       .contractorInfo(arendeDto.contractorInfo())
-      .updates(arendeDto.updates().stream().map(ArendeStatus::toArendeStatus).toList())
+      .updates(arendeDto.updates().stream().map(a -> toArendeStatus(a, arendeDto.startTime())).toList())
       .tags(arendeDto.tags())
-      .createdAt(arendeDto.createdAt() != null ? TimeUtility.parseDateTime(arendeDto.createdAt()) : LocalDateTime.now())
+      .createdAt(LocalDateTime.now())
       .updatedAt(LocalDateTime.now());
   }
 

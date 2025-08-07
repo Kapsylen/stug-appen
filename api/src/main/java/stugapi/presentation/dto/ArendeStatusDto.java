@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 public record ArendeStatusDto(
     String id,
-    LocalDateTime timestamp,
+    String timestamp,
     String message,
     String updatedBy,
     String status
@@ -16,7 +16,7 @@ public record ArendeStatusDto(
   public static ArendeStatusDto toArendeStatusDto (ArendeStatus arendeStatus){
     return ArendeStatusDto.builder()
       .id(arendeStatus.id())
-      .timestamp(arendeStatus.timestamp())
+      .timestamp(arendeStatus.timestamp() != null ? arendeStatus.timestamp().toString() : LocalDateTime.now().toString())
       .message(arendeStatus.message())
       .updatedBy(arendeStatus.updatedBy())
       .status(arendeStatus.status())

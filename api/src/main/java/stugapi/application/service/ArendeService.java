@@ -12,11 +12,13 @@ import stugapi.infrastructure.repositories.ArendeRepository;
 import stugapi.presentation.dto.ArendeDto;
 import stugapi.utility.TimeUtility;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import static stugapi.application.domain.model.Arende.*;
 import static stugapi.application.domain.model.Arende.fromArendeDto;
+import static stugapi.application.domain.model.ArendeStatus.toArendeStatus;
 import static stugapi.infrastructure.entities.ArendeEntity.fromArende;
 
 /**
@@ -83,15 +85,14 @@ public class ArendeService {
       .location(updateArende.location())
       .estimatedCost(updateArende.estimatedCost())
       .actualCost(updateArende.actualCost())
-      .startTime(TimeUtility.parseDateTime(updateArende.startTime()))
-      .resolvedTime(TimeUtility.parseDateTime(updateArende.resolvedTime()))
+      .startTime(TimeUtility.parseDate(updateArende.startTime()))
+      .resolvedTime(TimeUtility.parseDate(updateArende.resolvedTime()))
       .resolution(updateArende.resolution())
       .requiresContractor(updateArende.requiresContractor())
       .contractorInfo(updateArende.contractorInfo())
-      .updates(updateArende.updates().stream().map(ArendeStatus::toArendeStatus).toList())
+      .updates(updateArende.updates().stream().map(a -> toArendeStatus(a, updateArende.startTime())).toList())
       .tags(updateArende.tags())
-      .createdAt(TimeUtility.parseDateTime(updateArende.createdAt()))
-      .updatedAt(TimeUtility.parseDateTime(updateArende.updatedAt()));
+      .updatedAt(LocalDateTime.now());
 
     ArendeEntity arendeEntity = arendeRepository.save(ArendeEntity.fromArende(arendeBuilder.build()).build());
 

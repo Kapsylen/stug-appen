@@ -17,6 +17,7 @@ import stugapi.presentation.dto.ArendeDto;
 import stugapi.presentation.dto.ArendeStatusDto;
 import stugapi.utility.TimeUtility;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public class ArendeServiceTest {
       .resolution("Replaced damaged pipe and repaired floor")
       .requiresContractor(true)
       .contractorInfo("Plumber AB, Tel: 070-123-4567")
-      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1)), ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus2))))
+      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1, null)), ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus2, null))))
       .tags(List.of("plumbing", "water-damage", "bathroom"))
       .createdAt(startTime)
       .build();
@@ -104,6 +105,43 @@ public class ArendeServiceTest {
     assertEquals(savedArendeEntity.getUpdatedAt(), savedArende.updatedAt());
 
     verify(arendeRepository, times(1)).save(any(ArendeEntity.class));
+  }
+
+  @Test
+  void whenSaveArende_whenStartTimeIsSet_startTimeWillBeSetToCurrentTimeAndArendeIsSaved() {
+    String startTime = LocalDate.now().toString();
+
+    ArendeStatusDto arendeStatus1 = ArendeStatusDto.builder()
+      .id(UUID.randomUUID().toString())
+      .timestamp(startTime)
+      .message("Plumber contacted, arriving tomorrow morning")
+      .status("in_progress")
+      .updatedBy("Test Reporter")
+      .build();
+    ArendeStatusDto arendeStatus2 = ArendeStatusDto.builder()
+      .id(UUID.randomUUID().toString())
+      .message("Repair completed, water pressure tested")
+      .updatedBy("Plumber AB")
+      .status("resolved")
+      .build();
+
+    ArendeDto arendeDto = ArendeDto.builder()
+      .type(Typ.DAMAGE.name())
+      .priority(Prioritet.MEDIUM.name())
+      .status(Status.NEW.name())
+      .startTime(startTime)
+      .updates(List.of(arendeStatus1, arendeStatus2))
+      .build();
+
+    Mockito.when(arendeRepository.save(any(ArendeEntity.class))).thenReturn(ArendeEntity.builder()
+      .id(UUID.randomUUID())
+        .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1, null)), ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus2, null))))
+      .build());
+
+    arendeService.saveArende(arendeDto);
+
+    verify(arendeRepository, times(1)).save(any(ArendeEntity.class));
+
 
   }
 
@@ -154,7 +192,8 @@ public class ArendeServiceTest {
       .status("resolved")
       .build();
 
-    LocalDateTime startTime = LocalDateTime.now();
+    LocalDate startDate = LocalDate.now();
+    LocalDateTime startTime = startDate.atStartOfDay();
 
     ArendeEntity savedArendeEntity = ArendeEntity.builder()
       .id(id)
@@ -168,13 +207,14 @@ public class ArendeServiceTest {
       .location("Main bathroom")
       .estimatedCost("1000")
       .startTime(startTime)
-      .resolvedTime(null)
+      .resolvedTime(startTime.plusDays(7))
       .resolution("Replaced damaged pipe and repaired floor")
       .requiresContractor(true)
       .contractorInfo("Plumber AB, Tel: 070-123-4567")
-      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1))))
+      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1, null))))
       .tags(List.of("plumbing", "water-damage", "bathroom"))
-      .createdAt(startTime)
+      .createdAt(LocalDateTime.now().minusDays(10))
+      .updatedAt(LocalDateTime.now().minusDays(10))
       .build();
 
     ArendeDto updateArendeDto = ArendeDto.builder()
@@ -189,14 +229,13 @@ public class ArendeServiceTest {
       .location(savedArendeEntity.getLocation())
       .estimatedCost(savedArendeEntity.getEstimatedCost())
       .actualCost("2000")
-      .startTime(savedArendeEntity.getStartTime().toString())
-      .resolvedTime(savedArendeEntity.getStartTime().plusDays(1).toString())
+      .startTime(startDate.toString())
+      .resolvedTime(startDate.plusDays(7).toString())
       .resolution(savedArendeEntity.getResolution())
       .requiresContractor(true)
       .contractorInfo(savedArendeEntity.getContractorInfo())
       .updates(List.of(arendeStatus1, arendeStatus2))
       .tags(savedArendeEntity.getTags())
-      .createdAt(savedArendeEntity.getCreatedAt().toString())
       .build();
 
 
@@ -223,14 +262,14 @@ public class ArendeServiceTest {
     assertEquals(updateArendeDto.reportedBy(), updatedArende.reportedBy());
     assertEquals(updateArendeDto.assignedTo(), updatedArende.assignedTo());
     assertEquals(updateArendeDto.location(), updatedArende.location());
-    assertEquals(TimeUtility.parseDateTime(updateArendeDto.startTime()), updatedArende.startTime());
-    assertEquals(TimeUtility.parseDateTime(updateArendeDto.resolvedTime()), updatedArende.resolvedTime());
+    assertEquals(TimeUtility.parseDate(LocalDate.now().toString()), updatedArende.startTime());
+    assertEquals(TimeUtility.parseDate(LocalDate.now().plusDays(7).toString()), updatedArende.resolvedTime());
     assertEquals(updateArendeDto.resolution(), updatedArende.resolution());
     assertEquals(updateArendeDto.requiresContractor(), updatedArende.requiresContractor());
     assertEquals(updateArendeDto.contractorInfo(), updatedArende.contractorInfo());
     assertEquals(updateArendeDto.updates().size(), updatedArende.updates().size());
     assertEquals(updateArendeDto.tags(), updatedArende.tags());
-    assertEquals(TimeUtility.parseDateTime(updateArendeDto.createdAt()), updatedArende.createdAt());
+    assertNotNull(updatedArende.createdAt());
     assertNotNull(updatedArende.updatedAt());
 
     verify(arendeRepository, times(1)).save(any(ArendeEntity.class));
@@ -262,7 +301,7 @@ public class ArendeServiceTest {
       .resolution("Replaced damaged pipe and repaired floor")
       .requiresContractor(true)
       .contractorInfo("Plumber AB, Tel: 070-123-4567")
-      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1))))
+      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1, null))))
       .tags(List.of("plumbing", "water-damage", "bathroom"))
       .build();
 
@@ -327,7 +366,7 @@ public class ArendeServiceTest {
       .resolution("Replaced damaged pipe and repaired floor")
       .requiresContractor(true)
       .contractorInfo("Plumber AB, Tel: 070-123-4567")
-      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1Arende1)), ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus2Arende1))))
+      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1Arende1, null)), ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus2Arende1, null))))
       .tags(List.of("plumbing", "water-damage", "bathroom"))
       .build();
 
@@ -346,7 +385,7 @@ public class ArendeServiceTest {
       .resolution("Replaced damaged pipe and repaired floor")
       .requiresContractor(true)
       .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
-      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1Arende2))))
+      .updates(List.of(ArendeStatusEntity.toArendeStatusEntity(ArendeStatus.toArendeStatus(arendeStatus1Arende2, null))))
       .tags(List.of("heating", "urgent", "winter"))
       .build();
 
