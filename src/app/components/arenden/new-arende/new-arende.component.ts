@@ -1,11 +1,13 @@
 import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {ArendeService} from '../../../service/arende.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-new-arende',
   imports: [
-    FormsModule
+    FormsModule,
+    DatePipe
   ],
   templateUrl: './new-arende.component.html',
   styleUrl: './new-arende.component.css'
@@ -26,7 +28,7 @@ export class NewArendeComponent {
   enteredLocation = '';
   enteredEstimatedCost = '';
   enteredActualCost = '';
-  enteredStartTime = '';
+  enteredStartTime  = '';
   enteredResolvedTime = '';
   enteredResolution = '';
   enteredRequiresContractor = false;
@@ -73,6 +75,17 @@ export class NewArendeComponent {
       updatedAt: this.enteredUpdatedAt
     });
     this.close.emit();
+  }
+
+  handleStartTimeChange(event: string) {
+    // Convert local datetime to UTC
+    const date = new Date(event);
+    this.enteredStartTime = date.toISOString();
+  }
+
+  handleResolvedTimeChange(event: string) {
+    const date = new Date(event);
+    this.enteredResolvedTime = date.toISOString();
   }
 
   onCancel() {

@@ -2,7 +2,7 @@
   <article>
     <h3><label>Fakturanummer:</label> {{ faktura.invoiceNumber }}</h3>
     <label>Skapad:</label> <time>{{ faktura.issueDate }}</time>
-    <label>Förfallodatum:</label><time> {{ faktura.dueDate }}</time>
+    <p><label>Förfallodatum:</label><time> {{ faktura.dueDate }}</time></p>
     <p><label>Rubrik:</label> {{ faktura.clientName }}</p>
     <ul>
       @for (i of faktura.items; track i.id) {

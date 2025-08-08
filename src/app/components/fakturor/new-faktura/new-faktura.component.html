@@ -8,13 +8,10 @@
     </p>
 
     <p>
-      <label for="createdAt">Skapad</label>
-      <input type="date" id="createdAt" name="createdAt" [(ngModel)]="enteredCreatedAt"/>
-    </p>
-
-    <p>
       <label for="dueDate">Förfallodatum</label>
-      <input type="date" id="dueDate" name="dueDate" [(ngModel)]="enteredDueDate"/>
+      <input type="datetime-local" id="dueDate" name="dueDate"
+             [ngModel]="enteredDueDate | date:'yyyy-MM-ddTHH:mm'"
+             (ngModelChange)="handleDueDateChange($event)"/>
     </p>
 
     <p>

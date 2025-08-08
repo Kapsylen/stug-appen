@@ -73,12 +73,16 @@
 
     <p>
       <label for="startTime">Starttid</label>
-      <input type="datetime-local" id="startTime" name="startTime" [(ngModel)]="enteredStartTime"/>
+      <input type="datetime-local" id="startTime" name="startTime"
+             [ngModel]="enteredStartTime | date:'yyyy-MM-ddTHH:mm'"
+             (ngModelChange)="handleStartTimeChange($event)"/>
     </p>
 
     <p>
       <label for="resolvedTime">Datum färdigställt</label>
-      <input type="date" id="resolvedTime" name="resolvedTime" [(ngModel)]="enteredResolvedTime"/>
+      <input type="datetime-local" id="resolvedTime" name="resolvedTime"
+             [ngModel]="enteredResolvedTime | date:'yyyy-MM-ddTHH:mm'"
+             (ngModelChange)="handleResolvedTimeChange($event)"/>
     </p>
 
     <p>

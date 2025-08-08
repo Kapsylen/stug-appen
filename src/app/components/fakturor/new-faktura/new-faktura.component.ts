@@ -1,11 +1,13 @@
 import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {FakturaService} from '../../../service/faktura.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-new-faktura',
   imports: [
-    FormsModule
+    FormsModule,
+    DatePipe
   ],
   templateUrl: './new-faktura.component.html',
   styleUrl: './new-faktura.component.css'
@@ -23,7 +25,6 @@ export class NewFakturaComponent {
   enteredTotal = '';
   enteredTotalAmount = '';
   enteredStatus = '';
-
 
   onSubmit() {
     this.fakturaService.saveFaktura(
@@ -46,5 +47,10 @@ export class NewFakturaComponent {
 
   onCancel() {
     this.close.emit();
+  }
+
+  handleDueDateChange(event: string) {
+    const date = new Date(event);
+    this.enteredDueDate = date.toISOString();
   }
 }
