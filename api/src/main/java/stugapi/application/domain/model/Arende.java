@@ -6,13 +6,9 @@ import stugapi.infrastructure.entities.enums.Prioritet;
 import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
 import stugapi.presentation.dto.ArendeDto;
-import stugapi.utility.TimeUtility;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
-
-import static stugapi.application.domain.model.ArendeStatus.toArendeStatus;
-import static stugapi.utility.TimeUtility.isNullOrEmpty;
 
 @Builder
 public record Arende(
@@ -27,15 +23,15 @@ public record Arende(
   String location,
   String estimatedCost,
   String actualCost,
-  LocalDateTime startTime,
-  LocalDateTime resolvedTime,
+  Instant startTime,
+  Instant resolvedTime,
   String resolution,
   boolean requiresContractor,
   String contractorInfo,
   List<ArendeStatus> updates,
   List<String> tags,
-  LocalDateTime createdAt,
-  LocalDateTime updatedAt
+  Instant createdAt,
+  Instant updatedAt
 ) {
 
   public static ArendeBuilder fromArendeDto(ArendeDto arendeDto) {
@@ -51,15 +47,15 @@ public record Arende(
       .location(arendeDto.location())
       .estimatedCost(arendeDto.estimatedCost())
       .actualCost(arendeDto.actualCost())
-      .startTime(isNullOrEmpty(arendeDto.startTime()) ? LocalDateTime.now() : TimeUtility.parseDate(arendeDto.startTime()))
-      .resolvedTime(isNullOrEmpty(arendeDto.resolvedTime()) ? null : TimeUtility.parseDate(arendeDto.resolvedTime()))
+      .startTime(arendeDto.startTime())
+      .resolvedTime(arendeDto.resolvedTime())
       .resolution(arendeDto.resolution())
       .requiresContractor(arendeDto.requiresContractor())
       .contractorInfo(arendeDto.contractorInfo())
-      .updates(arendeDto.updates().stream().map(a -> toArendeStatus(a, arendeDto.startTime())).toList())
+      .updates(arendeDto.updates().stream().map(ArendeStatus::toArendeStatus).toList())
       .tags(arendeDto.tags())
-      .createdAt(LocalDateTime.now())
-      .updatedAt(LocalDateTime.now());
+      .createdAt(Instant.now())
+      .updatedAt(Instant.now());
   }
 
   public static ArendeBuilder fromArendeEntity(ArendeEntity arendeEntity) {

@@ -1,6 +1,8 @@
 package stugapi.presentation.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,7 +20,8 @@ import stugapi.infrastructure.entities.enums.Typ;
 import stugapi.presentation.dto.ArendeDto;
 import stugapi.presentation.dto.ArendeStatusDto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Period;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,14 +37,22 @@ public class ArendeControllerTest {
   @MockitoBean
   private ArendeService arendeService;
 
+  private ObjectMapper mapper;
+
+
+  @BeforeEach
+  void setUp() {
+    mapper = new ObjectMapper()
+      .registerModule(new JavaTimeModule());
+  }
+
+
   @Test
   public void whenPostArende_thenCreateArende() throws Exception {
 
-    ObjectMapper mapper = new ObjectMapper();
-
-    LocalDateTime createdAt = LocalDateTime.now();
-    LocalDateTime updatedAt = LocalDateTime.now().plusDays(7);
-    LocalDateTime resolvedTime = LocalDateTime.now().plusDays(7);
+    Instant createdAt = Instant.now();
+    Instant updatedAt = Instant.now();
+    Instant resolvedTime = Instant.now().plus(Period.ofDays(7));
 
     ArendeDto input = ArendeDto.builder()
       .title("Test title")
@@ -53,15 +64,15 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(createdAt.toString())
-      .resolvedTime(resolvedTime.toString())
+      .startTime(createdAt)
+      .resolvedTime(resolvedTime)
       .resolution("resolution")
       .requiresContractor(true)
       .contractorInfo("contructorinfo")
       .updates(List.of(ArendeStatusDto.builder().message("INVESTIGATING").build(), ArendeStatusDto.builder().message("CLOSED").build()))
       .tags(List.of("", ""))
-      .createdAt(createdAt.toString())
-      .updatedAt(updatedAt.toString())
+      .createdAt(createdAt)
+      .updatedAt(updatedAt)
       .build();
 
     Arende output = Arende.builder()
@@ -89,7 +100,7 @@ public class ArendeControllerTest {
 
     mvc.perform(MockMvcRequestBuilders
         .post("/api/v1/arende")
-        .content(mapper.writeValueAsBytes(input))
+        .content(mapper.writeValueAsString(input))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
       .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -130,12 +141,10 @@ public class ArendeControllerTest {
 
   @Test
   public void whenPutArende_thenUpdateArende() throws Exception {
-    ObjectMapper mapper = new ObjectMapper();
     var id = UUID.randomUUID().toString();
-    LocalDateTime createdAt = LocalDateTime.now();
-    LocalDateTime updatedAt = LocalDateTime.now().plusDays(7);
-    LocalDateTime resolvedTime = LocalDateTime.now().plusDays(7);
-    LocalDateTime startTime = createdAt;
+    Instant createdAt = Instant.now();
+    Instant updatedAt = Instant.now();
+    Instant resolvedTime = Instant.now().plus(Period.ofDays(7));
 
     ArendeDto inputUpdateArende = ArendeDto.builder()
       .title("Test title")
@@ -147,15 +156,15 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(startTime.toString())
-      .resolvedTime(resolvedTime.toString())
+      .startTime(createdAt)
+      .resolvedTime(resolvedTime)
       .resolution("resolution")
       .requiresContractor(true)
       .contractorInfo("contructorinfo")
       .updates(List.of(ArendeStatusDto.builder().message("INVESTIGATING").build(), ArendeStatusDto.builder().message("CLOSED").build()))
       .tags(List.of("", ""))
-      .createdAt(startTime.toString())
-      .updatedAt(updatedAt.toString())
+      .createdAt(createdAt)
+      .updatedAt(updatedAt)
       .build();
 
     Arende outputUpdatedArende = Arende.builder()
@@ -169,7 +178,7 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(startTime)
+      .startTime(createdAt)
       .resolvedTime(resolvedTime)
       .resolution("resolution")
       .requiresContractor(true)
@@ -180,11 +189,11 @@ public class ArendeControllerTest {
       .updatedAt(updatedAt)
       .build();
 
-    given(arendeService.update(id.toString(), inputUpdateArende)).willReturn(outputUpdatedArende);
+    given(arendeService.update(id, inputUpdateArende)).willReturn(outputUpdatedArende);
 
     mvc.perform(MockMvcRequestBuilders
         .put("/api/v1/arende/{id}", id)
-        .content(mapper.writeValueAsBytes(inputUpdateArende))
+        .content(mapper.writeValueAsString(inputUpdateArende))
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(MockMvcResultMatchers.status().isOk())
@@ -197,7 +206,7 @@ public class ArendeControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.assignedTo").value("tester"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.location").value("location"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.estimatedCost").value("5000"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.startTime").value(startTime.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.startTime").value(createdAt.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.resolvedTime").value(resolvedTime.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.resolution").value("resolution"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.requiresContractor").value(true))
@@ -213,10 +222,9 @@ public class ArendeControllerTest {
   @Test
   public void whenGetArende_thenReturnArende() throws Exception {
     var id = UUID.randomUUID().toString();
-    LocalDateTime createdAt = LocalDateTime.now();
-    LocalDateTime updatedAt = LocalDateTime.now().plusDays(7);
-    LocalDateTime resolvedTime = LocalDateTime.now().plusDays(7);
-    LocalDateTime startTime = createdAt;
+    Instant createdAt = Instant.now();
+    Instant updatedAt = Instant.now();
+    Instant resolvedTime = Instant.now().plus(Period.ofDays(7));
 
     Arende output = Arende.builder()
       .title("Test title")
@@ -228,7 +236,7 @@ public class ArendeControllerTest {
       .assignedTo("tester")
       .location("location")
       .estimatedCost("5000")
-      .startTime(startTime)
+      .startTime(createdAt)
       .resolvedTime(resolvedTime)
       .resolution("resolution")
       .requiresContractor(true)
@@ -254,7 +262,7 @@ public class ArendeControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.assignedTo").value("tester"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.location").value("location"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.estimatedCost").value("5000"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.startTime").value(startTime.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.startTime").value(createdAt.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.resolvedTime").value(resolvedTime.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.resolution").value("resolution"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.requiresContractor").value(true))
@@ -273,10 +281,9 @@ public class ArendeControllerTest {
   public void whenGetAllArende_thenReturnAllArende() throws Exception {
     String id1 = UUID.randomUUID().toString();
     String id2 = UUID.randomUUID().toString();
-    LocalDateTime createdAt = LocalDateTime.now();
-    LocalDateTime updatedAt = LocalDateTime.now().plusDays(7);
-    LocalDateTime resolvedTime = LocalDateTime.now().plusDays(7);
-    //LocalDateTime startTime = createdAt;
+    Instant createdAt = Instant.now();
+    Instant updatedAt = Instant.now();
+    Instant resolvedTime = Instant.now().plus(Period.ofDays(7));
 
     Arende output = Arende.builder()
       .id(id1)

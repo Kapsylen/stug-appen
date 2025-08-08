@@ -3,12 +3,13 @@ package stugapi.presentation.dto;
 import lombok.Builder;
 import stugapi.application.domain.model.ArendeStatus;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Builder
 public record ArendeStatusDto(
     String id,
-    String timestamp,
+    Instant timestamp,
     String message,
     String updatedBy,
     String status
@@ -16,7 +17,7 @@ public record ArendeStatusDto(
   public static ArendeStatusDto toArendeStatusDto (ArendeStatus arendeStatus){
     return ArendeStatusDto.builder()
       .id(arendeStatus.id())
-      .timestamp(arendeStatus.timestamp() != null ? arendeStatus.timestamp().toString() : LocalDateTime.now().toString())
+      .timestamp(arendeStatus.timestamp())
       .message(arendeStatus.message())
       .updatedBy(arendeStatus.updatedBy())
       .status(arendeStatus.status())

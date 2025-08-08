@@ -10,6 +10,7 @@ import stugapi.infrastructure.entities.enums.Prioritet;
 import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -57,9 +58,9 @@ public class ArendeEntity {
   private String actualCost;
 
   @Column(nullable = false)
-  private LocalDateTime startTime;
+  private Instant startTime;
 
-  private LocalDateTime resolvedTime;
+  private Instant resolvedTime;
 
   private String resolution;
 
@@ -78,20 +79,20 @@ public class ArendeEntity {
   private List<ArendeStatusEntity> updates;
 
   @Column(nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+  private Instant createdAt;
 
   @Column(nullable = false)
-  private LocalDateTime updatedAt;
+  private Instant updatedAt;
 
   @PrePersist
   protected void onCreate() {
-    createdAt = LocalDateTime.now();
+    createdAt = Instant.now();
     updatedAt = createdAt;
   }
 
   @PreUpdate
   protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
+    updatedAt = Instant.now();
   }
 
   public static ArendeEntityBuilder fromArende(Arende arende) {

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import stugapi.application.domain.model.ArendeStatus;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,7 +23,7 @@ public class ArendeStatusEntity {
   private UUID id;
 
   @Column(nullable = false)
-  private LocalDateTime timestamp;
+  private Instant timestamp;
 
   @Column(nullable = false, columnDefinition = "TEXT")
   private String message;
@@ -36,7 +37,7 @@ public class ArendeStatusEntity {
   public static ArendeStatusEntity toArendeStatusEntity(ArendeStatus arendeStatus) {
     return ArendeStatusEntity.builder()
       .id(arendeStatus.id() != null ? UUID.fromString(arendeStatus.id()) : null)
-      .timestamp(arendeStatus.timestamp())
+      .timestamp(arendeStatus.timestamp() != null ? arendeStatus.timestamp() : Instant.now())
       .message(arendeStatus.message())
       .updatedBy(arendeStatus.updatedBy())
       .status(arendeStatus.status())

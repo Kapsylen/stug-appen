@@ -5,6 +5,7 @@ import stugapi.infrastructure.entities.FakturaEntity;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
 import stugapi.presentation.dto.FakturaDto;
 
+import java.time.Instant;
 import java.util.List;
 
 @Builder
@@ -12,14 +13,15 @@ public record Faktura(
   String id,
   String invoiceNumber,
   String clientName,
-  String issueDate,
-  String dueDate,
+  Instant issueDate,
+  Instant dueDate,
   List<FakturaEnhet> items,
   String totalAmount,
   FakturaStatus status
 ) {
   public static FakturaBuilder fromFakturaDto(FakturaDto fakturaDto) {
     return Faktura.builder()
+      .id(fakturaDto.id())
       .invoiceNumber(fakturaDto.invoiceNumber())
       .clientName(fakturaDto.clientName())
       .issueDate(fakturaDto.issueDate())

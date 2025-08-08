@@ -13,16 +13,9 @@ public record FakturaEnhet(
     String total
 ) {
 
-  public static FakturaEnhetBuilder toFakturaEnhetBuilder(FakturaEnhetDto enhet) {
-    return FakturaEnhet.builder()
-      .description(enhet.description())
-      .quantity(enhet.quantity())
-      .price(enhet.price())
-      .total(enhet.total());
-  }
-
   public static FakturaEnhet toFakturaEnhet(FakturaEnhetDto enhet) {
     return FakturaEnhet.builder()
+      .id(enhet.id())
       .description(enhet.description())
       .quantity(enhet.quantity())
       .price(enhet.price())

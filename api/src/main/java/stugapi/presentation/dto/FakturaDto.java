@@ -1,9 +1,11 @@
 package stugapi.presentation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import stugapi.application.domain.model.Faktura;
 import stugapi.application.domain.model.FakturaEnhet;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +31,10 @@ public record FakturaDto(
     String id,
     String invoiceNumber,
     String clientName,
-    String issueDate,
-    String dueDate,
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    Instant issueDate,
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    Instant dueDate,
     List<FakturaEnhetDto> items,
     String totalAmount,
     String status

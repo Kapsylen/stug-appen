@@ -1,5 +1,6 @@
 package stugapi.utility;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -24,7 +25,4 @@ public class TimeUtility {
     }
   }
 
-  public static boolean isNullOrEmpty(String startTime) {
-    return startTime == null || startTime.isEmpty();
-  }
 }

@@ -27,6 +27,7 @@ public class UtlaggEntity {
 
   public static UtlaggEntityBuilder fromUtlagg(Utlagg utlagg) {
     return UtlaggEntity.builder()
+      .id(utlagg.id() != null ? UUID.fromString(utlagg.id()) : null)
       .title(utlagg.title())
       .description(utlagg.description())
       .outlayDate(utlagg.outlayDate())

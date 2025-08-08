@@ -3,25 +3,21 @@ package stugapi.application.domain.model;
 import lombok.Builder;
 import stugapi.infrastructure.entities.ArendeStatusEntity;
 import stugapi.presentation.dto.ArendeStatusDto;
-import stugapi.utility.TimeUtility;
 
-import java.time.LocalDateTime;
-
-import static stugapi.utility.TimeUtility.isNullOrEmpty;
-import static stugapi.utility.TimeUtility.parseDateTime;
+import java.time.Instant;
 
 @Builder
 public record ArendeStatus(
     String id,
-    LocalDateTime timestamp,
+    Instant timestamp,
     String message,
     String updatedBy,
     String status // Consider using an enum like 'Status' if applicable
 ) {
-  public static ArendeStatus toArendeStatus(ArendeStatusDto arendeStatusDto, String timestamp) {
+  public static ArendeStatus toArendeStatus(ArendeStatusDto arendeStatusDto) {
     return ArendeStatus.builder()
       .id(arendeStatusDto.id())
-      .timestamp(isNullOrEmpty(timestamp) ? LocalDateTime.now() : TimeUtility.parseDate(timestamp))
+      .timestamp(arendeStatusDto.timestamp())
       .message(arendeStatusDto.message())
       .updatedBy(arendeStatusDto.updatedBy())
       .status(arendeStatusDto.status())
