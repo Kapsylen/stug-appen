@@ -13,8 +13,10 @@
     </p>
 
     <p>
-      <label for="createdDate">Utlägsdatum</label>
-      <input type="date" id="createdDate" name="createdDate" [(ngModel)]="enteredOutlayDate"/>
+      <label for="ut">Utlägsdatum</label>
+      <input type="datetime-local" id="outlayDate" name="outlayDate"
+             [ngModel]="enteredOutlayTime | date:'yyyy-MM-ddTHH:mm'"
+             (ngModelChange)="enteredOutlayTimeChange($event)"/>
     </p>
 
     <p>

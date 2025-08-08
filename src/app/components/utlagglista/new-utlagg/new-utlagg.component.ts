@@ -1,11 +1,13 @@
 import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {UtlaggService} from '../../../service/utlagg.service';
 import {FormsModule} from '@angular/forms';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-new-utlagg',
   imports: [
-    FormsModule
+    FormsModule,
+    DatePipe
   ],
   templateUrl: './new-utlagg.component.html',
   styleUrl: './new-utlagg.component.css'
@@ -14,7 +16,7 @@ export class NewUtlaggComponent {
   @Output () close = new EventEmitter<void>();
   private utlaggService  = inject(UtlaggService);
   enteredTitle = '';
-  enteredOutlayDate = '';
+  enteredOutlayTime = '';
   enteredDescription = '';
   enteredPrice = '';
 
@@ -24,7 +26,7 @@ export class NewUtlaggComponent {
       {
         title: this.enteredTitle,
         description: this.enteredDescription,
-        outlayDate: this.enteredOutlayDate,
+        outlayDate: this.enteredOutlayTime,
         price: this.enteredPrice,
       },
     );
@@ -33,5 +35,10 @@ export class NewUtlaggComponent {
 
   onCancel() {
     this.close.emit();
+  }
+
+  enteredOutlayTimeChange(event: string) {
+    const date = new Date(event);
+    this.enteredOutlayTime = date.toISOString();
   }
 }
