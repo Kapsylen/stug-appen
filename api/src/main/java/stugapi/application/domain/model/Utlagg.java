@@ -4,12 +4,14 @@ import lombok.Builder;
 import stugapi.infrastructure.entities.UtlaggEntity;
 import stugapi.presentation.dto.UtlaggDto;
 
+import java.time.Instant;
+
 @Builder
 public record Utlagg (
   String id,
   String title,
   String description,
-  String outlayDate,
+  Instant outlayDate,
   String price
 ){
   public static UtlaggBuilder fromUtlaggEntity(UtlaggEntity utlagg) {
@@ -23,6 +25,7 @@ public record Utlagg (
 
   public static UtlaggBuilder fromUtlaggDto(UtlaggDto utlaggDto) {
     return Utlagg.builder()
+      .id(utlaggDto.id())
       .title(utlaggDto.title())
       .description(utlaggDto.description())
       .outlayDate(utlaggDto.outlayDate())

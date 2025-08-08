@@ -1,6 +1,8 @@
 package stugapi.presentation.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,6 +16,7 @@ import stugapi.application.service.UtlaggService;
 import stugapi.presentation.dto.UtlaggDto;
 
 import java.time.Instant;
+import java.time.Period;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,11 +34,18 @@ public class UtlaggControllerTest {
   @MockitoBean
   private UtlaggService utlaggService;
 
+  private ObjectMapper mapper;
+
+  @BeforeEach
+  void setUp() {
+    mapper = new ObjectMapper()
+      .registerModule(new JavaTimeModule());
+  }
+
   @Test
   public void whenPostUtlagg_thenCreateUtlagg() throws Exception {
 
-    ObjectMapper mapper = new ObjectMapper();
-    var outlayDate = Instant.now().toString();
+    var outlayDate = Instant.now();
     var inputUtlagg = UtlaggDto.builder()
       .title("Test title")
       .description("Test description")
@@ -55,13 +65,13 @@ public class UtlaggControllerTest {
 
     mvc.perform(MockMvcRequestBuilders
       .post("/api/v1/utlagg")
-      .content(mapper.writeValueAsBytes(inputUtlagg))
+      .content(mapper.writeValueAsString(inputUtlagg))
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isCreated())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Test title"))
       .andExpect(MockMvcResultMatchers.jsonPath("description").value("Test description"))
-      .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate))
+      .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("price").value("1000"));
 
     verify(utlaggService).saveUtlagg(inputUtlagg);
@@ -79,7 +89,7 @@ public class UtlaggControllerTest {
 
   @Test
   public void whenGetUtlagg_thenReturnUtlagg() throws Exception {
-    var outlayDate = Instant.now().toString();
+    var outlayDate = Instant.now();
     var id = UUID.randomUUID().toString();
     var inputUtlagg = UtlaggDto.builder()
       .title("Test title")
@@ -97,13 +107,13 @@ public class UtlaggControllerTest {
       .andExpect(status().isOk())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Test title"))
       .andExpect(MockMvcResultMatchers.jsonPath("description").value("Test description"))
-      .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate))
+      .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("price").value("1000"));
   }
 
   @Test
   public void whenGetAllUtlagg_thenReturnAllUtlagg() throws Exception {
-    var outlayDate = Instant.now().toString();
+    var outlayDate = Instant.now();
     var utlagg1 = Utlagg.builder()
       .title("Test title")
       .description("Test description")
@@ -111,7 +121,7 @@ public class UtlaggControllerTest {
       .price("1000")
       .build();
 
-    var outlayDate2 = Instant.now().plusSeconds(1000000).toString();
+    var outlayDate2 = Instant.now().plus(Period.ofDays(10));
     var utlagg2 = Utlagg.builder()
       .title("Test title 2")
       .description("Test description 2")
@@ -130,11 +140,11 @@ public class UtlaggControllerTest {
       .andExpect(status().isOk())
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Test title"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value("Test description"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[0].outlayDate").value(outlayDate))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[0].outlayDate").value(outlayDate.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value("1000"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("Test title 2"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].description").value("Test description 2"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[1].outlayDate").value(outlayDate2))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[1].outlayDate").value(outlayDate2.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].price").value("2000"));
 
     verify(utlaggService).findAll();
@@ -154,8 +164,7 @@ public class UtlaggControllerTest {
 
   @Test
   public void whenPutUtlagg_thenUpdateUtlagg() throws Exception {
-    ObjectMapper mapper = new ObjectMapper();
-    var outlayDate = Instant.now().toString();
+    var outlayDate = Instant.now();
     var id = UUID.randomUUID().toString();
     var inputUtlagg = UtlaggDto.builder()
       .title("Test title")
@@ -183,7 +192,7 @@ public class UtlaggControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Test title"))
       .andExpect(MockMvcResultMatchers.jsonPath("description").value("Test description"))
-      .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate))
+      .andExpect(MockMvcResultMatchers.jsonPath("outlayDate").value(outlayDate.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("price").value("2000"));
 
     verify(utlaggService).update(id, inputUtlagg);

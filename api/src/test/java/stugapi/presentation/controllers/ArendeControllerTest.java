@@ -39,7 +39,6 @@ public class ArendeControllerTest {
 
   private ObjectMapper mapper;
 
-
   @BeforeEach
   void setUp() {
     mapper = new ObjectMapper()

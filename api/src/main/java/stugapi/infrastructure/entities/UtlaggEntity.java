@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import stugapi.application.domain.model.Utlagg;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -22,7 +23,7 @@ public class UtlaggEntity {
   UUID id;
   String title;
   String description;
-  String outlayDate;
+  Instant outlayDate;
   String price;
 
   public static UtlaggEntityBuilder fromUtlagg(Utlagg utlagg) {

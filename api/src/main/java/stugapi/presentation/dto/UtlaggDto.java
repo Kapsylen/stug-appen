@@ -1,7 +1,10 @@
 package stugapi.presentation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import stugapi.application.domain.model.Utlagg;
+
+import java.time.Instant;
 
 /**
  * Represents a data transfer object for "Utlagg" (an outlay or expense).
@@ -24,7 +27,8 @@ public record UtlaggDto(
   String id,
   String title,
   String description,
-  String outlayDate,
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  Instant outlayDate,
   String price
 ) {
   public static UtlaggDtoBuilder toUtlaggDtoBuilder(Utlagg utlagg) {
