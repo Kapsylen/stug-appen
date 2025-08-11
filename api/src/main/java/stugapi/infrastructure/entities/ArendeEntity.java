@@ -53,9 +53,9 @@ public class ArendeEntity {
   @Column(nullable = false)
   private String location;
 
-  private String estimatedCost;
+  private Integer estimatedCost;
 
-  private String actualCost;
+  private Integer actualCost;
 
   @Column(nullable = false)
   private Instant startTime;

@@ -1,5 +1,6 @@
 package stugapi.presentation.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ArendeController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ArendeDto createArende(@RequestBody ArendeDto arendeDto) {
+  public ArendeDto createArende(@RequestBody @Valid ArendeDto arendeDto) {
     log.info("createArende {}", arendeDto);
     return toArendeDtoBuilder(arendeService.saveArende(arendeDto))
       .build();

@@ -10,9 +10,12 @@ import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
 import stugapi.infrastructure.repositories.ArendeRepository;
 import stugapi.presentation.dto.ArendeDto;
+import stugapi.presentation.error.ArendeNotFoundException;
+import stugapi.presentation.error.InvalidArendeIdException;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static stugapi.application.domain.model.Arende.*;
@@ -54,8 +57,12 @@ public class ArendeService {
    * @param id the unique identifier of the entry to be deleted, represented as a string
    */
   public void deleteById(String id) {
-    arendeRepository.deleteById(UUID.fromString(id));
+    UUID arendeId = parseUuid(id);
+    arendeRepository.findById(arendeId)
+      .orElseThrow(() -> new ArendeNotFoundException("No ArendeEntity found with ID: " + id));
+    arendeRepository.deleteById(arendeId);
   }
+
 
   /**
    * Updates an existing Arende entry in the repository based on its unique identifier.
@@ -108,7 +115,7 @@ public class ArendeService {
   public Arende findById(String id) {
     return fromArendeEntity(arendeRepository
       .findById(UUID.fromString(id))
-      .orElseThrow(RuntimeException::new))
+      .orElseThrow(() -> new ArendeNotFoundException("No ArendeEntity found with ID: " + id)))
       .build();
   }
 
@@ -135,4 +142,11 @@ public class ArendeService {
     arendeRepository.deleteAll();
   }
 
+  private UUID parseUuid(String id) {
+    try {
+      return UUID.fromString(id);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidArendeIdException("Invalid Arende ID format: " + id, e);
+    }
+  }
 }
