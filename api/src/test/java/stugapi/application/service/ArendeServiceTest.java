@@ -151,12 +151,14 @@ public class ArendeServiceTest {
   void whenDeleteExistingArende_thenArendeIsDeleted() {
     UUID id = UUID.randomUUID();
 
+    ArendeEntity existingArende = ArendeEntity.builder().id(id).build();
+    when(arendeRepository.findById(id)).thenReturn(Optional.of(existingArende));
+
     arendeService.deleteById(id.toString());
 
     doNothing().when(arendeRepository).deleteById(id);
 
     verify(arendeRepository, times(1)).deleteById(any(UUID.class));
-    verifyNoMoreInteractions(arendeRepository);
   }
 
   @Test
