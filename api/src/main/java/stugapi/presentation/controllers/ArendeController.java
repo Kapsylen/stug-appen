@@ -35,18 +35,21 @@ public class ArendeController {
   }
 
   @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
   public ArendeDto getArende(@PathVariable String id) {
     return toArendeDtoBuilder(arendeService.findById(id))
       .build();
   }
 
   @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
   public ArendeDto updateArende(@PathVariable String id, @RequestBody ArendeDto updateArende) {
     return toArendeDtoBuilder(arendeService.update(id, updateArende))
       .build();
   }
 
   @GetMapping
+  @ResponseStatus(HttpStatus.OK)
   public List<ArendeDto> getAllArende() {
     return arendeService.findAll().stream().map(arenden -> ArendeDto.toArendeDtoBuilder(arenden).build()).toList();
   }

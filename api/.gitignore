@@ -34,4 +34,4 @@ build/
 
 ### H2 database ###
 data/testdb.mv.db
-
+data/testdb.trace.db

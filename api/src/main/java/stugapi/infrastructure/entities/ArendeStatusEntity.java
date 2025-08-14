@@ -16,6 +16,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "arende_statuses")
 public class ArendeStatusEntity {
 
   @Id

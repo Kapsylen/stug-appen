@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     log.error("Entity not found exception occurred: {}", ex.getMessage());
 
     return createErrorResponse(
-      HttpStatus.NO_CONTENT,
+      HttpStatus.NOT_FOUND,
       "Resource not found",
       ex.getMessage()
     );
@@ -38,6 +38,7 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)  // Explicitly set HTTP status
   @ResponseBody
   public ErrorResponse handleInvalidArendeIdException(InvalidArendeIdException ex, WebRequest request) {
+    log.error("Invalid arende id exception occurred: {}", ex.getMessage());
     return createErrorResponse(
       HttpStatus.BAD_REQUEST,
       ex.getMessage(),
@@ -48,7 +49,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)  // Explicitly set HTTP status
   @ResponseBody
-  public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
+  public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
+    log.error("Validation exception occurred: {}", ex.getMessage());
     String errors = ex.getBindingResult()
       .getFieldErrors()
       .stream()
@@ -65,7 +67,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)  // Explicitly set HTTP status
   @ResponseBody
-  public ErrorResponse handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+  public ErrorResponse handleConstraintViolationException(ConstraintViolationException ex) {
+    log.error("Constraint violation exception occurred: {}", ex.getMessage());
     return createErrorResponse(
       HttpStatus.BAD_REQUEST,
       "Validation failed",
@@ -76,7 +79,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(AuthenticationException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)  // Explicitly set HTTP status
   @ResponseBody
-  public ErrorResponse handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+  public ErrorResponse handleAuthenticationException(AuthenticationException ex) {
+    log.error("Authentication exception occurred: {}", ex.getMessage());
     return createErrorResponse(
       HttpStatus.UNAUTHORIZED,
       "Authentication failed",
@@ -87,7 +91,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(AccessDeniedException.class)
   @ResponseStatus(HttpStatus.FORBIDDEN)  // Explicitly set HTTP status
   @ResponseBody
-  public ErrorResponse handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+  public ErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
+    log.error("Access denied exception occurred: {}", ex.getMessage());
     return createErrorResponse(
       HttpStatus.FORBIDDEN,
       "Access denied",
@@ -98,7 +103,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // Explicitly set HTTP status
   @ResponseBody
-  public ErrorResponse handleAllUncaughtException(Exception ex, WebRequest request) {
+  public ErrorResponse handleAllUncaughtException(Exception ex) {
+    log.error("An unexpected error occurred: {}", ex.getMessage());
     return createErrorResponse(
       HttpStatus.INTERNAL_SERVER_ERROR,
       "An unexpected error occurred",

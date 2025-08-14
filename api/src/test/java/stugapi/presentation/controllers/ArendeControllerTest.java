@@ -3,9 +3,12 @@ package stugapi.presentation.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AssertionFailureBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -18,14 +21,16 @@ import stugapi.application.service.ArendeService;
 import stugapi.infrastructure.entities.enums.Prioritet;
 import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
-import stugapi.infrastructure.repositories.ArendeRepository;
 import stugapi.presentation.dto.ArendeDto;
+import stugapi.presentation.dto.ArendeDto.ArendeDtoBuilder;
 import stugapi.presentation.dto.ArendeStatusDto;
+import stugapi.presentation.dto.ArendeStatusDto.ArendeStatusDtoBuilder;
 
 import java.time.Instant;
 import java.time.Period;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -40,9 +45,6 @@ public class ArendeControllerTest {
 
   @MockitoBean
   private ArendeService arendeService;
-
-  @Mock
-  private ArendeRepository arendeRepository;
 
   private ObjectMapper mapper;
 
@@ -71,7 +73,7 @@ public class ArendeControllerTest {
       .reportedBy("Lars Andersson")
       .assignedTo("Plumber AB")
       .location("Main Bathroom")
-      .estimatedCost(5000)
+      .estimatedCost(5000.0)
       .startTime(createdAt)
       .resolvedTime(resolvedTime)
       .resolution("resolution")
@@ -82,11 +84,13 @@ public class ArendeControllerTest {
           .timestamp(createdAt)
           .message(Status.INVESTIGATING.name())
           .updatedBy("Lars Andersson")
+          .status(Status.IN_PROGRESS.name())
           .build(),
         ArendeStatusDto.builder()
           .timestamp(resolvedTime)
           .message(Status.CLOSED.name())
           .updatedBy("Lars Andersson")
+          .status(Status.RESOLVED.name())
           .build()))
       .tags(List.of("plumbing", "water-damage", "bathroom"))
       .createdAt(createdAt)
@@ -158,7 +162,7 @@ public class ArendeControllerTest {
 
   @Test
   public void whenPutArende_thenUpdateArende() throws Exception {
-    var id = UUID.randomUUID().toString();
+    String id = UUID.randomUUID().toString();
     Instant createdAt = Instant.now();
     Instant updatedAt = Instant.now();
     Instant lastUpdatedAt = Instant.now();
@@ -173,7 +177,7 @@ public class ArendeControllerTest {
       .reportedBy("Maria Svensson")
       .assignedTo("John Doe")
       .location("Entire Cottage")
-      .estimatedCost(8000)
+      .estimatedCost(8000.0)
       .startTime(createdAt)
       .requiresContractor(true)
       .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
@@ -198,7 +202,7 @@ public class ArendeControllerTest {
       .assignedTo(inputUpdateArende.assignedTo())
       .location(inputUpdateArende.location())
       .estimatedCost(inputUpdateArende.estimatedCost())
-      .actualCost(10000)
+      .actualCost(10000.0)
       .startTime(inputUpdateArende.startTime())
       .resolvedTime(resolvedTime)
       .resolution("Replaced heating system")
@@ -225,7 +229,7 @@ public class ArendeControllerTest {
     given(arendeService.update(id, inputUpdateArende)).willReturn(outputUpdatedArende);
 
     mvc.perform(MockMvcRequestBuilders
-        .put(BASE_URL  + "/{id}", id)
+        .put(BASE_URL + "/{id}", id)
         .content(mapper.writeValueAsString(inputUpdateArende))
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON))
@@ -258,7 +262,7 @@ public class ArendeControllerTest {
 
   @Test
   public void whenGetArende_thenReturnArende() throws Exception {
-    var id = UUID.randomUUID().toString();
+    String id = UUID.randomUUID().toString();
     Instant createdAt = Instant.now();
     Instant updatedAt = Instant.now();
     Instant resolvedTime = Instant.now().plus(Period.ofDays(7));
@@ -272,7 +276,7 @@ public class ArendeControllerTest {
       .reportedBy("Maria Svensson")
       .assignedTo("John Doe")
       .location("Entire Cottage")
-      .estimatedCost(8000)
+      .estimatedCost(8000.0)
       .startTime(createdAt)
       .requiresContractor(true)
       .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
@@ -338,7 +342,7 @@ public class ArendeControllerTest {
       .reportedBy("Lars Andersson")
       .assignedTo("John Doe")
       .location("Main Bathroom")
-      .estimatedCost(5000)
+      .estimatedCost(5000.0)
       .startTime(createdAt)
       .resolvedTime(resolvedTime)
       .resolution("Replaced damaged pipe and repaired floor")
@@ -376,7 +380,7 @@ public class ArendeControllerTest {
       .reportedBy("Lars Andersson")
       .assignedTo("Heating Expert SE")
       .location("Entire Cottage")
-      .estimatedCost(8000)
+      .estimatedCost(8000.0)
       .startTime(createdAt)
       .requiresContractor(true)
       .contractorInfo("contructorinfo")
@@ -457,54 +461,15 @@ public class ArendeControllerTest {
 
   @Test
   public void whenDeleteAllArenden_thenReturnEmptyList() throws Exception {
+    given(arendeService.findAll()).willReturn(List.of());
     mvc.perform(delete(BASE_URL)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
-      .andExpect(status()
-        .isNoContent());
-  }
-
-  // Non happy path
-
-  @Test
-  public void whenPostArendeWithInvalidFields_thenReturnBadRequest() throws Exception {
-    ArendeDto invalidInput = ArendeDto.builder()
-      .title("")
-      .description("")
-      .status(Status.NEW.name())
-      .reportedBy("")
-      .assignedTo("")
-      .location("")
-      .startTime(Instant.now())
-      .resolvedTime(Instant.now().minus(Period.ofDays(1)))
-      .resolution("")
-      .requiresContractor(true)
-      .contractorInfo("Plumber AB, Tel: 070-123-4567")
-      .updates(List.of(
-        ArendeStatusDto.builder()
-          .timestamp(Instant.now())
-          .message(Status.INVESTIGATING.name())
-          .updatedBy("Lars Andersson")
-          .build(),
-        ArendeStatusDto.builder()
-          .timestamp(Instant.now())
-          .message(Status.CLOSED.name())
-          .updatedBy("Lars Andersson")
-          .build()))
-      .tags(List.of("plumbing", "water-damage", "bathroom"))
-      .build();
-
-    mvc.perform(post(BASE_URL)
-        .content(mapper.writeValueAsString(invalidInput))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
-      .andExpect(status().isBadRequest());
-
-    verify(arendeService, times(0)).saveArende(invalidInput);
+      .andExpect(status().isNoContent());
   }
 
   @Test
-  void whenGetById_nonExistingArende_thenReturn204() throws Exception {
+  void whenGetById_nonExistingArende_thenReturn404() throws Exception {
     // Given
     String nonExistingId = "non-existing-id";
     when(arendeService.findById(nonExistingId))
@@ -514,40 +479,20 @@ public class ArendeControllerTest {
     mvc.perform(get(BASE_URL + "/{id}", nonExistingId))
       .andExpect(status().isNotFound())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value("204"))
-      .andExpect(jsonPath("$.error").value("No Content"))
+      .andExpect(jsonPath("$.status").value("404"))
+      .andExpect(jsonPath("$.error").value("Not Found"))
       .andExpect(jsonPath("$.message").value("Resource not found"))
       .andExpect(jsonPath("$.details").value("Arende not found with id: " + nonExistingId))
       .andExpect(jsonPath("$.timestamp").exists());
   }
 
-  @Test
-  void whenCreate_withInvalidData_thenReturn400() throws Exception {
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidTitleCases")
+  void whenCreate_andTitleIsNotNullOrBlankOrNotBetween3And100Characters_thenReturn400(String title, String expectedError) throws Exception {
+
     // Given
-    ArendeDto invalidInput = ArendeDto.builder()
-      .title("")
-      .description("")
-      .status(Status.NEW.name())
-      .reportedBy("")
-      .assignedTo("")
-      .location("")
-      .startTime(Instant.now())
-      .resolvedTime(Instant.now().minus(Period.ofDays(1)))
-      .resolution("")
-      .requiresContractor(true)
-      .contractorInfo("Plumber AB, Tel: 070-123-4567")
-      .updates(List.of(
-        ArendeStatusDto.builder()
-          .timestamp(Instant.now())
-          .message(Status.INVESTIGATING.name())
-          .updatedBy("Lars Andersson")
-          .build(),
-        ArendeStatusDto.builder()
-          .timestamp(Instant.now())
-          .message(Status.CLOSED.name())
-          .updatedBy("Lars Andersson")
-          .build()))
-      .tags(List.of("plumbing", "water-damage", "bathroom"))
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .title(title)
       .build();
 
     // When & Then
@@ -559,11 +504,505 @@ public class ArendeControllerTest {
       .andExpect(jsonPath("$.status").value(400))
       .andExpect(jsonPath("$.error").value("Bad Request"))
       .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
       .andExpect(jsonPath("$.timestamp").exists());
   }
 
+  private static Stream<Arguments> invalidTitleCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "title: Title is required"
+      ),
+      Arguments.of(
+        "",
+        "title: Title must be between 3 and 100 characters"
+      ),
+      Arguments.of(
+        " ",
+        "title: Title must be between 3 and 100 characters"
+      ),
+      Arguments.of(
+        "ab",
+        "title: Title must be between 3 and 100 characters"
+      ),
+      Arguments.of(
+        "a" .repeat(101),
+        "title: Title must be between 3 and 100 characters"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidDescriptionCases")
+  void whenCreate_andDescriptionIsNotNullOrBlankOrExceeds1000Characters_thenReturn400(String description, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .description(description)
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  private static Stream<Arguments> invalidDescriptionCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "description: Description is required"
+      ),
+      Arguments.of(
+        " ",
+        "description: Description is required"
+      ),
+      Arguments.of(
+        "",
+        "description: Description is required"
+      ),
+      Arguments.of(
+        "a" .repeat(1001),
+        "description: Description cannot exceed 1000 characters"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidTypeCases")
+  void whenCreate_andTypeIsNullOrEmptyOrNotMatchValidString_thenReturn400(String type, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .type(type)
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+
+    verify(arendeService, times(0)).saveArende(invalidInput);
+  }
+
+  private static Stream<Arguments> invalidTypeCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "type: Type is required"
+      ),
+      Arguments.of(
+        " ",
+        "type: Type must be either MAINTENANCE, DAMAGE, UTILITY, SECURITY, PEST, WEATHER or OTHER"
+      ),
+      Arguments.of(
+        "",
+        "type: Type must be either MAINTENANCE, DAMAGE, UTILITY, SECURITY, PEST, WEATHER or OTHER"
+      ),
+      Arguments.of(
+        "a",
+        "type: Type must be either MAINTENANCE, DAMAGE, UTILITY, SECURITY, PEST, WEATHER or OTHER"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidPriorityCases")
+  void whenCreate_andPriorityIsNullOrEmptyOrNotMatchValidString_thenReturn400(String priority, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .priority(priority)
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+
+    verify(arendeService, times(0)).saveArende(invalidInput);
+  }
+
+  private static Stream<Arguments> invalidPriorityCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "priority: Priority is required"
+      ),
+      Arguments.of(
+        " ",
+        "priority: Priority must be either LOW, MEDIUM, HIGH or CRITICAL"
+      ),
+      Arguments.of(
+        "",
+        "priority: Priority must be either LOW, MEDIUM, HIGH or CRITICAL"
+      ),
+      Arguments.of(
+        "a",
+        "priority: Priority must be either LOW, MEDIUM, HIGH or CRITICAL"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidStatusCases")
+  void whenCreate_andStatusIsNullOrEmptyOrNotMatchValidString_thenReturn400(String status, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .status(status)
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+
+    verify(arendeService, times(0)).saveArende(invalidInput);
+  }
+
+  private static Stream<Arguments> invalidStatusCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "status: Status is required"
+      ),
+      Arguments.of(
+        " ",
+        "status: Status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSED"
+      ),
+      Arguments.of(
+        "",
+        "status: Status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSED"
+      ),
+      Arguments.of(
+        "a",
+        "status: Status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSED"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidReportedByCases")
+  void whenCreate_andReportedByIsNullOrEmptyOrNotBetween3And100Characters_thenReturn400(String reportedBy, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .reportedBy(reportedBy)
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+
+    verify(arendeService, times(0)).saveArende(invalidInput);
+  }
+
+  private static Stream<Arguments> invalidReportedByCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "reportedBy: ReportedBy is required"
+      ),
+      Arguments.of(
+        "ab",
+        "reportedBy: ReportedBy must be between 3 and 30 characters"
+      ),
+      Arguments.of(
+        "a".repeat(31),
+        "reportedBy: ReportedBy must be between 3 and 30 characters"
+      ),
+      Arguments.of(
+        "John@Doe",
+        "reportedBy: ReportedBy must contain only letters, numbers and spaces"
+      ),
+      Arguments.of(
+        "John @ Doe",
+        "reportedBy: ReportedBy must contain only letters, numbers and spaces"
+      ),
+      Arguments.of(
+        "John-Doe",
+        "reportedBy: ReportedBy must contain only letters, numbers and spaces"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidAssignedToCases")
+  void whenCreate_andAssignedToyIsNullOrEmptyOrNotBetween3And100Characters_thenReturn400(String assignedTo, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .assignedTo(assignedTo)
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+
+    verify(arendeService, times(0)).saveArende(invalidInput);
+  }
+
+  private static Stream<Arguments> invalidAssignedToCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "assignedTo: AssignedTo is required"
+      ),
+      Arguments.of(
+        "ab",
+        "assignedTo: AssignedTo must be between 3 and 30 characters"
+      ),
+      Arguments.of(
+        "a".repeat(31),
+        "assignedTo: AssignedTo must be between 3 and 30 characters"
+      ),
+      Arguments.of(
+        "John@Doe",
+        "assignedTo: AssignedTo must contain only letters, numbers and spaces"
+      ),
+      Arguments.of(
+        "John @ Doe",
+        "assignedTo: AssignedTo must contain only letters, numbers and spaces"
+      ),
+      Arguments.of(
+        "John-Doe",
+        "assignedTo: AssignedTo must contain only letters, numbers and spaces"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidEstimatedCostCases")
+  void whenCreate_andEstimatedCostIsInvalid_thenReturn400(Double estimatedCost, String expectedError) throws Exception {
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .estimatedCost(estimatedCost)
+      .build();
+
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  private static Stream<Arguments> invalidEstimatedCostCases() {
+    return Stream.of(
+      Arguments.of(null, "estimatedCost: Estimated cost is required"),
+      Arguments.of(-1.0, "estimatedCost: Estimated cost must be greater than or equal to 0"),
+      Arguments.of(-100.0, "estimatedCost: Estimated cost must be greater than or equal to 0"),
+      Arguments.of(1000000000.0, "estimatedCost: Estimated cost cannot exceed 999,999,999.99"),
+      Arguments.of(12345678901.23, "estimatedCost: Estimated cost cannot exceed 999,999,999.99")
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidMessageCases")
+  void whenCreate_andMessageIsNotNullOrBlankOrExceeds1000Characters_thenReturn400(String message, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .updates(
+        List.of(
+          createArendeStatusDtoBuilder()
+          .message(message)
+        .build()))
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  private static Stream<Arguments> invalidMessageCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "updates[0].message: Message is required"
+      ),
+      Arguments.of(
+        " ",
+        "updates[0].message: Message is required"
+      ),
+      Arguments.of(
+        "",
+        "updates[0].message: Message is required"
+      ),
+      Arguments.of(
+        "a" .repeat(1001),
+        "updates[0].message: Message cannot exceed 1000 characters"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidUpdatedByCases")
+  void whenCreate_andUpdatedByIsNotNullOrBlankOrNotBetween3And30Characters_thenReturn400(String updatedBy, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .updates(
+        List.of(
+          createArendeStatusDtoBuilder()
+            .updatedBy(updatedBy)
+            .build()))
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  private static Stream<Arguments> invalidUpdatedByCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "updates[0].updatedBy: UpdatedBy is required"
+      ),
+      Arguments.of(
+        " ",
+        "updates[0].updatedBy: UpdatedBy must be between 3 and 30 characters"
+      ),
+      Arguments.of(
+        "ab",
+        "updates[0].updatedBy: UpdatedBy must be between 3 and 30 characters"
+      ),
+      Arguments.of(
+        "a" .repeat(101),
+        "updates[0].updatedBy: UpdatedBy must be between 3 and 30 characters"
+      ),
+      Arguments.of(
+        "John@Doe",
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers and spaces"
+      ),
+      Arguments.of(
+        "John @ Doe",
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers and spaces"
+      ),
+      Arguments.of(
+        "John-Doe",
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers and spaces"
+      )
+    );
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("invalidArendeStatusCases")
+  void whenCreate_andArendeStatusIsNullOrEmptyOrNotMatchValidString_thenReturn400(String status, String expectedError) throws Exception {
+
+    // Given
+    ArendeDto invalidInput = createArendeDtoBuilder()
+      .updates(
+        List.of(
+          createArendeStatusDtoBuilder()
+            .status(status)
+            .build()))
+      .build();
+
+    // When & Then
+    mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(invalidInput)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+      .andExpect(jsonPath("$.status").value(400))
+      .andExpect(jsonPath("$.error").value("Bad Request"))
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(jsonPath("$.details").value(expectedError))
+      .andExpect(jsonPath("$.timestamp").exists());
+
+    verify(arendeService, times(0)).saveArende(invalidInput);
+  }
+
+  private static Stream<Arguments> invalidArendeStatusCases() {
+    return Stream.of(
+      Arguments.of(
+        null,
+        "updates[0].status: Arende status is required"
+      ),
+      Arguments.of(
+        " ",
+        "updates[0].status: Arende status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSE"
+      ),
+      Arguments.of(
+        "",
+        "updates[0].status: Arende status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSE"
+      ),
+      Arguments.of(
+        "a",
+        "updates[0].status: Arende status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSE"
+      )
+    );
+  }
+
   @Test
-  void whenUpdate_withNonExistingId_thenReturn204() throws Exception {
+  void whenUpdate_withNonExistingId_thenReturn404() throws Exception {
     // Given
     String nonExistingId = "non-existing-id";
     ArendeDto inputUpdateArende = ArendeDto.builder()
@@ -575,7 +1014,7 @@ public class ArendeControllerTest {
       .reportedBy("Maria Svensson")
       .assignedTo("John Doe")
       .location("Entire Cottage")
-      .estimatedCost(8000)
+      .estimatedCost(8000.0)
       .startTime(Instant.now())
       .requiresContractor(true)
       .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
@@ -596,15 +1035,15 @@ public class ArendeControllerTest {
         .content(mapper.writeValueAsString(inputUpdateArende)))
       .andExpect(status().isNotFound())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value(204))
-      .andExpect(jsonPath("$.error").value("No Content"))
+      .andExpect(jsonPath("$.status").value(404))
+      .andExpect(jsonPath("$.error").value("Not Found"))
       .andExpect(jsonPath("$.message").value("Resource not found"))
       .andExpect(jsonPath("$.details").value("Cannot update non-existing arende"))
       .andExpect(jsonPath("$.timestamp").exists());
   }
 
   @Test
-  void whenDelete_withNonExistingId_thenReturn204() throws Exception {
+  void whenDelete_withNonExistingId_thenReturn404() throws Exception {
     // Given
     String nonExistingId = "non-existing-id";
     doThrow(new EntityNotFoundException("Cannot delete non-existing arende"))
@@ -614,8 +1053,8 @@ public class ArendeControllerTest {
     mvc.perform(delete(BASE_URL + "/{id}", nonExistingId))
       .andExpect(status().isNotFound())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value(204))
-      .andExpect(jsonPath("$.error").value("No Content"))
+      .andExpect(jsonPath("$.status").value(404))
+      .andExpect(jsonPath("$.error").value("Not Found"))
       .andExpect(jsonPath("$.message").value("Resource not found"))
       .andExpect(jsonPath("$.details").value("Cannot delete non-existing arende"))
       .andExpect(jsonPath("$.timestamp").exists());
@@ -652,5 +1091,39 @@ public class ArendeControllerTest {
       .andExpect(jsonPath("$.error").value("Bad Request"))
       .andExpect(jsonPath("$.message").value("Validation failed"))
       .andExpect(jsonPath("$.timestamp").exists());
+  }
+
+  private ArendeDtoBuilder createArendeDtoBuilder() {
+
+    return ArendeDto.builder()
+      .title("Heating System Failure")
+      .description("No heat output from radiators, temperature dropping")
+      .type(Typ.UTILITY.name())
+      .priority(Prioritet.HIGH.name())
+      .status(Status.IN_PROGRESS.name())
+      .reportedBy("Maria Svensson")
+      .assignedTo("John Doe")
+      .location("Entire Cottage")
+      .estimatedCost(8000.00)
+      .startTime(Instant.now())
+      .requiresContractor(true)
+      .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
+      .updates(List.of(ArendeStatusDto.builder()
+        .updatedBy("Maria Svensson")
+        .status(Status.INVESTIGATING.name())
+        .timestamp(Instant.now())
+        .message("Emergency call placed to heating specialist")
+        .build()))
+      .tags(List.of("heating", "urgent"))
+      .createdAt(Instant.now())
+      .updatedAt(Instant.now());
+  }
+
+  private ArendeStatusDtoBuilder createArendeStatusDtoBuilder() {
+    return ArendeStatusDto.builder()
+      .timestamp(Instant.now())
+      .message("message")
+      .status(Status.NEW.name())
+      .updatedBy("updatedBy");
   }
 }
