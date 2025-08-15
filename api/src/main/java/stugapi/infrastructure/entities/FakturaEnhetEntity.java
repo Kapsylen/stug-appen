@@ -25,13 +25,13 @@ public class FakturaEnhetEntity {
   private String description;
 
   @Column(nullable = false)
-  private String quantity;
+  private Integer quantity;
 
   @Column(nullable = false)
-  private String price;
+  private Double price;
 
   @Column(nullable = false)
-  private String total;
+  private Double total;
 
   public static FakturaEnhetEntity toFakturaEnhetEntity(FakturaEnhet item) {
     return FakturaEnhetEntity.builder()

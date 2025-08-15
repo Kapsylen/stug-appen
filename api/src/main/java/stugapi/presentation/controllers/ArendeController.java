@@ -43,7 +43,7 @@ public class ArendeController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ArendeDto updateArende(@PathVariable String id, @RequestBody ArendeDto updateArende) {
+  public ArendeDto updateArende(@PathVariable String id, @Valid @RequestBody ArendeDto updateArende) {
     return toArendeDtoBuilder(arendeService.update(id, updateArende))
       .build();
   }

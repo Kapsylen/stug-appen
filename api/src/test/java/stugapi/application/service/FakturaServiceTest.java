@@ -46,18 +46,18 @@ public class FakturaServiceTest {
           FakturaEnhetEntity.builder()
             .id(UUID.randomUUID())
             .description("Cottage Rental - High Season (2 weeks)")
-            .quantity("14")
-            .price("1200")
-            .total("16800")
+            .quantity(14)
+            .price(1200.00)
+            .total(16800.00)
             .build(),
           FakturaEnhetEntity.builder()
             .id(UUID.randomUUID())
             .description("Final Cleaning Service")
-            .quantity("1")
-            .price("1500")
-            .total("1500")
+            .quantity(1)
+            .price(1500.00)
+            .total(1500.00)
             .build()))
-      .totalAmount("18300")
+      .totalAmount(18300.00)
       .status(FakturaStatus.PAID)
       .build();
 
@@ -116,18 +116,18 @@ public class FakturaServiceTest {
           FakturaEnhetEntity.builder()
             .id(UUID.randomUUID())
             .description("Cottage Rental - High Season (2 weeks)")
-            .quantity("14")
-            .price("1200")
-            .total("16800")
+            .quantity(14)
+            .price(1200.00)
+            .total(16800.00)
             .build(),
           FakturaEnhetEntity.builder()
             .id(UUID.randomUUID())
             .description("Final Cleaning Service")
-            .quantity("1")
-            .price("1500")
-            .total("1500")
+            .quantity(1)
+            .price(1500.00)
+            .total(1500.00)
             .build()))
-      .totalAmount("18300")
+      .totalAmount(18300.00)
       .status(FakturaStatus.SENT)
       .build();
 
@@ -141,18 +141,18 @@ public class FakturaServiceTest {
           FakturaEnhetDto.builder()
             .id(UUID.randomUUID().toString())
             .description("Cottage Rental - High Season (2 weeks)")
-            .quantity("14")
-            .price("1200")
-            .total("16800")
+            .quantity(14)
+            .price(1200.00)
+            .total(16800.00)
             .build(),
           FakturaEnhetDto.builder()
             .id(UUID.randomUUID().toString())
             .description("Final Cleaning Service")
-            .quantity("2")
-            .price("1500")
-            .total("3000")
+            .quantity(2)
+            .price(1500.00)
+            .total(3000.00)
             .build()))
-      .totalAmount("19800")
+      .totalAmount(19800.00)
       .status(FakturaStatus.PAID.name())
       .build();
 
@@ -189,5 +189,7 @@ public class FakturaServiceTest {
     verify(fakturaRepository, times(1)).save(any(FakturaEntity.class));
     verifyNoMoreInteractions(fakturaRepository);
   }
+
+
 
 }

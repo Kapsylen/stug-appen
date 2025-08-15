@@ -1,5 +1,6 @@
 package stugapi.presentation.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class FakturaController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public FakturaDto createFaktura(@RequestBody FakturaDto fakturaDto) {
+  public FakturaDto createFaktura(@RequestBody  @Valid FakturaDto fakturaDto) {
     log.info("createFaktura: {}", fakturaDto);
     return toFakturaDtoBuilder(fakturaService.saveFaktura(fakturaDto))
       .build();
@@ -34,7 +35,7 @@ public class FakturaController {
   }
 
   @PutMapping("/{id}")
-  public FakturaDto updateFaktura(@PathVariable String id, @RequestBody FakturaDto updateFaktura) {
+  public FakturaDto updateFaktura(@PathVariable String id, @Valid @RequestBody FakturaDto updateFaktura) {
     return toFakturaDtoBuilder(fakturaService.update(id, updateFaktura))
       .build();
   }

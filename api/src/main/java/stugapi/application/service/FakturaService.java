@@ -11,6 +11,7 @@ import stugapi.infrastructure.repositories.FakturaEnhetRepository;
 import stugapi.infrastructure.repositories.FakturaRepository;
 import stugapi.presentation.dto.FakturaDto;
 import stugapi.presentation.dto.FakturaEnhetDto;
+import stugapi.presentation.error.FakturaNotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -91,7 +92,7 @@ public class FakturaService {
   public Faktura find(String id) {
     return fromFakturaEntity(fakturaRepository
       .findById(UUID.fromString(id))
-      .orElseThrow(RuntimeException::new))
+      .orElseThrow(() ->  new FakturaNotFoundException(id)))
       .build();
   }
 

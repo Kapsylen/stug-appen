@@ -45,7 +45,7 @@ public class FakturaEntity {
   private List<FakturaEnhetEntity> items = new ArrayList<>();
 
   @Column(name = "total_amount", nullable = false)
-  private String totalAmount;
+  private Double totalAmount;
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)

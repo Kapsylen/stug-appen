@@ -8,9 +8,9 @@ import stugapi.presentation.dto.FakturaEnhetDto;
 public record FakturaEnhet(
     String id,
     String description,
-    String quantity,
-    String price,
-    String total
+    Integer quantity,
+    Double price,
+    Double total
 ) {
 
   public static FakturaEnhet toFakturaEnhet(FakturaEnhetDto enhet) {

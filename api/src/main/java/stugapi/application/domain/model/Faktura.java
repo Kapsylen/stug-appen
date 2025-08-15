@@ -16,7 +16,7 @@ public record Faktura(
   Instant issueDate,
   Instant dueDate,
   List<FakturaEnhet> items,
-  String totalAmount,
+  Double totalAmount,
   FakturaStatus status
 ) {
   public static FakturaBuilder fromFakturaDto(FakturaDto fakturaDto) {

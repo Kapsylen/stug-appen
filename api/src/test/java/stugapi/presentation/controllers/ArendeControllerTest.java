@@ -265,7 +265,6 @@ public class ArendeControllerTest {
     String id = UUID.randomUUID().toString();
     Instant createdAt = Instant.now();
     Instant updatedAt = Instant.now();
-    Instant resolvedTime = Instant.now().plus(Period.ofDays(7));
 
     ArendeDto inputArende = ArendeDto.builder()
       .title("Heating System Failure")
@@ -468,6 +467,8 @@ public class ArendeControllerTest {
       .andExpect(status().isNoContent());
   }
 
+  // Unhappy cases
+
   @Test
   void whenGetById_nonExistingArende_thenReturn404() throws Exception {
     // Given
@@ -488,7 +489,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidTitleCases")
-  void whenCreate_andTitleIsNotNullOrBlankOrNotBetween3And100Characters_thenReturn400(String title, String expectedError) throws Exception {
+  void whenCreate_andTitleIsNullOrBlankOrNotBetween3And100Characters_thenReturn400(String title, String expectedError) throws Exception {
 
     // Given
     ArendeDto invalidInput = createArendeDtoBuilder()
@@ -535,7 +536,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidDescriptionCases")
-  void whenCreate_andDescriptionIsNotNullOrBlankOrExceeds1000Characters_thenReturn400(String description, String expectedError) throws Exception {
+  void whenCreate_andDescriptionIsNullOrBlankOrExceeds1000Characters_thenReturn400(String description, String expectedError) throws Exception {
 
     // Given
     ArendeDto invalidInput = createArendeDtoBuilder()
@@ -578,7 +579,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidTypeCases")
-  void whenCreate_andTypeIsNullOrEmptyOrNotMatchValidString_thenReturn400(String type, String expectedError) throws Exception {
+  void whenCreate_andTypeNullOrEmptyOrNotMatchValidString_thenReturn400(String type, String expectedError) throws Exception {
 
     // Given
     ArendeDto invalidInput = createArendeDtoBuilder()
@@ -848,7 +849,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidMessageCases")
-  void whenCreate_andMessageIsNotNullOrBlankOrExceeds1000Characters_thenReturn400(String message, String expectedError) throws Exception {
+  void whenCreate_andMessageIsNullOrBlankOrExceeds1000Characters_thenReturn400(String message, String expectedError) throws Exception {
 
     // Given
     ArendeDto invalidInput = createArendeDtoBuilder()
@@ -895,7 +896,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidUpdatedByCases")
-  void whenCreate_andUpdatedByIsNotNullOrBlankOrNotBetween3And30Characters_thenReturn400(String updatedBy, String expectedError) throws Exception {
+  void whenCreate_andUpdatedByIsNullOrBlankOrNotBetween3And30Characters_thenReturn400(String updatedBy, String expectedError) throws Exception {
 
     // Given
     ArendeDto invalidInput = createArendeDtoBuilder()
