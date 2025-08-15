@@ -1,5 +1,6 @@
 package stugapi.presentation.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class KontaktController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public KontaktDto createKontakt(@RequestBody KontaktDto kontaktDto) {
+  public KontaktDto createKontakt(@RequestBody @Valid KontaktDto kontaktDto) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.saveKontakt(kontaktDto))
       .build();
   }

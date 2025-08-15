@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import stugapi.application.domain.model.Utlagg;
 import stugapi.application.service.UtlaggService;
 import stugapi.presentation.dto.UtlaggDto;
+import stugapi.presentation.dto.UtlaggDto.UtlaggDtoBuilder;
 
 import java.time.Instant;
 import java.time.Period;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UtlaggController.class)
 public class UtlaggControllerTest {
 
+  public static final String BASE_URL = "/api/v1/utlagg";
   @Autowired
   private MockMvc mvc;
 
@@ -45,26 +47,15 @@ public class UtlaggControllerTest {
   @Test
   public void whenPostUtlagg_thenCreateUtlagg() throws Exception {
 
-    var outlayDate = Instant.now();
-    var inputUtlagg = UtlaggDto.builder()
-      .title("Test title")
-      .description("Test description")
+    Instant outlayDate = Instant.now();
+    UtlaggDto inputUtlagg = createUtlaggDtoBuilder()
       .outlayDate(outlayDate)
-      .price("1000")
       .build();
 
-    var outputUtlagg = Utlagg.builder()
-      .id(UUID.randomUUID().toString())
-      .title("Test title")
-      .description("Test description")
-      .outlayDate(outlayDate)
-      .price("1000")
-      .build();
-
-    given(utlaggService.saveUtlagg(inputUtlagg)).willReturn(outputUtlagg);
+    given(utlaggService.saveUtlagg(inputUtlagg)).willReturn(Utlagg.fromUtlaggDto(inputUtlagg).build());
 
     mvc.perform(MockMvcRequestBuilders
-      .post("/api/v1/utlagg")
+      .post(BASE_URL)
       .content(mapper.writeValueAsString(inputUtlagg))
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON))
@@ -77,10 +68,11 @@ public class UtlaggControllerTest {
     verify(utlaggService).saveUtlagg(inputUtlagg);
   }
 
+
   @Test
   public void whenDeleteUtlagg_thenDeleteUtlagg() throws Exception {
     mvc.perform(MockMvcRequestBuilders
-      .delete("/api/v1/utlagg/12345678-1234-1234-1234-123456789012")
+      .delete(BASE_URL + "/" + UUID.randomUUID())
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON))
       .andExpect(status()
@@ -89,19 +81,17 @@ public class UtlaggControllerTest {
 
   @Test
   public void whenGetUtlagg_thenReturnUtlagg() throws Exception {
-    var outlayDate = Instant.now();
-    var id = UUID.randomUUID().toString();
-    var inputUtlagg = UtlaggDto.builder()
-      .title("Test title")
-      .description("Test description")
+    Instant outlayDate = Instant.now();
+    String id = UUID.randomUUID().toString();
+    UtlaggDto inputUtlagg = createUtlaggDtoBuilder()
+      .id(id)
       .outlayDate(outlayDate)
-      .price("1000")
       .build();
 
     given(utlaggService.find(any())).willReturn(Utlagg.fromUtlaggDto(inputUtlagg).build());
 
     mvc.perform(MockMvcRequestBuilders
-      .get("/api/v1/utlagg/{id}", id)
+      .get(BASE_URL + "/{id}", id)
       .accept(MediaType.APPLICATION_JSON)
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
@@ -113,39 +103,37 @@ public class UtlaggControllerTest {
 
   @Test
   public void whenGetAllUtlagg_thenReturnAllUtlagg() throws Exception {
-    var outlayDate = Instant.now();
-    var utlagg1 = Utlagg.builder()
-      .title("Test title")
-      .description("Test description")
-      .outlayDate(outlayDate)
-      .price("1000")
-      .build();
+    Instant outlayDate = Instant.now();
+    Utlagg utlagg1 = Utlagg.fromUtlaggDto(createUtlaggDtoBuilder()
+        .outlayDate(outlayDate)
+      .build()).build();
 
-    var outlayDate2 = Instant.now().plus(Period.ofDays(10));
-    var utlagg2 = Utlagg.builder()
-      .title("Test title 2")
-      .description("Test description 2")
-      .outlayDate(outlayDate2)
-      .price("2000")
-      .build();
+    Instant outlayDate2 = Instant.now().plus(Period.ofDays(10));
+    Utlagg utlagg2 =
+      Utlagg.fromUtlaggDto(createUtlaggDtoBuilder()
+          .title("Test title 2")
+        .description("Test description 2")
+        .outlayDate(outlayDate2)
+        .price("2000").build())
+        .build();
 
-    var utlagg = List.of(utlagg1, utlagg2);
+    List<Utlagg> utlagg = List.of(utlagg1, utlagg2);
 
     given(utlaggService.findAll()).willReturn(utlagg);
 
     mvc.perform(MockMvcRequestBuilders
-      .get("/api/v1/utlagg")
+      .get(BASE_URL)
       .accept(MediaType.APPLICATION_JSON)
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
-      .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Test title"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value("Test description"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value(utlagg1.title()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value(utlagg1.description()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].outlayDate").value(outlayDate.toString()))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value("1000"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("Test title 2"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[1].description").value("Test description 2"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value(utlagg1.price()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value(utlagg2.title()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[1].description").value(utlagg2.description()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].outlayDate").value(outlayDate2.toString()))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[1].price").value("2000"));
+      .andExpect(MockMvcResultMatchers.jsonPath("$[1].price").value(utlagg2.price()));
 
     verify(utlaggService).findAll();
   }
@@ -153,7 +141,7 @@ public class UtlaggControllerTest {
   @Test
   public void whenDeleteAllUtlagg_thenNoContentIsReturned() throws Exception {
     mvc.perform(MockMvcRequestBuilders
-      .delete("/api/v1/utlagg")
+      .delete(BASE_URL)
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON))
       .andExpect(status()
@@ -164,16 +152,11 @@ public class UtlaggControllerTest {
 
   @Test
   public void whenPutUtlagg_thenUpdateUtlagg() throws Exception {
-    var outlayDate = Instant.now();
-    var id = UUID.randomUUID().toString();
-    var inputUtlagg = UtlaggDto.builder()
-      .title("Test title")
-      .description("Test description")
-      .outlayDate(outlayDate)
-      .price("2000")
-      .build();
+    Instant outlayDate = Instant.now();
+    String id = UUID.randomUUID().toString();
+    UtlaggDto inputUtlagg = createUtlaggDtoBuilder().build();
 
-    var outputUtlagg = Utlagg.builder()
+    Utlagg outputUtlagg = Utlagg.builder()
       .id(id)
       .title("Test title")
       .description("Test description")
@@ -184,7 +167,7 @@ public class UtlaggControllerTest {
     given(utlaggService.update(id, inputUtlagg)).willReturn(outputUtlagg);
 
     mvc.perform(MockMvcRequestBuilders
-      .put("/api/v1/utlagg/{id}", id)
+      .put(BASE_URL + "/{id}", id)
         .content(mapper.writeValueAsBytes(inputUtlagg))
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON))
@@ -196,5 +179,13 @@ public class UtlaggControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("price").value("2000"));
 
     verify(utlaggService).update(id, inputUtlagg);
+  }
+
+  private static UtlaggDtoBuilder createUtlaggDtoBuilder() {
+    return UtlaggDto.builder()
+      .title("Test title")
+      .description("Test description")
+      .outlayDate(Instant.now())
+      .price("1000");
   }
 }

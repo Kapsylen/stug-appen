@@ -1,5 +1,6 @@
 package stugapi.presentation.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class UtlaggController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public UtlaggDto saveUtlagg(@RequestBody UtlaggDto utlaggDto) {
+  public UtlaggDto saveUtlagg(@RequestBody @Valid UtlaggDto utlaggDto) {
     return toUtlaggDtoBuilder(utlaggService.saveUtlagg(utlaggDto))
       .build();
   }
