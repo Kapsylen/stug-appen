@@ -24,7 +24,7 @@ public class UtlaggEntity {
   String title;
   String description;
   Instant outlayDate;
-  String price;
+  Double price;
 
   public static UtlaggEntityBuilder fromUtlagg(Utlagg utlagg) {
     return UtlaggEntity.builder()

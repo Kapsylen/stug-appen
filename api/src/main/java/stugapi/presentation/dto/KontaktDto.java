@@ -20,13 +20,14 @@ import stugapi.application.domain.model.Kontakt;
 @Builder
 public record KontaktDto(
     String id,
-    @NotBlank(message = "Name is required")
+    @NotNull(message = "Name is required")
     @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
     @Pattern(regexp = "^[\\p{L}\\s.-]+$", message = "Name can only contain letters, spaces, dots, and hyphens")
     String name,
     @NotBlank(message = "Company is required")
     String company,
     String category,
+    @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^$|^\\+?[0-9\\s-()]{8,20}$", message = "Phone number can only contain numbers, spaces, hyphens, parentheses, and optional '+' prefix")
     String phone,
     @NotBlank(message = "Email is required")

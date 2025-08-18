@@ -12,7 +12,7 @@ public record Utlagg (
   String title,
   String description,
   Instant outlayDate,
-  String price
+  Double price
 ){
   public static UtlaggBuilder fromUtlaggEntity(UtlaggEntity utlagg) {
     return Utlagg.builder()

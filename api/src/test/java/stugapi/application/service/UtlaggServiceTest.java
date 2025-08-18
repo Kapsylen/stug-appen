@@ -74,7 +74,7 @@ public class UtlaggServiceTest {
       .title("Gardening")
       .outlayDate(savedUtlaggEntity.getOutlayDate())
       .description("lawn maintenance")
-      .price("1500")
+      .price(1500.00)
       .build();
 
     UtlaggEntity updatedUtlaggEntity = UtlaggEntity.fromUtlagg(Utlagg.fromUtlaggDto(updateUtlaggDto).build()).build();

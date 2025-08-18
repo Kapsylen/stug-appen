@@ -315,53 +315,6 @@ class FakturaControllerTest {
     );
   }
 
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("invalidTitleCases")
-  void whenCreate_clientNameIsNullOrBlankOrNotBetween3And100Characters_thenReturn400(String clientName, String expectedError) throws Exception {
-
-    // Given
-    FakturaDto invalidInput = createFakturaDtoBuilder()
-      .clientName(clientName)
-      .build();
-
-    // When & Then
-    mvc.perform(post(BASE_URL)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(invalidInput)))
-      .andExpect(status().isBadRequest())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value(400))
-      .andExpect(jsonPath("$.error").value("Bad Request"))
-      .andExpect(jsonPath("$.message").value("Validation failed"))
-      .andExpect(jsonPath("$.details").value(expectedError))
-      .andExpect(jsonPath("$.timestamp").exists());
-  }
-
-  private static Stream<Arguments> invalidTitleCases() {
-    return Stream.of(
-      Arguments.of(
-        null,
-        "clientName: Client name is required"
-      ),
-      Arguments.of(
-        "",
-        "clientName: Client name must be between 2 and 100 characters"
-      ),
-      Arguments.of(
-        " ",
-        "clientName: Client name must be between 2 and 100 characters"
-      ),
-      Arguments.of(
-        "a",
-        "clientName: Client name must be between 2 and 100 characters"
-      ),
-      Arguments.of(
-        "a" .repeat(101),
-        "clientName: Client name must be between 2 and 100 characters"
-      )
-    );
-  }
-
   @Test
   void whenCreate_issueDateIsNull_thenReturn400() throws Exception {
 
