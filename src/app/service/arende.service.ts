@@ -43,6 +43,7 @@ export class ArendeService {
   }
 
   saveArende(newArende: NewArende) {
+    console.log(newArende);
     this.httpClient.post<Arende>(this.baseUrl, newArende)
       .subscribe({
         next: (newArendeData) => {

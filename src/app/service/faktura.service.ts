@@ -47,6 +47,7 @@ export class FakturaService {
   }
 
   saveFaktura(newFakture: NewFaktura) {
+    console.log(newFakture);
     this.httpClient.post<Faktura>(this.baseUrl, newFakture)
       .subscribe({
         next: (newFakturorData) => {

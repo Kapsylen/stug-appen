@@ -37,7 +37,6 @@ public record FakturaDto(
     @Size(min = 2, max = 100, message = "Client name must be between 2 and 100 characters")
     String clientName,
 
-    @NotNull(message = "Issue date is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     Instant issueDate,
 
@@ -66,7 +65,7 @@ public record FakturaDto(
       .id(faktura.id())
       .invoiceNumber(faktura.invoiceNumber())
       .clientName(faktura.clientName())
-      .issueDate(faktura.issueDate())
+      .issueDate(Instant.now())
       .dueDate(faktura.dueDate())
       .items(faktura.items() != null
         ? faktura.items().stream()

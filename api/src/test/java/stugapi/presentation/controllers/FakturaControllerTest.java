@@ -316,27 +316,6 @@ class FakturaControllerTest {
   }
 
   @Test
-  void whenCreate_issueDateIsNull_thenReturn400() throws Exception {
-
-    // Given
-    FakturaDto invalidInput = createFakturaDtoBuilder()
-      .issueDate(null)
-      .build();
-
-    // When & Then
-    mvc.perform(post(BASE_URL)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(invalidInput)))
-      .andExpect(status().isBadRequest())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value(400))
-      .andExpect(jsonPath("$.error").value("Bad Request"))
-      .andExpect(jsonPath("$.message").value("Validation failed"))
-      .andExpect(jsonPath("$.details").value("issueDate: Issue date is required"))
-      .andExpect(jsonPath("$.timestamp").exists());
-  }
-
-  @Test
   void whenCreate_dueDateIsNull_thenReturn400() throws Exception {
     // Given
     FakturaDto invalidInput = createFakturaDtoBuilder()

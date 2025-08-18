@@ -40,7 +40,6 @@ export class NewArendeComponent {
   enteredStatusTime = '';
   enteredMessage = '';
   enteredUpdatedBy = '';
-  enteredIssueStatus = '';
 
 
   onSubmit() {
@@ -65,7 +64,7 @@ export class NewArendeComponent {
           timestamp: this.enteredStatusTime,
           message: this.enteredMessage,
           updatedBy: this.enteredUpdatedBy,
-          status: this.enteredIssueStatus
+          status: this.enteredStatus
         }
       ],
       tags: [
