@@ -19,10 +19,6 @@ public record FakturaEnhetDto(
     @DecimalMax(value = "999999999.99", message = "Price cannot exceed 999,999,999.99")
     @Digits(integer = 9, fraction = 2, message = "Price must have at most 9 digits before decimal point and 2 decimal places")
     Double price,
-    @NotNull(message = "Total price is required")
-    @DecimalMin(value = "0.0", message = "Total price must be greater than or equal to 0")
-    @DecimalMax(value = "999999999.99", message = "Total price cost cannot exceed 999,999,999.99")
-    @Digits(integer = 9, fraction = 2, message = "Total price must have at most 9 digits before decimal point and 2 decimal places")
     Double total
 ) {
   public static FakturaEnhetDto toFaktureEnhet(FakturaEnhet item) {
@@ -31,7 +27,7 @@ public record FakturaEnhetDto(
       .description(item.description())
       .quantity(item.quantity())
       .price(item.price())
-      .total(item.total())
+      .total(item.quantity() * item.price())
       .build();
   }
 }

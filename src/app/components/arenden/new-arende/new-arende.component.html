@@ -3,13 +3,49 @@
   <h2>Nytt Ärende</h2>
   <form (ngSubmit)="onSubmit()">
     <p>
-      <label for="name">Namn</label>
-      <input type="text" id="name" name="name" [(ngModel)]="enteredName"/>
+      <label class="form-group required" for="name">Namn</label>
+      <input type="text"
+             id="name"
+             name="name" [(ngModel)]="enteredName"
+             minlength="3"
+             maxlength="100"
+             #nameInput="ngModel"
+      />
+
+      @if (nameInput.errors) {
+        @switch (true) {
+          @case (nameInput.hasError('minlength')) {
+            Rubrik måste vara mellan 3 and 100 tecken.
+          }
+          @case (nameInput.hasError('maxlength')) {
+            Rubrik måste vara mellan 3 and 100 tecken.
+          }
+        }
+      }
+
     </p>
 
     <p>
-      <label for="description">Beskrivning</label>
-      <input type="text" id="description" name="description" [(ngModel)]="enteredDescription"/>
+      <label class="form-group required" for="description">Beskrivning</label>
+      <input
+        type="text"
+        id="description"
+        name="description" [(ngModel)]="enteredDescription"
+        minlength="3"
+        maxlength="1000"
+        #descriptionInput="ngModel"
+      />
+
+      @if (descriptionInput.errors) {
+        @switch (true) {
+          @case (nameInput.hasError('required')) {
+            Beskrivning måste vara mellan 3 and 1000 tecken.
+          }
+          @case (descriptionInput.hasError('maxlength')) {
+            Beskrivning måste vara mellan 3 and 1000 tecken.
+          }
+        }
+      }
     </p>
 
     <p>
@@ -47,8 +83,31 @@
     </p>
 
     <p>
-      <label for="reportedBy">Rapported av</label>
-      <input type="text" id="reportedBy" name="reportedBy" [(ngModel)]="enteredReportedBy"/>
+      <label class="form-group required" for="reportedBy">Rapported av</label>
+      <input
+        type="text"
+        id="reportedBy"
+        name="reportedBy" [(ngModel)]="enteredReportedBy"
+        pattern="^[a-zA-Z0-9 ]+$"
+        minlength="3"
+        maxlength="30"
+        #reportedByInput="ngModel"
+      />
+
+      @if (reportedByInput.errors) {
+        @switch (true) {
+          @case (reportedByInput.hasError('pattern')) {
+            ReportedBy must contain only letters, numbers and spaces
+          }
+          @case (reportedByInput.hasError('minlength')) {
+            ReportedBy must be at least 3 characters long
+          }
+          @case (reportedByInput.hasError('maxlength')) {
+            ReportedBy must be at most 30 characters long
+          }
+        }
+      }
+
     </p>
 
     <p>

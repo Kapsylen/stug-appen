@@ -3,40 +3,107 @@
   <h2>Ny faktura</h2>
   <form (ngSubmit)="onSubmit()">
     <p>
-      <label for="customerName">Kund</label>
-      <input type="text" id="customerName" name="customerName" [(ngModel)]="enteredCustomerName"/>
+      <label class="form-group required" for="customerName">Kund</label>
+      <input
+        type="text"
+        id="customerName"
+        name="customerName" [(ngModel)]="enteredCustomerName"
+        minlength="2"
+        maxlength="100"
+        #customerName="ngModel"
+      />
+
+      @if (customerName.errors) {
+        @switch (true) {
+          @case (customerName.hasError('minlength')) {
+            Kundnamn måste vara mellan 3 and 100 tecken.
+          }
+          @case (customerName.hasError('maxlength')) {
+            Kundnamn måste vara mellan 3 and 100 tecken.
+          }
+        }
+      }
     </p>
 
     <p>
-      <label for="dueDate">Förfallodatum</label>
-      <input type="datetime-local" id="dueDate" name="dueDate"
+      <label class="form-group required" for="dueDate">Förfallodatum</label>
+      <input
+        type="datetime-local"
+        id="dueDate" name="dueDate"
              [ngModel]="enteredDueDate | date:'yyyy-MM-ddTHH:mm'"
-             (ngModelChange)="handleDueDateChange($event)"/>
+             (ngModelChange)="handleDueDateChange($event)"
+      />
     </p>
 
     <p>
-      <label for="description">Beskrivning</label>
-      <textarea type= text id="description" rows="5" name="description" [(ngModel)]="enteredDescription"></textarea>
+      <label class="form-group required" for="description">Beskrivning</label>
+      <textarea
+        type= text
+        id="description"
+        rows="5"
+        name="description" [(ngModel)]="enteredDescription"
+        minlength="1"
+        maxlength="255"
+        #description="ngModel"
+      >
+      </textarea>
+
+      @if (description.errors) {
+        @switch (true) {
+          @case (description.hasError('minlength')) {
+            Beskrivning måste vara mellan 1 and 255 tecken.
+          }
+          @case (description.hasError('maxlength')) {
+            Beskrivning måste vara mellan 1 and 255 tecken.
+          }
+        }
+      }
     </p>
 
     <p>
-      <label for="quantity">Antal</label>
-      <input type="number" id="quantity" name="quantity" [(ngModel)]="enteredQuantity"/>
+      <label class="form-group required" for="quantity">Antal</label>
+      <input
+        type="number"
+        id="quantity"
+        name="quantity" [(ngModel)]="enteredQuantity"
+        min="1"
+        max="1000"
+        #quantity="ngModel"
+      />
+
+      @if (quantity.errors) {
+        @switch (true) {
+          @case (quantity.hasError('min')) {
+            Priset behöver vara mellan 0 and 1000000.
+          }
+          @case (quantity.hasError('max')) {
+            Priset behöver vara mellan 0 and 1000000.
+          }
+        }
+      }
     </p>
 
     <p>
-      <label for="price">Kostnad</label>
-      <input type="number" id="price" name="price" [(ngModel)]="enteredPrice"/>
-    </p>
+      <label class="form-group required" for="price">Pris</label>
+      <input
+        type="number"
+        id="price"
+        name="price" [(ngModel)]="enteredPrice"
+        min="1"
+        max="1000000"
+        #price="ngModel"
+      />
 
-    <p>
-      <label for="total">Summa</label>
-      <input type="number" id="total" name="total" [(ngModel)]="enteredTotal"/>
-    </p>
-
-    <p>
-      <label for="totalAmount">Total amount</label>
-      <input type="number" id="totalAmount" name="totalAmount" [(ngModel)]="enteredTotalAmount"/>
+      @if (price.errors) {
+        @switch (true) {
+          @case (price.hasError('min')) {
+            Priset behöver vara mellan 0 and 1000000.
+          }
+          @case (price.hasError('max')) {
+            Priset behöver vara mellan 0 and 1000000.
+          }
+        }
+      }
     </p>
 
     <p>

@@ -70,7 +70,6 @@ class FakturaControllerTest {
       .id(UUID.randomUUID().toString())
       .invoiceNumber(input.invoiceNumber())
       .clientName(input.clientName())
-      .issueDate(input.issueDate())
       .dueDate(input.dueDate())
       .items(List.of(
         FakturaEnhet.builder()
@@ -95,7 +94,7 @@ class FakturaControllerTest {
       .andExpect(MockMvcResultMatchers.status().isCreated())
       .andExpect(MockMvcResultMatchers.jsonPath("$.invoiceNumber").value("Test invoice number"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.clientName").value("Test client name"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").value(issueDate.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$.dueDate").value(duedate.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.items[0].id").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$.items[0].description").value("Test description"))
@@ -122,12 +121,10 @@ class FakturaControllerTest {
   @Test
   void whenGetFaktura_thenReturnFaktura() throws Exception {
     var id = UUID.randomUUID().toString();
-    Instant issueDate = Instant.now();
     Instant duedate = Instant.now().plus(Period.ofDays(30));
     var output = Faktura.builder()
       .invoiceNumber("Test invoice number")
       .clientName("Test client name")
-      .issueDate(issueDate)
       .dueDate(duedate)
       .totalAmount(1000.00)
       .status(FakturaStatus.PAID)
@@ -141,7 +138,7 @@ class FakturaControllerTest {
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andExpect(MockMvcResultMatchers.jsonPath("$.invoiceNumber").value("Test invoice number"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.clientName").value("Test client name"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").value(issueDate.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$.dueDate").value(duedate.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.totalAmount").value(1000.00));
 
@@ -150,14 +147,11 @@ class FakturaControllerTest {
 
   @Test
   public void whenGetAllFaktura_thenReturnAllFaktura() throws Exception {
-    Instant issueDate = Instant.now();
     Instant duedate = Instant.now().plus(Period.ofDays(30));
-    Instant issueDate2 = Instant.now().plus(Period.ofDays(60));
     Instant dueDate2 = Instant.now().plus(Period.ofDays(90));
     var faktura1 = Faktura.builder()
       .invoiceNumber("Test invoice number")
       .clientName("Test client name")
-      .issueDate(issueDate)
       .dueDate(duedate)
       .totalAmount(1000.00)
       .status(FakturaStatus.PAID)
@@ -166,7 +160,6 @@ class FakturaControllerTest {
     var faktura2 = Faktura.builder()
       .invoiceNumber("Test invoice number2")
       .clientName("Test client name")
-      .issueDate(issueDate2)
       .dueDate(dueDate2)
       .totalAmount(2000.00)
       .status(FakturaStatus.SENT)
@@ -182,11 +175,11 @@ class FakturaControllerTest {
       .andExpect(MockMvcResultMatchers.status().isOk())
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].invoiceNumber").value("Test invoice number"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].clientName").value("Test client name"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[0].issueDate").value(issueDate.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[0].issueDate").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$[0].dueDate").value(duedate.toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].invoiceNumber").value("Test invoice number2"))
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].clientName").value("Test client name"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$[1].issueDate").value(issueDate2.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$[1].issueDate").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$[1].dueDate").value(dueDate2.toString()));
 
     verify(fakturaService).findAll();
@@ -204,14 +197,12 @@ class FakturaControllerTest {
 
   @Test
   public void whenPutFaktura_thenUpdateFaktura() throws Exception {
-    Instant issueDate = Instant.now();
-    Instant duedate = Instant.now().plus(Period.ofDays(30));
+    Instant dueDate = Instant.now().plus(Period.ofDays(30));
     var id = UUID.randomUUID().toString();
-    var inputUpdateFaktura = FakturaDto.builder()
+    FakturaDto inputUpdateFaktura = FakturaDto.builder()
       .invoiceNumber("Test invoice number")
       .clientName("Test client name")
-      .issueDate(issueDate)
-      .dueDate(duedate)
+      .dueDate(dueDate)
       .items(List.of(
         createArendeEnhetBuilder()
           .build()
@@ -220,18 +211,11 @@ class FakturaControllerTest {
       .status("SENT")
       .build();
 
-    var outputUpdatedFakura = Faktura.builder()
-      .id(UUID.randomUUID().toString())
-      .invoiceNumber(inputUpdateFaktura.invoiceNumber())
-      .clientName(inputUpdateFaktura.clientName())
-      .issueDate(inputUpdateFaktura.issueDate())
-      .dueDate(inputUpdateFaktura.dueDate())
-      .items(inputUpdateFaktura.items().stream().map(FakturaEnhet::toFakturaEnhet).toList())
-      .totalAmount(inputUpdateFaktura.totalAmount())
-      .status(FakturaStatus.SENT)
+    Faktura outputUpdatedFaktura = Faktura.fromFakturaDto(inputUpdateFaktura)
+      .id(id)
       .build();
 
-    given(fakturaService.update(id, inputUpdateFaktura)).willReturn(outputUpdatedFakura);
+    given(fakturaService.update(id, inputUpdateFaktura)).willReturn(outputUpdatedFaktura);
 
     mvc.perform(MockMvcRequestBuilders
       .put(BASE_URL + "/{id}", id)
@@ -242,8 +226,8 @@ class FakturaControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$.invoiceNumber").value("Test invoice number"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.clientName").value("Test client name"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").value(issueDate.toString()))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.dueDate").value(duedate.toString()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").isNotEmpty())
+      .andExpect(MockMvcResultMatchers.jsonPath("$.dueDate").value(outputUpdatedFaktura.dueDate().toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.totalAmount").value(1000.00));
 
     verify(fakturaService).update(id, inputUpdateFaktura);
@@ -442,76 +426,6 @@ class FakturaControllerTest {
       Arguments.of(null, "items[0].price: Price is required"),
       Arguments.of(-1.0, "items[0].price: Price must be greater than or equal to 0"),
       Arguments.of(-100.0, "items[0].price: Price must be greater than or equal to 0")
-    );
-  }
-
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("invalidFakturaEnhetTotalPriceCases")
-  void whenCreate_andFakturaEnhetTotalIsNullOrEmptyOrNotValidValue_thenReturn400(Double total, String expectedError) throws Exception {
-
-    // Given
-    FakturaDto invalidInput = createFakturaDtoBuilder()
-      .items(List.of(
-        createArendeEnhetBuilder()
-          .total(total)
-          .build()
-      )).build();
-
-    // When & Then
-    mvc.perform(post(BASE_URL)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(invalidInput)))
-      .andExpect(status().isBadRequest())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value(400))
-      .andExpect(jsonPath("$.error").value("Bad Request"))
-      .andExpect(jsonPath("$.message").value("Validation failed"))
-      .andExpect(jsonPath("$.details").value(expectedError))
-      .andExpect(jsonPath("$.timestamp").exists());
-
-    verify(fakturaService, times(0)).saveFaktura(invalidInput);
-  }
-
-  private static Stream<Arguments> invalidFakturaEnhetTotalPriceCases() {
-    return Stream.of(
-      Arguments.of(null, "items[0].total: Total price is required"),
-      Arguments.of(-1.0, "items[0].total: Total price must be greater than or equal to 0"),
-      Arguments.of(-100.0, "items[0].total: Total price must be greater than or equal to 0")
-    );
-  }
-
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("invalidFakturaTotalAmountCases")
-  void whenCreate_andFakturaTotalAmountIsNullOrEmptyOrNotValidValue_thenReturn400(Double totalAmount, String expectedError) throws Exception {
-
-    // Given
-    FakturaDto invalidInput = createFakturaDtoBuilder()
-      .totalAmount(totalAmount)
-      .items(List.of(
-        createArendeEnhetBuilder()
-          .build()
-      )).build();
-
-    // When & Then
-    mvc.perform(post(BASE_URL)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(invalidInput)))
-      .andExpect(status().isBadRequest())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value(400))
-      .andExpect(jsonPath("$.error").value("Bad Request"))
-      .andExpect(jsonPath("$.message").value("Validation failed"))
-      .andExpect(jsonPath("$.details").value(expectedError))
-      .andExpect(jsonPath("$.timestamp").exists());
-
-    verify(fakturaService, times(0)).saveFaktura(invalidInput);
-  }
-
-  private static Stream<Arguments> invalidFakturaTotalAmountCases() {
-    return Stream.of(
-      Arguments.of(null, "totalAmount: Total amount is required"),
-      Arguments.of(-1.0, "totalAmount: Total amount must be greater than or equal to 0"),
-      Arguments.of(-100.0, "totalAmount: Total amount must be greater than or equal to 0")
     );
   }
 

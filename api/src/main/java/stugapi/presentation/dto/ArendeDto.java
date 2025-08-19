@@ -14,8 +14,8 @@ public record ArendeDto(
     @NotNull(message = "Title is required")
     @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
     String title,
-    @NotBlank(message = "Description is required")
-    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
+    @NotNull(message = "Description is required")
+    @Size(min = 3, max = 1000, message = "Description must be between 3 and 1000 characters")
     String description,
     @NotNull(message = "Type is required")
     @Pattern(regexp = "^(MAINTENANCE|DAMAGE|UTILITY|SECURITY|PEST|WEATHER|OTHER)$", message = "Type must be either MAINTENANCE, DAMAGE, UTILITY, SECURITY, PEST, WEATHER or OTHER")

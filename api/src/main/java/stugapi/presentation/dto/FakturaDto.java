@@ -49,10 +49,6 @@ public record FakturaDto(
     @Valid
     List<FakturaEnhetDto> items,
 
-    @NotNull(message = "Total amount is required")
-    @DecimalMin(value = "0.0", message = "Total amount must be greater than or equal to 0")
-    @DecimalMax(value = "999999999.99", message = "Total amount cannot exceed 999,999,999.99")
-    @Digits(integer = 9, fraction = 2, message = "Total amount must have at most 9 digits before decimal point and 2 decimal places")
     Double totalAmount,
 
     @NotNull(message = "Status is required")

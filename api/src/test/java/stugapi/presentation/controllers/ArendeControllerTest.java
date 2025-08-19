@@ -3,7 +3,6 @@ package stugapi.presentation.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AssertionFailureBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -564,15 +563,15 @@ public class ArendeControllerTest {
       ),
       Arguments.of(
         " ",
-        "description: Description is required"
+        "description: Description must be between 3 and 1000 characters"
       ),
       Arguments.of(
         "",
-        "description: Description is required"
+        "description: Description must be between 3 and 1000 characters"
       ),
       Arguments.of(
         "a" .repeat(1001),
-        "description: Description cannot exceed 1000 characters"
+        "description: Description must be between 3 and 1000 characters"
       )
     );
   }

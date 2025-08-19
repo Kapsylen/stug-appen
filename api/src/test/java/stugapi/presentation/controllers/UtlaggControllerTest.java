@@ -212,9 +212,9 @@ public class UtlaggControllerTest {
   private static Stream<Arguments> invalidTitleCases() {
     return Stream.of(
       Arguments.of(null, "title: Title is required"),
-      Arguments.of("", "title: Title must be between 2 and 100 characters"),
-      Arguments.of(" ", "title: Title must be between 2 and 100 characters"),
-      Arguments.of("a".repeat(256), "title: Title must be between 2 and 100 characters")
+      Arguments.of("", "title: Title must be between 3 and 100 characters"),
+      Arguments.of(" ", "title: Title must be between 3 and 100 characters"),
+      Arguments.of("a".repeat(256), "title: Title must be between 3 and 100 characters")
     );
   }
 
@@ -243,9 +243,9 @@ public class UtlaggControllerTest {
   private static Stream<Arguments> invalidDescriptionCases() {
     return Stream.of(
       Arguments.of(null, "description: Description is required"),
-      Arguments.of("", "description: Description must be between 2 and 1000 characters"),
-      Arguments.of(" ", "description: Description must be between 2 and 1000 characters"),
-      Arguments.of("a".repeat(1001), "description: Description must be between 2 and 1000 characters")
+      Arguments.of("", "description: Description must be between 3 and 1000 characters"),
+      Arguments.of(" ", "description: Description must be between 3 and 1000 characters"),
+      Arguments.of("a".repeat(1001), "description: Description must be between 3 and 1000 characters")
     );
   }
 

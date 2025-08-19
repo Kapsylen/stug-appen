@@ -3,13 +3,36 @@
   <h2>Ny kontakt</h2>
   <form (ngSubmit)="onSubmit()">
     <p>
-      <label for="name">Namn</label>
-      <input type="text" id="name" name="name" [(ngModel)]="enteredName"/>
+      <label class="form-group required" for="name">Namn</label>
+      <input
+        type="text"
+        id="name"
+        name="name" [(ngModel)]="enteredName"
+        minlength="3"
+        maxlength="50"
+        #nameInput="ngModel"
+      />
+      @if (nameInput.errors) {
+        @switch (true) {
+          @case (nameInput.hasError('minlength')) {
+            Kundnamn måste vara mellan 2 and 100 tecken.
+          }
+          @case (nameInput.hasError('maxlength')) {
+            Kundnamn måste vara mellan 2 and 100 tecken.
+          }
+        }
+      }
     </p>
 
     <p>
-      <label for="company">Företag</label>
-      <input type="text" id="company" name="company" [(ngModel)]="enteredCompany"/>
+      <label class="form-group required" for="company">Företag</label>
+      <input
+        type="text"
+        id="company"
+        name="company" [(ngModel)]="enteredCompany"
+        minlength="3"
+        maxlength="50"
+      />
     </p>
 
     <p>
@@ -18,13 +41,42 @@
     </p>
 
     <p>
-      <label for="phone">Telefon</label>
-      <input type=text id="phone" name="phone" [(ngModel)]="enteredPhone"/>
+      <label class="form-group required" for="phone">Telefon</label>
+      <input
+        type=text
+        id="phone"
+        name="phone" [(ngModel)]="enteredPhone"
+        pattern="^[\+]?[(]?[0-9]{2,3}[)]?[-\s\.]?[0-9]{2,3}[-\s\.]?[0-9]{4,6}$"
+        #phoneInput="ngModel"
+      />
+
+      @switch (true) {
+        @case (phoneInput.hasError('pattern')) {
+          Ange ett giltigt telefonnummer (t.ex. +46 123 456 789 eller 0123-456789)
+        }
+      }
+
     </p>
 
     <p>
-      <label for="email">Email</label>
-      <input type="text" id="email" name="email" [(ngModel)]="enteredEmail"/>
+      <label class="form-group required" for="email">Email</label>
+      <input
+        type="text"
+        id="email"
+        name="email" [(ngModel)]="enteredEmail"
+        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        #emailInput="ngModel"
+      />
+
+      @switch (true) {
+        @case (emailInput.hasError('required')) {
+          E-postadress är obligatorisk
+        }
+        @case (emailInput.hasError('email') || emailInput.hasError('pattern')) {
+          Ange en giltig e-postadress ('exempel: name{{'@'}}domain.com')
+        }
+      }
+
     </p>
 
     <p>

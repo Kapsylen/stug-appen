@@ -23,7 +23,6 @@ export class NewFakturaComponent {
   enteredQuantity = '';
   enteredPrice = '';
   enteredTotal = '';
-  enteredTotalAmount = '';
   enteredStatus = '';
 
   onSubmit() {
@@ -39,7 +38,6 @@ export class NewFakturaComponent {
           price: this.enteredPrice,
           total: this.enteredTotal
         }],
-        totalAmount: this.enteredTotalAmount,
         status: this.enteredStatus
       });
     this.close.emit();

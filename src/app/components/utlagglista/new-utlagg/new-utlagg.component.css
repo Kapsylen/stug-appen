@@ -38,7 +38,7 @@ textarea {
   padding: 0.15rem 0.25rem;
   border-radius: 4px;
   border: 1px solid lightgrey;
-  background-color:lightgrey;
+  background-color: lightgrey;
 }
 
 .actions {
@@ -52,4 +52,8 @@ textarea {
   dialog {
     padding: 2rem;
   }
+}
+
+label.required:after {
+  content: "*";
 }

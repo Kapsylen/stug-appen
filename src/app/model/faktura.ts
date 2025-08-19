@@ -30,6 +30,5 @@ export interface NewFaktura {
   issueDate: string;
   dueDate: string;
   items: NewFakturaEnhet[];
-  totalAmount: string;
   status: string;
 }

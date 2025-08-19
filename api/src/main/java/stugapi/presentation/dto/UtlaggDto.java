@@ -27,10 +27,10 @@ import java.time.Instant;
 public record UtlaggDto(
   String id,
   @NotNull(message = "Title is required")
-  @Size(min = 2, max = 100, message = "Title must be between 2 and 100 characters")
+  @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
   String title,
   @NotNull(message = "Description is required")
-  @Size(min = 2, max = 1000, message = "Description must be between 2 and 1000 characters")
+  @Size(min = 3, max = 1000, message = "Description must be between 3 and 1000 characters")
   String description,
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   @NotNull(message = "Outlay date is required")

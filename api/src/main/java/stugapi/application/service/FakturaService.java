@@ -4,13 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import stugapi.application.domain.model.Faktura;
 import stugapi.application.domain.model.Faktura.FakturaBuilder;
-import stugapi.application.domain.model.FakturaEnhet;
-import stugapi.infrastructure.entities.FakturaEnhetEntity;
 import stugapi.infrastructure.entities.FakturaEntity;
 import stugapi.infrastructure.repositories.FakturaEnhetRepository;
 import stugapi.infrastructure.repositories.FakturaRepository;
 import stugapi.presentation.dto.FakturaDto;
-import stugapi.presentation.dto.FakturaEnhetDto;
 import stugapi.presentation.error.FakturaNotFoundException;
 
 import java.util.List;

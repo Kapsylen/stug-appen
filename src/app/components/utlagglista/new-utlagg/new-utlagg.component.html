@@ -3,25 +3,87 @@
   <h2>Nytt utlägg</h2>
   <form (ngSubmit)="onSubmit()">
     <p>
-      <label for="title">Rubrik</label>
-      <input type="text" id="title" name="title" [(ngModel)]="enteredTitle"/>
+      <label class="form-group required" for="title">Rubrik</label>
+      <input class="control-label" type="text"
+             id="title"
+             name="title" [(ngModel)]="enteredTitle"
+             minlength="2"
+             maxlength="100"
+             #title="ngModel"
+      />
+
+      @if (title.errors) {
+        @switch (true) {
+          @case (title.hasError('minlength')) {
+            Rubrik måste vara mellan 3 and 100 tecken.
+          }
+          @case (title.hasError('maxlength')) {
+            Rubrik måste vara mellan 3 and 100 tecken.
+          }
+        }
+      }
     </p>
 
     <p>
-      <label for="description">Beskrivning</label>
-      <textarea id="description" rows="5" name="description" [(ngModel)]="enteredDescription"></textarea>
+      <label class="form-group required" for="description">Beskrivning</label>
+      <textarea
+        type="text-area"
+        id="description"
+        rows="5"
+        name="description" [(ngModel)]="enteredDescription"
+        minlength="2"
+        maxlength="1000"
+        #description="ngModel">
+      </textarea>
+
+      @if (description.errors) {
+        @switch (true) {
+          @case (description.hasError('minlength')) {
+            Beskrivning måste vara mellan 2 and 1000 tecken.
+          }
+          @case (description.hasError('maxlength')) {
+            Beskrivning måste vara mellan 2 and 1000 tecken.
+          }
+        }
+      }
     </p>
 
     <p>
-      <label for="ut">Utlägsdatum</label>
-      <input type="datetime-local" id="outlayDate" name="outlayDate"
-             [ngModel]="enteredOutlayTime | date:'yyyy-MM-ddTHH:mm'"
-             (ngModelChange)="enteredOutlayTimeChange($event)"/>
+      <label class="form-group required" for="ut">Utlägsdatum</label>
+      <input
+        type="datetime-local"
+        id="outlayDate"
+        name="outlayDate"
+        [ngModel]="enteredOutlayTime | date:'yyyy-MM-ddTHH:mm'"
+        (ngModelChange)="enteredOutlayTimeChange($event)"
+        #outlayDate="ngModel"
+      />
+      @if (outlayDate.hasError('required')) {
+      }
+
     </p>
 
     <p>
-      <label for="price">Kostnad</label>
-      <input type="number" id="price" name="price" [(ngModel)]="enteredPrice"/>
+      <label class="form-group required" for="price">Kostnad</label>
+      <input
+        type="number"
+        id="price"
+        name="price" [(ngModel)]="enteredPrice"
+        min="0"
+        max="1000000"
+        #price="ngModel"
+      />
+
+      @if (price.errors) {
+        @switch (true) {
+          @case (price.hasError('min')) {
+            Priset behöver vara mellan 0 and 1000000.
+          }
+          @case (price.hasError('max')) {
+            Priset behöver vara mellan 0 and 1000000.
+          }
+        }
+      }
     </p>
 
     <p class="actions">
