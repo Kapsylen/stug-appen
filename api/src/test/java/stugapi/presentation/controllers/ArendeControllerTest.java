@@ -56,7 +56,6 @@ public class ArendeControllerTest {
       .registerModule(new JavaTimeModule());
   }
 
-
   @Test
   public void whenPostArende_thenCreateArende() throws Exception {
 

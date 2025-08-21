@@ -12,15 +12,8 @@
              #title="ngModel"
       />
 
-      @if (title.errors) {
-        @switch (true) {
-          @case (title.hasError('minlength')) {
-            Rubrik måste vara mellan 3 and 100 tecken.
-          }
-          @case (title.hasError('maxlength')) {
-            Rubrik måste vara mellan 3 and 100 tecken.
-          }
-        }
+      @if (title.hasError('minlength') || title.hasError('maxlength')) {
+        Rubrik måste vara mellan 3 and 100 tecken.
       }
     </p>
 
@@ -36,15 +29,8 @@
         #description="ngModel">
       </textarea>
 
-      @if (description.errors) {
-        @switch (true) {
-          @case (description.hasError('minlength')) {
-            Beskrivning måste vara mellan 2 and 1000 tecken.
-          }
-          @case (description.hasError('maxlength')) {
-            Beskrivning måste vara mellan 2 and 1000 tecken.
-          }
-        }
+      @if (description.hasError('minlength') || description.hasError('maxlength')) {
+        Beskrivning måste vara mellan 2 and 1000 tecken.
       }
     </p>
 
@@ -74,15 +60,8 @@
         #price="ngModel"
       />
 
-      @if (price.errors) {
-        @switch (true) {
-          @case (price.hasError('min')) {
-            Priset behöver vara mellan 0 and 1000000.
-          }
-          @case (price.hasError('max')) {
-            Priset behöver vara mellan 0 and 1000000.
-          }
-        }
+      @if (price.hasError('min') || price.hasError('max')) {
+        Priset behöver vara mellan 0 and 1000000.
       }
     </p>
 

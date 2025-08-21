@@ -43,3 +43,5 @@ Thumbs.db
 
 api/data/testdb.trace.db
 api/data/testdb.mv.db
+data/testdb.trace.db
+data/testdb.mv.db

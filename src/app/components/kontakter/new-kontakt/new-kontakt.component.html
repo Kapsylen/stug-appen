@@ -12,15 +12,8 @@
         maxlength="50"
         #nameInput="ngModel"
       />
-      @if (nameInput.errors) {
-        @switch (true) {
-          @case (nameInput.hasError('minlength')) {
-            Kundnamn måste vara mellan 2 and 100 tecken.
-          }
-          @case (nameInput.hasError('maxlength')) {
-            Kundnamn måste vara mellan 2 and 100 tecken.
-          }
-        }
+      @if (nameInput.hasError('minlength') || nameInput.hasError('maxlength')) {
+        Kundnamn måste vara mellan 2 and 100 tecken.
       }
     </p>
 
@@ -30,8 +23,7 @@
         type="text"
         id="company"
         name="company" [(ngModel)]="enteredCompany"
-        minlength="3"
-        maxlength="50"
+        required
       />
     </p>
 
@@ -50,14 +42,10 @@
         #phoneInput="ngModel"
       />
 
-      @switch (true) {
-        @case (phoneInput.hasError('pattern')) {
-          Ange ett giltigt telefonnummer (t.ex. +46 123 456 789 eller 0123-456789)
-        }
+      @if (phoneInput.hasError('pattern')) {
+        Ange ett giltigt telefonnummer (t.ex. +46 123 456 789 eller 0123-456789)
       }
-
     </p>
-
     <p>
       <label class="form-group required" for="email">Email</label>
       <input
@@ -68,13 +56,8 @@
         #emailInput="ngModel"
       />
 
-      @switch (true) {
-        @case (emailInput.hasError('required')) {
-          E-postadress är obligatorisk
-        }
-        @case (emailInput.hasError('email') || emailInput.hasError('pattern')) {
-          Ange en giltig e-postadress ('exempel: name{{'@'}}domain.com')
-        }
+      @if (emailInput.hasError('email') || emailInput.hasError('pattern')) {
+        Ange en giltig e-postadress ('exempel: name{{ '@' }}domain.com')
       }
 
     </p>

@@ -13,16 +13,10 @@
         #customerName="ngModel"
       />
 
-      @if (customerName.errors) {
-        @switch (true) {
-          @case (customerName.hasError('minlength')) {
-            Kundnamn måste vara mellan 3 and 100 tecken.
-          }
-          @case (customerName.hasError('maxlength')) {
-            Kundnamn måste vara mellan 3 and 100 tecken.
-          }
-        }
+      @if (customerName.hasError('minlength') || customerName.hasError('maxlength')) {
+        Kundnamn måste vara mellan 2 and 100 tecken.
       }
+
     </p>
 
     <p>
@@ -30,15 +24,15 @@
       <input
         type="datetime-local"
         id="dueDate" name="dueDate"
-             [ngModel]="enteredDueDate | date:'yyyy-MM-ddTHH:mm'"
-             (ngModelChange)="handleDueDateChange($event)"
+        [ngModel]="enteredDueDate | date:'yyyy-MM-ddTHH:mm'"
+        (ngModelChange)="handleDueDateChange($event)"
       />
     </p>
 
     <p>
       <label class="form-group required" for="description">Beskrivning</label>
       <textarea
-        type= text
+        type=text
         id="description"
         rows="5"
         name="description" [(ngModel)]="enteredDescription"
@@ -48,15 +42,8 @@
       >
       </textarea>
 
-      @if (description.errors) {
-        @switch (true) {
-          @case (description.hasError('minlength')) {
-            Beskrivning måste vara mellan 1 and 255 tecken.
-          }
-          @case (description.hasError('maxlength')) {
-            Beskrivning måste vara mellan 1 and 255 tecken.
-          }
-        }
+      @if (description.hasError('minlength') || description.hasError('maxlength')) {
+        Beskrivning måste vara mellan 1 and 255 tecken.
       }
     </p>
 
@@ -71,15 +58,8 @@
         #quantity="ngModel"
       />
 
-      @if (quantity.errors) {
-        @switch (true) {
-          @case (quantity.hasError('min')) {
-            Priset behöver vara mellan 0 and 1000000.
-          }
-          @case (quantity.hasError('max')) {
-            Priset behöver vara mellan 0 and 1000000.
-          }
-        }
+      @if (quantity.hasError('min') || quantity.hasError('max')) {
+        Antalet behöver vara mellan 0 and 1000000.
       }
     </p>
 
@@ -89,21 +69,15 @@
         type="number"
         id="price"
         name="price" [(ngModel)]="enteredPrice"
-        min="1"
+        min="0"
         max="1000000"
         #price="ngModel"
       />
 
-      @if (price.errors) {
-        @switch (true) {
-          @case (price.hasError('min')) {
-            Priset behöver vara mellan 0 and 1000000.
-          }
-          @case (price.hasError('max')) {
-            Priset behöver vara mellan 0 and 1000000.
-          }
-        }
+      @if (price.hasError('min') || price.hasError('max')) {
+        Priset behöver vara mellan 0 and 1000000.
       }
+
     </p>
 
     <p>

@@ -12,17 +12,9 @@
              #nameInput="ngModel"
       />
 
-      @if (nameInput.errors) {
-        @switch (true) {
-          @case (nameInput.hasError('minlength')) {
-            Rubrik måste vara mellan 3 and 100 tecken.
-          }
-          @case (nameInput.hasError('maxlength')) {
-            Rubrik måste vara mellan 3 and 100 tecken.
-          }
-        }
+      @if (nameInput.hasError('minlength') || nameInput.hasError('maxlength') || nameInput.hasError('pattern')) {
+        Rubrik måste vara mellan 3 and 100 tecken.
       }
-
     </p>
 
     <p>
@@ -36,16 +28,10 @@
         #descriptionInput="ngModel"
       />
 
-      @if (descriptionInput.errors) {
-        @switch (true) {
-          @case (nameInput.hasError('required')) {
-            Beskrivning måste vara mellan 3 and 1000 tecken.
-          }
-          @case (descriptionInput.hasError('maxlength')) {
-            Beskrivning måste vara mellan 3 and 1000 tecken.
-          }
-        }
+      @if (descriptionInput.hasError('minlength') || descriptionInput.hasError('maxlength')) {
+        Beskrivning måste vara mellan 3 and 1000 tecken.
       }
+
     </p>
 
     <p>
@@ -88,31 +74,28 @@
         type="text"
         id="reportedBy"
         name="reportedBy" [(ngModel)]="enteredReportedBy"
-        pattern="^[a-zA-Z0-9 ]+$"
-        minlength="3"
-        maxlength="30"
+        pattern="^[a-zA-Z0-9]{3,20}$"
         #reportedByInput="ngModel"
       />
 
-      @if (reportedByInput.errors) {
-        @switch (true) {
-          @case (reportedByInput.hasError('pattern')) {
-            ReportedBy must contain only letters, numbers and spaces
-          }
-          @case (reportedByInput.hasError('minlength')) {
-            ReportedBy must be at least 3 characters long
-          }
-          @case (reportedByInput.hasError('maxlength')) {
-            ReportedBy must be at most 30 characters long
-          }
-        }
+      @if (reportedByInput.hasError('pattern')) {
+        Rapporterad av måste innehålla endast bokstäver, siffror och mellan 3 och 20 tecken.
       }
-
     </p>
 
     <p>
-      <label for="assignedTo">Tilldelad</label>
-      <input type="text" id="assignedTo" name="assignedTo" [(ngModel)]="enteredAssignedTo"/>
+      <label class="form-group required" for="assignedTo">Tilldelad</label>
+      <input
+        type="text"
+        id="assignedTo"
+        name="assignedTo" [(ngModel)]="enteredAssignedTo"
+        pattern="^[a-zA-Z0-9]{3,20}$"
+        #assignedToInput="ngModel"
+      />
+
+     @if (assignedToInput.hasError('pattern')) {
+       Tilldelad av måste innehålla endast bokstäver, siffror och mellan 3 och 20 tecken.
+     }
     </p>
 
     <p>
@@ -121,13 +104,24 @@
     </p>
 
     <p>
-      <label for="estimatedCost">Uppskattad kostnad</label>
-      <input type="text" id="estimatedCost" name="estimatedCost" [(ngModel)]="enteredEstimatedCost"/>
+      <label class="form-group required" for="estimatedCost">Uppskattad kostnad</label>
+      <input
+        type="number"
+        id="estimatedCost"
+        name="estimatedCost" [(ngModel)]="enteredEstimatedCost"
+        min="0"
+        max="999999999"
+        #estimatedCost="ngModel"
+      />
+
+      @if (estimatedCost.hasError('min') || estimatedCost.hasError('max')) {
+        Priset behöver vara mellan 0 and 1000000.
+      }
     </p>
 
     <p>
       <label for="actualCost">Faktisk kostnad</label>
-      <input type="text" id="actualCost" name="actualCost" [(ngModel)]="enteredActualCost"/>
+      <input type="number" id="actualCost" name="actualCost" [(ngModel)]="enteredActualCost"/>
     </p>
 
     <p>
@@ -160,13 +154,33 @@
     </p>
 
     <p>
-      <label for="message">Meddelande</label>
-      <input type="text" id="message" name="message" [(ngModel)]="enteredMessage"/>
+      <label class="form-group required" for="message">Meddelande</label>
+      <input
+        type="text"
+        id="message"
+        name="message" [(ngModel)]="enteredMessage"
+        minlength="3"
+        maxlength="1000"
+        #messageInput="ngModel"
+      />
+      @if (messageInput.hasError('minlength') || messageInput.hasError('maxlength')) {
+        Meddelande måste mellan från 3 och 1000 tecken.
+      }
     </p>
 
     <p>
-      <label for="updatedBy">Uppdaterad av</label>
-      <input type="text" id="updatedBy" name="updatedBy" [(ngModel)]="enteredUpdatedBy"/>
+      <label class="form-group required" for="updatedBy">Uppdaterad av</label>
+      <input
+        type="text"
+        id="updatedBy"
+        name="updatedBy" [(ngModel)]="enteredUpdatedBy"
+        pattern="^[a-zA-Z0-9]{3,20}$"
+        #updatedByInput="ngModel"
+      />
+
+      @if (updatedByInput.hasError('pattern')) {
+        Uppdaterad av måste innehålla endast bokstäver, siffror och mellan 3 och 20 tecken.
+      }
     </p>
 
     <p>
