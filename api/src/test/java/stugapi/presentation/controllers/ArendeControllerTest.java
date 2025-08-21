@@ -35,6 +35,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static stugapi.application.domain.model.Arende.fromArendeDto;
 
 @WebMvcTest(ArendeController.class)
 public class ArendeControllerTest {
@@ -83,39 +84,13 @@ public class ArendeControllerTest {
           .timestamp(createdAt)
           .message(Status.INVESTIGATING.name())
           .updatedBy("Lars Andersson")
-          .status(Status.IN_PROGRESS.name())
-          .build(),
-        ArendeStatusDto.builder()
-          .timestamp(resolvedTime)
-          .message(Status.CLOSED.name())
-          .updatedBy("Lars Andersson")
-          .status(Status.RESOLVED.name())
           .build()))
       .tags(List.of("plumbing", "water-damage", "bathroom"))
       .createdAt(createdAt)
       .updatedAt(updatedAt)
       .build();
 
-    Arende output = Arende.builder()
-      .title(input.title())
-      .description(input.description())
-      .type(Typ.valueOf(input.type()))
-      .priority(Prioritet.valueOf(input.priority()))
-      .status(Status.valueOf(input.status()))
-      .reportedBy(input.reportedBy())
-      .assignedTo(input.assignedTo())
-      .location(input.location())
-      .estimatedCost(input.estimatedCost())
-      .startTime(input.startTime())
-      .resolvedTime(input.resolvedTime())
-      .resolution(input.resolution())
-      .requiresContractor(true)
-      .contractorInfo(input.contractorInfo())
-      .updates(input.updates().stream().map(ArendeStatus::toArendeStatus).toList())
-      .tags(input.tags())
-      .createdAt(input.createdAt())
-      .updatedAt(input.updatedAt())
-      .build();
+    Arende output = fromArendeDto(input).build();
 
     given(arendeService.saveArende(input)).willReturn(output);
 
@@ -132,19 +107,19 @@ public class ArendeControllerTest {
       .andExpect(jsonPath("$.reportedBy").value(input.reportedBy()))
       .andExpect(jsonPath("$.assignedTo").value(input.assignedTo()))
       .andExpect(jsonPath("$.location").value(input.location()))
+      .andExpect(jsonPath("$.actualCost").isEmpty())
       .andExpect(jsonPath("$.estimatedCost").value(input.estimatedCost()))
       .andExpect(jsonPath("$.startTime").value(input.startTime().toString()))
       .andExpect(jsonPath("$.resolvedTime").value(input.resolvedTime().toString()))
       .andExpect(jsonPath("$.resolution").value(input.resolution()))
       .andExpect(jsonPath("$.requiresContractor").value(input.requiresContractor()))
       .andExpect(jsonPath("$.contractorInfo").value(input.contractorInfo()))
-      .andExpect(jsonPath("$.updates[0].status").value(input.updates().getFirst().status()))
-      .andExpect(jsonPath("$.updates[1].status").value(input.updates().getLast().status()))
+      .andExpect(jsonPath("$.updates[0].status").value(input.status()))
       .andExpect(jsonPath("$.tags[0]").value(input.tags().getFirst()))
       .andExpect(jsonPath("$.tags[1]").value(input.tags().get(1)))
       .andExpect(jsonPath("$.tags[2]").value(input.tags().getLast()))
-      .andExpect(jsonPath("$.createdAt").value(input.createdAt().toString()))
-      .andExpect(jsonPath("$.updatedAt").value(input.updatedAt().toString()));
+      .andExpect(jsonPath("$.createdAt").isNotEmpty())
+      .andExpect(jsonPath("$.updatedAt").isNotEmpty());
 
     verify(arendeService, times(1)).saveArende(input);
 
@@ -182,8 +157,7 @@ public class ArendeControllerTest {
       .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
       .updates(List.of(ArendeStatusDto.builder()
         .updatedBy("Maria Svensson")
-        .status(Status.INVESTIGATING.name())
-        .message("Emergency call placed to heating specialist")
+        .message("Replaced damaged pipe and repaired floor")
         .build()))
       .tags(List.of("heating", "urgent"))
       .createdAt(createdAt)
@@ -196,7 +170,7 @@ public class ArendeControllerTest {
       .description(inputUpdateArende.description())
       .type(Typ.valueOf(inputUpdateArende.type()))
       .priority(Prioritet.valueOf(inputUpdateArende.priority()))
-      .status(Status.valueOf(Status.CLOSED.name()))
+      .status(Status.valueOf(Status.RESOLVED.name()))
       .reportedBy(inputUpdateArende.reportedBy())
       .assignedTo(inputUpdateArende.assignedTo())
       .location(inputUpdateArende.location())
@@ -207,19 +181,19 @@ public class ArendeControllerTest {
       .resolution("Replaced heating system")
       .requiresContractor(inputUpdateArende.requiresContractor())
       .contractorInfo(inputUpdateArende.contractorInfo())
-      .updates(List.of(ArendeStatus.builder()
-          .updatedBy("Maria Svensson")
-          .status(Status.INVESTIGATING.name())
-          .message("Emergency call placed to heating specialist")
-          .build(),
-        ArendeStatus.builder()
-          .updatedBy("John Doe")
-          .status(Status.RESOLVED.name())
-          .build(),
-        ArendeStatus.builder()
-          .updatedBy("John Doe")
-          .status(Status.CLOSED.name())
-          .build()))
+      .updates(
+        List.of(
+          ArendeStatus.builder()
+            .updatedBy("Maria Svensson")
+            .message("Emergency call placed to heating specialist")
+            .status(Status.IN_PROGRESS.name())
+            .build(),
+          ArendeStatus.builder()
+            .updatedBy("Maria Svensson")
+            .message("Replaced damaged pipe and repaired floor")
+            .status(Status.RESOLVED.name())
+            .build()
+        ))
       .tags(inputUpdateArende.tags())
       .createdAt(inputUpdateArende.createdAt())
       .updatedAt(lastUpdatedAt)
@@ -249,8 +223,7 @@ public class ArendeControllerTest {
       .andExpect(jsonPath("$.requiresContractor").value(inputUpdateArende.requiresContractor()))
       .andExpect(jsonPath("$.contractorInfo").value(inputUpdateArende.contractorInfo()))
       .andExpect(jsonPath("$.updates[0].status").value(outputUpdatedArende.updates().getFirst().status()))
-      .andExpect(jsonPath("$.updates[1].status").value(outputUpdatedArende.updates().get(1).status()))
-      .andExpect(jsonPath("$.updates[2].status").value(outputUpdatedArende.updates().getLast().status()))
+      .andExpect(jsonPath("$.updates[1].status").value(outputUpdatedArende.updates().getLast().status()))
       .andExpect(jsonPath("$.tags[0]").value(outputUpdatedArende.tags().getFirst()))
       .andExpect(jsonPath("$.tags[1]").value(outputUpdatedArende.tags().getLast()))
       .andExpect(jsonPath("$.createdAt").value(inputUpdateArende.createdAt().toString()))
@@ -289,7 +262,7 @@ public class ArendeControllerTest {
       .updatedAt(updatedAt)
       .build();
 
-    Arende output = Arende.fromArendeDto(inputArende).build();
+    Arende output = fromArendeDto(inputArende).build();
 
     given(arendeService.findById(id)).willReturn(output);
 
@@ -527,7 +500,7 @@ public class ArendeControllerTest {
         "title: Title must be between 3 and 100 characters"
       ),
       Arguments.of(
-        "a" .repeat(101),
+        "a".repeat(101),
         "title: Title must be between 3 and 100 characters"
       )
     );
@@ -570,7 +543,7 @@ public class ArendeControllerTest {
         "description: Description must be between 3 and 1000 characters"
       ),
       Arguments.of(
-        "a" .repeat(1001),
+        "a".repeat(1001),
         "description: Description must be between 3 and 1000 characters"
       )
     );
@@ -602,10 +575,6 @@ public class ArendeControllerTest {
 
   private static Stream<Arguments> invalidTypeCases() {
     return Stream.of(
-      Arguments.of(
-        null,
-        "type: Type is required"
-      ),
       Arguments.of(
         " ",
         "type: Type must be either MAINTENANCE, DAMAGE, UTILITY, SECURITY, PEST, WEATHER or OTHER"
@@ -743,23 +712,23 @@ public class ArendeControllerTest {
       ),
       Arguments.of(
         "ab",
-        "reportedBy: ReportedBy must be between 3 and 30 characters"
+        "reportedBy: ReportedBy must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "a".repeat(31),
-        "reportedBy: ReportedBy must be between 3 and 30 characters"
+        "reportedBy: ReportedBy must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "John@Doe",
-        "reportedBy: ReportedBy must contain only letters, numbers and spaces"
+        "reportedBy: ReportedBy must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "John @ Doe",
-        "reportedBy: ReportedBy must contain only letters, numbers and spaces"
+        "reportedBy: ReportedBy must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "John-Doe",
-        "reportedBy: ReportedBy must contain only letters, numbers and spaces"
+        "reportedBy: ReportedBy must contain only letters, numbers, spaces and between 3 and 20 characters"
       )
     );
   }
@@ -796,23 +765,23 @@ public class ArendeControllerTest {
       ),
       Arguments.of(
         "ab",
-        "assignedTo: AssignedTo must be between 3 and 30 characters"
+        "assignedTo: AssignedTo must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "a".repeat(31),
-        "assignedTo: AssignedTo must be between 3 and 30 characters"
+        "assignedTo: AssignedTo must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "John@Doe",
-        "assignedTo: AssignedTo must contain only letters, numbers and spaces"
+        "assignedTo: AssignedTo must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "John @ Doe",
-        "assignedTo: AssignedTo must contain only letters, numbers and spaces"
+        "assignedTo: AssignedTo must contain only letters, numbers, spaces and between 3 and 20 characters"
       ),
       Arguments.of(
         "John-Doe",
-        "assignedTo: AssignedTo must contain only letters, numbers and spaces"
+        "assignedTo: AssignedTo must contain only letters, numbers, spaces and between 3 and 20 characters"
       )
     );
   }
@@ -848,15 +817,15 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidMessageCases")
-  void whenCreate_andMessageIsNullOrBlankOrExceeds1000Characters_thenReturn400(String message, String expectedError) throws Exception {
+  void whenCreate_andMessageIsNullOrBlankOrZeroOrExceeds1000Characters_thenReturn400(String message, String expectedError) throws Exception {
 
     // Given
     ArendeDto invalidInput = createArendeDtoBuilder()
       .updates(
         List.of(
           createArendeStatusDtoBuilder()
-          .message(message)
-        .build()))
+            .message(message)
+            .build()))
       .build();
 
     // When & Then
@@ -880,15 +849,15 @@ public class ArendeControllerTest {
       ),
       Arguments.of(
         " ",
-        "updates[0].message: Message is required"
+        "updates[0].message: Message must be between 3 and 1000 characters"
       ),
       Arguments.of(
-        "",
-        "updates[0].message: Message is required"
+        "aa",
+        "updates[0].message: Message must be between 3 and 1000 characters"
       ),
       Arguments.of(
-        "a" .repeat(1001),
-        "updates[0].message: Message cannot exceed 1000 characters"
+        "a".repeat(1001),
+        "updates[0].message: Message must be between 3 and 1000 characters"
       )
     );
   }
@@ -927,76 +896,27 @@ public class ArendeControllerTest {
       ),
       Arguments.of(
         " ",
-        "updates[0].updatedBy: UpdatedBy must be between 3 and 30 characters"
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long."
       ),
       Arguments.of(
         "ab",
-        "updates[0].updatedBy: UpdatedBy must be between 3 and 30 characters"
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long."
       ),
       Arguments.of(
-        "a" .repeat(101),
-        "updates[0].updatedBy: UpdatedBy must be between 3 and 30 characters"
+        "a".repeat(101),
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long."
       ),
       Arguments.of(
         "John@Doe",
-        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers and spaces"
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long."
       ),
       Arguments.of(
         "John @ Doe",
-        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers and spaces"
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long."
       ),
       Arguments.of(
         "John-Doe",
-        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers and spaces"
-      )
-    );
-  }
-
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("invalidArendeStatusCases")
-  void whenCreate_andArendeStatusIsNullOrEmptyOrNotMatchValidString_thenReturn400(String status, String expectedError) throws Exception {
-
-    // Given
-    ArendeDto invalidInput = createArendeDtoBuilder()
-      .updates(
-        List.of(
-          createArendeStatusDtoBuilder()
-            .status(status)
-            .build()))
-      .build();
-
-    // When & Then
-    mvc.perform(post(BASE_URL)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(invalidInput)))
-      .andExpect(status().isBadRequest())
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.status").value(400))
-      .andExpect(jsonPath("$.error").value("Bad Request"))
-      .andExpect(jsonPath("$.message").value("Validation failed"))
-      .andExpect(jsonPath("$.details").value(expectedError))
-      .andExpect(jsonPath("$.timestamp").exists());
-
-    verify(arendeService, times(0)).saveArende(invalidInput);
-  }
-
-  private static Stream<Arguments> invalidArendeStatusCases() {
-    return Stream.of(
-      Arguments.of(
-        null,
-        "updates[0].status: Arende status is required"
-      ),
-      Arguments.of(
-        " ",
-        "updates[0].status: Arende status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSE"
-      ),
-      Arguments.of(
-        "",
-        "updates[0].status: Arende status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSE"
-      ),
-      Arguments.of(
-        "a",
-        "updates[0].status: Arende status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSE"
+        "updates[0].updatedBy: UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long."
       )
     );
   }

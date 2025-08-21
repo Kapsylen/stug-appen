@@ -5,27 +5,30 @@ import org.springframework.stereotype.Service;
 import stugapi.application.domain.model.Arende;
 import stugapi.application.domain.model.ArendeStatus;
 import stugapi.infrastructure.entities.ArendeEntity;
+import stugapi.infrastructure.entities.ArendeStatusEntity;
 import stugapi.infrastructure.entities.enums.Prioritet;
 import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
 import stugapi.infrastructure.repositories.ArendeRepository;
 import stugapi.presentation.dto.ArendeDto;
+import stugapi.presentation.dto.ArendeStatusDto;
 import stugapi.presentation.error.ArendeNotFoundException;
 import stugapi.presentation.error.InvalidArendeIdException;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static stugapi.application.domain.model.Arende.*;
+import static stugapi.application.domain.model.ArendeStatus.toArendeStatus;
 import static stugapi.infrastructure.entities.ArendeEntity.fromArende;
 
 /**
  * Service class for managing operations related to `Arende`.
  * It provides methods to handle the lifecycle of `Arende` objects,
  * including creation, retrieval, update, and deletion.
- *
+ * <p>
  * This class interacts with `ArendeRepository` for persistence and
  * employs mapping between domain models and data transfer objects.
  */
@@ -69,38 +72,46 @@ public class ArendeService {
    * The method finds the ArendeEntity by ID, applies updates from the provided ArendeDto,
    * and persists the changes to the database.
    *
-   * @param id the unique identifier of the Arende entry to be updated
+   * @param id           the unique identifier of the Arende entry to be updated
    * @param updateArende the data transfer object containing the updated information
    * @return the updated Arende object after persistence
    * @throws RuntimeException if no ArendeEntity is found with the provided ID
    */
   public Arende update(String id, ArendeDto updateArende) {
-    ArendeBuilder arendeBuilder =  fromArendeEntity(arendeRepository
+    ArendeBuilder arendeBuilder = fromArendeEntity(arendeRepository
       .findById(UUID.fromString(id))
-      .orElseThrow(RuntimeException::new));
+      .orElseThrow(() -> new ArendeNotFoundException("No ArendeEntity found with ID: " + id)));
 
-    arendeBuilder.title(updateArende.title())
-      .description(updateArende.description())
-      .type(Typ.valueOf(updateArende.type()))
-      .priority(Prioritet.valueOf(updateArende.priority()))
-      .status(Status.valueOf(updateArende.status()))
-      .reportedBy(updateArende.reportedBy())
-      .assignedTo(updateArende.assignedTo())
-      .location(updateArende.location())
-      .estimatedCost(updateArende.estimatedCost())
-      .actualCost(updateArende.actualCost())
-      .startTime(updateArende.startTime())
-      .resolvedTime(updateArende.resolvedTime())
-      .resolution(updateArende.resolution())
-      .requiresContractor(updateArende.requiresContractor())
-      .contractorInfo(updateArende.contractorInfo())
-      .updates(updateArende.updates().stream().map(ArendeStatus::toArendeStatus).toList())
-      .tags(updateArende.tags())
-      .updatedAt(Instant.now());
+    try {
+      arendeBuilder.title(updateArende.title())
+        .description(updateArende.description())
+        .type(updateArende.type() != null ? Typ.valueOf(updateArende.type()) : null)
+        .priority(updateArende.priority() != null ? Prioritet.valueOf(updateArende.priority()) : null)
+        .status(updateArende.status() != null ? Status.valueOf(updateArende.status()) : null)
+        .reportedBy(updateArende.reportedBy())
+        .assignedTo(updateArende.assignedTo())
+        .location(updateArende.location())
+        .estimatedCost(updateArende.estimatedCost())
+        .actualCost(updateArende.actualCost())
+        .startTime(updateArende.startTime())
+        .resolvedTime(updateArende.resolvedTime())
+        .resolution(updateArende.resolution())
+        .requiresContractor(updateArende.requiresContractor())
+        .contractorInfo(updateArende.contractorInfo())
+        .tags(updateArende.tags())
+        .updatedAt(Instant.now());
 
-    ArendeEntity arendeEntity = arendeRepository.save(ArendeEntity.fromArende(arendeBuilder.build()).build());
+      List<ArendeStatus> currentUpdates = arendeBuilder.build().updates();
+      List<ArendeStatus> updateStatuses = updateArende.updates().stream().map(arendeStatus -> toArendeStatus(arendeStatus, updateArende.status())).toList();
+      List<ArendeStatus> latestUpdatedStatusList = Stream.concat(currentUpdates.stream(), updateStatuses.stream()).toList();
+      arendeBuilder.updates(latestUpdatedStatusList);
 
-    return fromArendeEntity(arendeEntity).build();
+      ArendeEntity arendeEntity = arendeRepository.save(ArendeEntity.fromArende(arendeBuilder.build()).build());
+      return fromArendeEntity(arendeEntity).build();
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid enum value provided in update request", e);
+    }
+
   }
 
   /**
@@ -134,7 +145,7 @@ public class ArendeService {
 
   /**
    * Deletes all records from the underlying repository.
-   *
+   * <p>
    * This method removes all entries in the associated repository, effectively clearing all data.
    * Use with caution as this operation is irreversible and will delete all stored records.
    */

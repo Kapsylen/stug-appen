@@ -27,14 +27,12 @@ public record ArendeDto(
     @Pattern(regexp = "^(NEW|INVESTIGATING|IN_PROGRESS|RESOLVED|CLOSED)$", message = "Status must be either NEW, INVESTIGATING, IN_PROGRESS, RESOLVED or CLOSED")
     String status,
     @NotNull(message = "ReportedBy is required")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]+$",
-      message = "ReportedBy must contain only letters, numbers and spaces")
-    @Size(min = 3, max = 30, message = "ReportedBy must be between 3 and 30 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]{3,20}",
+      message = "ReportedBy must contain only letters, numbers, spaces and between 3 and 20 characters")
     String reportedBy,
     @NotNull(message = "AssignedTo is required")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]+$",
-    message = "AssignedTo must contain only letters, numbers and spaces")
-    @Size(min = 3, max = 30, message = "AssignedTo must be between 3 and 30 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]{3,20}$",
+    message = "AssignedTo must contain only letters, numbers, spaces and between 3 and 20 characters")
     String assignedTo,
     String location,
     @NotNull(message = "Estimated cost is required")

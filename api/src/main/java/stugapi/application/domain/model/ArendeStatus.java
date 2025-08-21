@@ -14,6 +14,16 @@ public record ArendeStatus(
     String updatedBy,
     String status // Consider using an enum like 'Status' if applicable
 ) {
+  public static ArendeStatus toArendeStatus(ArendeStatusDto arendeStatusDto, String status) {
+    return ArendeStatus.builder()
+      .id(arendeStatusDto.id())
+      .timestamp(arendeStatusDto.timestamp())
+      .message(arendeStatusDto.message())
+      .updatedBy(arendeStatusDto.updatedBy())
+      .status(status)
+      .build();
+  }
+
   public static ArendeStatus toArendeStatus(ArendeStatusDto arendeStatusDto) {
     return ArendeStatus.builder()
       .id(arendeStatusDto.id())

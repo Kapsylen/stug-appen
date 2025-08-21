@@ -10,6 +10,8 @@ import stugapi.presentation.dto.ArendeDto;
 import java.time.Instant;
 import java.util.List;
 
+import static stugapi.application.domain.model.ArendeStatus.toArendeStatus;
+
 @Builder
 public record Arende(
   String id,
@@ -35,7 +37,7 @@ public record Arende(
 ) {
 
   public static ArendeBuilder fromArendeDto(ArendeDto arendeDto) {
-    return Arende.builder()
+    return builder()
       .id(arendeDto.id())
       .title(arendeDto.title())
       .description(arendeDto.description())
@@ -52,14 +54,14 @@ public record Arende(
       .resolution(arendeDto.resolution())
       .requiresContractor(arendeDto.requiresContractor())
       .contractorInfo(arendeDto.contractorInfo())
-      .updates(arendeDto.updates().stream().map(ArendeStatus::toArendeStatus).toList())
+      .updates(arendeDto.updates().stream().map(arendeStatus -> toArendeStatus(arendeStatus, arendeDto.status())).toList())
       .tags(arendeDto.tags())
       .createdAt(Instant.now())
       .updatedAt(Instant.now());
   }
 
   public static ArendeBuilder fromArendeEntity(ArendeEntity arendeEntity) {
-    return Arende.builder()
+    return builder()
       .id(arendeEntity.getId().toString())
       .title(arendeEntity.getTitle())
       .description(arendeEntity.getDescription())
