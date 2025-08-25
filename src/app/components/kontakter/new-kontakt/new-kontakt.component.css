@@ -56,4 +56,7 @@ textarea {
 
 label.required:after {
   content: "*";
+  color: #ff0000;
+  margin-left: 0.2rem;
+  font-size: 0.6rem;
 }
