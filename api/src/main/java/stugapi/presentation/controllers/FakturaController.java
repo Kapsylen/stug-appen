@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import stugapi.application.service.FakturaService;
 import stugapi.presentation.dto.FakturaDto;
@@ -16,6 +17,7 @@ import static stugapi.presentation.dto.FakturaDto.toFakturaDtoBuilder;
 @RequestMapping("api/v1/faktura")
 @AllArgsConstructor
 @Slf4j
+@PreAuthorize("hasRole('client_admin')")
 public class FakturaController {
 
   private final FakturaService fakturaService;

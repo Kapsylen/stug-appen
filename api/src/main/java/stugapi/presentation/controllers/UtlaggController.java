@@ -3,6 +3,7 @@ package stugapi.presentation.controllers;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import stugapi.application.service.UtlaggService;
 import stugapi.presentation.dto.UtlaggDto;
@@ -14,6 +15,7 @@ import static stugapi.presentation.dto.UtlaggDto.toUtlaggDtoBuilder;
 @RestController
 @RequestMapping("api/v1/utlagg")
 @AllArgsConstructor
+@PreAuthorize("hasRole('client_admin')")
 public class UtlaggController {
 
   private final UtlaggService utlaggService;

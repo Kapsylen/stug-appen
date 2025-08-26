@@ -3,11 +3,11 @@ package stugapi.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,6 +20,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 @Slf4j
 public class SecurityConfig {
 
@@ -38,6 +39,7 @@ public class SecurityConfig {
           "/swagger-ui/**",
           "/swagger-ui.html")
         .permitAll()
+
         .requestMatchers("/api/**")
         .authenticated()
         .anyRequest()
@@ -74,6 +76,4 @@ public class SecurityConfig {
     jwtConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
     return jwtConverter;
   }
-
-
 }

@@ -3,6 +3,7 @@ package stugapi.presentation.controllers;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import stugapi.application.service.KontaktService;
 import stugapi.presentation.dto.KontaktDto;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/kontakt")
 @AllArgsConstructor
+@PreAuthorize("hasRole('client_admin')")
 public class KontaktController {
 
   private final KontaktService kontaktService;
