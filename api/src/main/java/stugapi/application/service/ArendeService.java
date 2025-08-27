@@ -5,19 +5,17 @@ import org.springframework.stereotype.Service;
 import stugapi.application.domain.model.Arende;
 import stugapi.application.domain.model.ArendeStatus;
 import stugapi.infrastructure.entities.ArendeEntity;
-import stugapi.infrastructure.entities.ArendeStatusEntity;
 import stugapi.infrastructure.entities.enums.Prioritet;
 import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
 import stugapi.infrastructure.repositories.ArendeRepository;
 import stugapi.presentation.dto.ArendeDto;
-import stugapi.presentation.dto.ArendeStatusDto;
 import stugapi.presentation.error.ArendeNotFoundException;
 import stugapi.presentation.error.InvalidArendeIdException;
 
 import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static stugapi.application.domain.model.Arende.*;

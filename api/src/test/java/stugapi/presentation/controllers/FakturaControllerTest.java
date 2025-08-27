@@ -19,7 +19,6 @@ import stugapi.application.domain.model.Faktura;
 import stugapi.application.domain.model.FakturaEnhet;
 import stugapi.application.service.FakturaService;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
-import stugapi.presentation.dto.ArendeDto;
 import stugapi.presentation.dto.FakturaDto;
 import stugapi.presentation.dto.FakturaDto.FakturaDtoBuilder;
 import stugapi.presentation.dto.FakturaEnhetDto;

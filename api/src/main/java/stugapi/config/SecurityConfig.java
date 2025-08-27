@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -29,19 +30,21 @@ public class SecurityConfig {
 
   private final JwtAuthConverter jwtAuthConverter;
 
+  private final CorsConfigurationSource corsConfigurationSource;
+
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
+      .cors(cors -> cors.configurationSource(corsConfigurationSource))
       .csrf(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(
           "/v3/api-docs/**",
           "/swagger-ui/**",
-          "/swagger-ui.html")
+          "/swagger-ui.html",
+          "/api/v1/token")
         .permitAll()
-
-        .requestMatchers("/api/**")
-        .authenticated()
         .anyRequest()
         .authenticated()
       );

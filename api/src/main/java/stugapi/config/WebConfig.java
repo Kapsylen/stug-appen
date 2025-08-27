@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
 
       // Add CORS mapping for H2 console
       registry.addMapping("/h2-console/**")
-        .allowedOrigins("http://localhost:8080")
+        .allowedOrigins("http://localhost:8081")
         .allowedMethods("GET", "POST")
         .allowedHeaders("*");
     }
