@@ -1,29 +1,50 @@
 import {Arende, NewArende} from '../model/arenden';
-import {afterNextRender, DestroyRef, inject, Injectable, signal} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {
+  afterNextRender,
+  DestroyRef,
+  effect,
+  inject,
+  Injectable,
+  Injector,
+  runInInjectionContext,
+  signal
+} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {TokenService} from './token.service';
 
 @Injectable({providedIn: 'root'})
 export class ArendeService {
 
   private arenden = signal<Arende[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8080/api/v1/arende';
   private destroyRef =inject(DestroyRef);
+  private baseUrl = 'http://localhost:8081/api/v1';
+  private tokenService = inject(TokenService);
 
-  constructor(private httpClient: HttpClient) {
-    afterNextRender(() => {
-      try {
-        this.fetchArende();
-      } catch (e) {
-        console.error('Failed to parse arenden data from localStorage:', e);
-      }
+  constructor(
+    private httpClient: HttpClient,
+    private injector: Injector,
+  ) {
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        const token = this.tokenService.fetchToken();
+        if (token) {
+          this.fetchArende();
+        }
+      });
     });
+
   }
 
   fetchArende() {
+    const token = this.tokenService.fetchToken();
+    const headers = new HttpHeaders()
+      .set('Authorization', `Bearer ${token?.access_token}`);
+
     const subscription = this.httpClient
-      .get<Arende[]>(this.baseUrl, {
+      .get<Arende[]>(this.baseUrl + '/arende', {
         observe: 'body',
-        responseType: 'json'
+        responseType: 'json',
+        headers: headers
       })
       .subscribe({
         next: (arendenData) => {

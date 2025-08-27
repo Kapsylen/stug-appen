@@ -1,83 +1,53 @@
-import {Arende, NewArende} from '../model/arenden';
-import {afterNextRender, DestroyRef, inject, Injectable, signal} from '@angular/core';
+import {DestroyRef, inject, Injectable, Injector, runInInjectionContext, signal} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {TokenResponse} from '../model/token';
 
 @Injectable({providedIn: 'root'})
-export class ArendeService {
+export class TokenService {
 
-  private arenden = signal<Arende[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8081/api/v1/arende';
+  private baseUrl = 'http://localhost:8081/api/v1/token';
   private destroyRef =inject(DestroyRef);
+  private token = signal<TokenResponse | undefined>(undefined);
 
-  constructor(private httpClient: HttpClient) {
-    afterNextRender(() => {
+  constructor(
+    private httpClient: HttpClient,
+    private injector: Injector,
+  ) {
+    runInInjectionContext(this.injector, () => {
       try {
-        this.fetchArende();
+        this.fetchToken();
       } catch (e) {
-        console.error('Failed to parse arenden data from localStorage:', e);
+        console.error('Failed to fetch bearer token', e);
       }
     });
   }
 
-  fetchArende() {
-
-    const token =
-
+   fetchToken() {
     const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token}`);
+      .set('grantType', 'password')
+      .set('clientId', 'stug-rest-api')
+      .set('username', 'sebsve')
+      .set('password', 'sebsve');
 
     const subscription = this.httpClient
-      .get<Arende[]>(this.baseUrl, {
+      .get<TokenResponse>(this.baseUrl, {
         observe: 'body',
         responseType: 'json',
-        headers: headers
+        headers: headers,
       })
       .subscribe({
-        next: (arendenData) => {
-          console.log(arendenData);
-          this.arenden.set(arendenData);
+        next: (token) => {
+          this.token.set(token);
+        },
+        error: (error) => {
+          console.error('Failed to fetch bearer token', error);
         }
       });
 
     this.destroyRef.onDestroy(() => {
       subscription.unsubscribe();
     });
-  }
-
-  deleteArenden(id: string) {
-    this.httpClient.delete(this.baseUrl + '/' + id).subscribe();
-    this.arenden.update(arendeData => arendeData?.filter(a => a.id !== id));
-    console.log('Arenden deleted successfully');
-  }
-
-  saveArende(newArende: NewArende) {
-    console.log(newArende);
-    this.httpClient.post<Arende>(this.baseUrl, newArende)
-      .subscribe({
-        next: (newArendeData) => {
-          console.log({...newArendeData});
-          this.arenden.update(arendenList => [
-            ...(arendenList ?? []),
-            newArendeData
-          ])
-        },
-        error: (error) => {
-          console.error('Failed to save arenden:', error);
-        }
-      })
-  }
-
-  editArende(arende: Arende) {
-    this.httpClient.put(this.baseUrl + '/' + arende.id, arende)
-      .subscribe({
-        next: (arendeData) => {
-          console.log('Arenden updated: ' + arendeData);
-        }
-      });
-  }
-
-  getArenden() {
-    return this.arenden;
+    return this.token();
   }
 }
 

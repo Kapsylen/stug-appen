@@ -1,29 +1,48 @@
-import {afterNextRender, DestroyRef, inject, Injectable, signal} from '@angular/core';
+import {
+  DestroyRef,
+  effect,
+  inject,
+  Injectable,
+  Injector,
+  runInInjectionContext,
+  signal
+} from '@angular/core';
 import {NewUtlagg, Utlagg} from '../model/utlagg';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {TokenService} from './token.service';
 
 @Injectable({providedIn: 'root'})
 export class UtlaggService {
 
   private utlagg =  signal<Utlagg[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8080/api/v1/utlagg';
+  private baseUrl = 'http://localhost:8081/api/v1';
   private destroyRef = inject(DestroyRef);
+  private tokenService = inject(TokenService);
 
-  constructor(private httpClient: HttpClient) {
-    afterNextRender(() => {
-        try {
+  constructor(
+    private httpClient: HttpClient,
+    private injector: Injector,
+  ) {
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        const token = this.tokenService.fetchToken();
+        if (token) {
           this.fetchUtlagg();
-        } catch (e) {
-          console.error('Failed to parse utlagg data from localStorage:', e);
         }
+      });
     });
   }
 
   fetchUtlagg() {
+    const token = this.tokenService.fetchToken();
+    const headers = new HttpHeaders()
+      .set('Authorization', `Bearer ${token?.access_token}`);
+
     const subscription = this.httpClient
-      .get<Utlagg[]>(this.baseUrl, {
+      .get<Utlagg[]>(this.baseUrl + '/utlagg', {
         observe: 'body',
-        responseType: 'json'
+        responseType: 'json',
+        headers: headers
       })
       .subscribe({
         next: (utlaggData) => {
