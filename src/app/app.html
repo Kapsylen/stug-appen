@@ -2,10 +2,12 @@
 <main>
   <div id="menu-buttons">
     <app-homebutton (homeEvent)="onClickedHome()">Home</app-homebutton>
-    <app-utlaggbutton (utlaggEvent)="onClickedUtlagg()">Utlägg</app-utlaggbutton>
-    <app-fakturabutton (fakturaEvent)="onClickedFakturor()">Faktura</app-fakturabutton>
-    <app-kontakterbutton (kontaktEvent)="onClickedKontakter()">Kontakter></app-kontakterbutton>
-    <app-arendenbutton (arendenEvent)="onClickedArenden()">Arende</app-arendenbutton>
+    @if (authenticated) {
+      <app-utlaggbutton (utlaggEvent)="onClickedUtlagg()">Utlägg</app-utlaggbutton>
+      <app-fakturabutton (fakturaEvent)="onClickedFakturor()">Faktura</app-fakturabutton>
+      <app-kontakterbutton (kontaktEvent)="onClickedKontakter()">Kontakter></app-kontakterbutton>
+      <app-arendenbutton (arendenEvent)="onClickedArenden()">Arende</app-arendenbutton>
+    }
     @if (!authenticated) {
       <app-loginbutton id="login-btn" (loginEvent)="onClickedLogin()">Login</app-loginbutton>
     } @else {

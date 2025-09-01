@@ -19,7 +19,10 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/assets"
+              "src/favicon.ico",
+              "src/assets",
+              "src/silent-check-sso.html"
+
             ],
             "styles": [
               "src/styles.css"

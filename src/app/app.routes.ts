@@ -5,6 +5,8 @@ import {HomeComponent} from './components/home/home.component';
 import {UtlaggComponent} from './components/utlagglista/utlagg.component';
 import {FakturaComponents} from './components/fakturor/faktura/faktura.components';
 import {canActivateAuthRole} from './guards/auth-role.guard';
+import {KontakterComponent} from './components/kontakter/kontakter.component';
+import {ArendenComponent} from './components/arenden/arenden.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,15 +24,15 @@ export const routes: Routes = [
   },
   {
     path: 'kontakter',
-    component: FakturaComponents,
+    component: KontakterComponent,
     canActivate: [canActivateAuthRole],
-    data: { role: 'view-fakturor' }
+    data: { role: 'view-kontakter' }
   },
   {
     path: 'arenden',
-    component: FakturaComponents,
+    component: ArendenComponent,
     canActivate: [canActivateAuthRole],
-    data: { role: 'view-fakturor' }
+    data: { role: 'view-arenden' }
   },
   { path: 'forbidden', component: ForbiddenComponent },
   { path: '**', component: NotFoundComponent }
