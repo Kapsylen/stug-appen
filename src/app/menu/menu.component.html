@@ -1,0 +1,7 @@
+<nav id="menu">
+  <a routerLink="/" class="action-item">Home</a>
+  <a routerLink="/utlagg" class="action-item" *kaHasRoles="['view-utlagg']"><app-utlaggbutton/></a>
+  <a routerLink="/fakturor" class="action-item" *kaHasRoles="['view-fakturor']"><app-fakturabutton/></a>
+  <a routerLink="/kontakter" class="action-item" *kaHasRoles="['view-kontakter']"><app-kontakterbutton/></a>
+  <a routerLink="/arenden" class="action-item" *kaHasRoles="['view-arenden']"><app-arendenbutton/></a>
+</nav>

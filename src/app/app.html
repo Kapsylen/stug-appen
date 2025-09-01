@@ -1,11 +1,21 @@
-<app-header></app-header>
+<app-header/>
 <main>
-  <div id="bar-buttons">
+  <div id="menu-buttons">
+    <app-homebutton (homeEvent)="onClickedHome()">Home</app-homebutton>
     <app-utlaggbutton (utlaggEvent)="onClickedUtlagg()">Utlägg</app-utlaggbutton>
     <app-fakturabutton (fakturaEvent)="onClickedFakturor()">Faktura</app-fakturabutton>
     <app-kontakterbutton (kontaktEvent)="onClickedKontakter()">Kontakter></app-kontakterbutton>
     <app-arendenbutton (arendenEvent)="onClickedArenden()">Arende</app-arendenbutton>
+    @if (!authenticated) {
+      <app-loginbutton id="login-btn" (loginEvent)="onClickedLogin()">Login</app-loginbutton>
+    } @else {
+      <app-logoutbutton id="logout-btn" (logoutEvent)="onClickedLogout()">Logout</app-logoutbutton>
+    }
+
   </div>
+  @if (isHomeClicked) {
+    <app-home/>
+  }
   @if (isArendenClicked) {
     <app-arenden/>
   }
@@ -17,5 +27,11 @@
   }
   @if (isUtlaggClicked) {
     <app-utlagglista/>
+  }
+  @if (isLoginClicked) {
+    <app-loginbutton/>
+  }
+  @if (isLogoutClicked) {
+    <app-logoutbutton/>
   }
 </main>

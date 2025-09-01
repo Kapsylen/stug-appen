@@ -3,17 +3,23 @@ import {UtlaggbuttonComponent} from './utlaggbutton/utlaggbutton.component';
 import {FakturabuttonComponent} from './fakturabutton/fakturabutton.component';
 import {KontakterbuttonComponent} from './kontakterbutton/kontakterbutton.component';
 import {ArendenbuttonComponent} from './arendenbutton/arendenbutton.component';
+import {RouterLink, RouterModule} from '@angular/router';
+import {HasRolesDirective} from 'keycloak-angular';
 
 @Component({
-  selector: 'app-buttons',
+  selector: 'app-menu',
   imports: [
     UtlaggbuttonComponent,
     FakturabuttonComponent,
     KontakterbuttonComponent,
-    ArendenbuttonComponent
+    ArendenbuttonComponent,
+    RouterLink,
+    RouterModule,
+    HasRolesDirective,
   ],
-  templateUrl: './buttons.component.html',
-  styleUrl: './buttons.component.css'
+  templateUrl: './menu.component.html',
+  styleUrl: './menu.component.css'
 })
-export class ButtonsComponent {
+export class MenuComponent {
+
 }
