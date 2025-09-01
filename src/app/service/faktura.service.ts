@@ -1,5 +1,4 @@
 import {
-  afterNextRender,
   DestroyRef,
   effect,
   inject,
