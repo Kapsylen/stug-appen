@@ -15,13 +15,14 @@ import static stugapi.presentation.dto.UtlaggDto.toUtlaggDtoBuilder;
 @RestController
 @RequestMapping("api/v1/utlagg")
 @AllArgsConstructor
-@PreAuthorize("hasRole('client_admin')")
+@PreAuthorize("hasRole('admin_user')")
 public class UtlaggController {
 
   private final UtlaggService utlaggService;
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public UtlaggDto saveUtlagg(@RequestBody @Valid UtlaggDto utlaggDto) {
     return toUtlaggDtoBuilder(utlaggService.saveUtlagg(utlaggDto))
       .build();
@@ -29,23 +30,30 @@ public class UtlaggController {
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasRole('admin_user')")
   public void deleteUtlagg(@PathVariable String id) {
     utlaggService.delete(id);
   }
 
   @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public UtlaggDto getUtlagg(@PathVariable String id) {
     return toUtlaggDtoBuilder(utlaggService.find(id))
       .build();
   }
 
   @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public UtlaggDto updateUtlagg(@PathVariable String id, @RequestBody UtlaggDto updateUtlagg) {
     return toUtlaggDtoBuilder(utlaggService.update(id, updateUtlagg))
       .build();
   }
 
   @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public List<UtlaggDto> getAllUtlagg() {
     return utlaggService.findAll()
       .stream()
@@ -55,6 +63,7 @@ public class UtlaggController {
 
   @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasRole('admin_user')")
   public void deleteAllUtlagg() {
     utlaggService.deleteAll();
   }

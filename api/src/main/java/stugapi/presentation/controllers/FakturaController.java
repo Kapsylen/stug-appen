@@ -17,13 +17,13 @@ import static stugapi.presentation.dto.FakturaDto.toFakturaDtoBuilder;
 @RequestMapping("api/v1/faktura")
 @AllArgsConstructor
 @Slf4j
-@PreAuthorize("hasRole('client_admin')")
 public class FakturaController {
 
   private final FakturaService fakturaService;
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public FakturaDto createFaktura(@RequestBody  @Valid FakturaDto fakturaDto) {
     log.info("createFaktura: {}", fakturaDto);
     return toFakturaDtoBuilder(fakturaService.saveFaktura(fakturaDto))
@@ -32,23 +32,30 @@ public class FakturaController {
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasRole('admin_user')")
   public void deleteFaktura(@PathVariable String id) {
     fakturaService.delete(id);
   }
 
   @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public FakturaDto updateFaktura(@PathVariable String id, @Valid @RequestBody FakturaDto updateFaktura) {
     return toFakturaDtoBuilder(fakturaService.update(id, updateFaktura))
       .build();
   }
 
   @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public FakturaDto getFaktura(@PathVariable String id) {
     return toFakturaDtoBuilder(fakturaService.find(id))
       .build();
   }
 
   @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public List<FakturaDto> getAllFaktura() {
     return fakturaService.findAll()
       .stream()
@@ -57,6 +64,8 @@ public class FakturaController {
   }
 
   @DeleteMapping
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasRole('admin_user')")
   public void deleteAllFaktura() {
     fakturaService.deleteAll();
   }

@@ -13,13 +13,14 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/kontakt")
 @AllArgsConstructor
-@PreAuthorize("hasRole('client_admin')")
+@PreAuthorize("hasRole('admin_user')")
 public class KontaktController {
 
   private final KontaktService kontaktService;
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public KontaktDto createKontakt(@RequestBody @Valid KontaktDto kontaktDto) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.saveKontakt(kontaktDto))
       .build();
@@ -32,18 +33,24 @@ public class KontaktController {
   }
 
   @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasRole('admin_user')")
   public KontaktDto getKontakt(@PathVariable String id) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.find(id))
       .build();
   }
 
   @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public KontaktDto updateKontakt(@PathVariable String id, @RequestBody KontaktDto updateKontakt) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.update(id, updateKontakt))
       .build();
   }
 
   @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public List<KontaktDto> getAllKontakt() {
     return kontaktService.findAll()
       .stream()
@@ -53,6 +60,7 @@ public class KontaktController {
 
   @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasRole('admin_user')")
   public void deleteAllKontakt() {
     kontaktService.deleteAll();
   }

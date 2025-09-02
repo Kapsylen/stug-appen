@@ -17,13 +17,13 @@ import static stugapi.presentation.dto.ArendeDto.toArendeDtoBuilder;
 @RequestMapping("api/v1/arende")
 @AllArgsConstructor
 @Slf4j
-@PreAuthorize("hasRole('client_admin')")
 public class ArendeController {
 
   private final ArendeService arendeService;
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public ArendeDto createArende(@RequestBody @Valid ArendeDto arendeDto) {
     log.info("createArende {}", arendeDto);
     return toArendeDtoBuilder(arendeService.saveArende(arendeDto))
@@ -32,12 +32,14 @@ public class ArendeController {
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasRole('admin_user')")
   public void deleteArende(@PathVariable String id) {
     arendeService.deleteById(id);
   }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public ArendeDto getArende(@PathVariable String id) {
     return toArendeDtoBuilder(arendeService.findById(id))
       .build();
@@ -45,6 +47,7 @@ public class ArendeController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasRole('admin_user')")
   public ArendeDto updateArende(@PathVariable String id, @Valid @RequestBody ArendeDto updateArende) {
     return toArendeDtoBuilder(arendeService.update(id, updateArende))
       .build();
@@ -52,12 +55,14 @@ public class ArendeController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public List<ArendeDto> getAllArende() {
     return arendeService.findAll().stream().map(arenden -> ArendeDto.toArendeDtoBuilder(arenden).build()).toList();
   }
 
   @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasRole('admin_user')")
   public void deleteAllArende() {
     arendeService.deleteAll();
   }

@@ -16,7 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
         .allowCredentials(true)
         .maxAge(3600);
 
-
       // Add CORS mapping for H2 console
       registry.addMapping("/h2-console/**")
         .allowedOrigins("http://localhost:8081")
