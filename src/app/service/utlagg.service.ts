@@ -9,15 +9,13 @@ import {
 } from '@angular/core';
 import {NewUtlagg, Utlagg} from '../model/utlagg';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {TokenService} from './token.service';
 
 @Injectable({providedIn: 'root'})
 export class UtlaggService {
 
-  private utlagg =  signal<Utlagg[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8081/api/v1';
+  private utlagg = signal<Utlagg[] | undefined>(undefined);
+  private baseUrl = 'http://localhost:8081/api/v1/utlagg';
   private destroyRef = inject(DestroyRef);
-  private tokenService = inject(TokenService);
 
   constructor(
     private httpClient: HttpClient,
@@ -25,21 +23,16 @@ export class UtlaggService {
   ) {
     runInInjectionContext(this.injector, () => {
       effect(() => {
-        const token = this.tokenService.fetchToken();
-        if (token) {
-          this.fetchUtlagg();
-        }
+        this.fetchUtlagg();
       });
     });
   }
 
   fetchUtlagg() {
-    const token = this.tokenService.fetchToken();
     const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token?.access_token}`);
 
     const subscription = this.httpClient
-      .get<Utlagg[]>(this.baseUrl + '/utlagg', {
+      .get<Utlagg[]>(this.baseUrl, {
         observe: 'body',
         responseType: 'json',
         headers: headers
@@ -86,8 +79,8 @@ export class UtlaggService {
       .subscribe({
         next: (utlaggData) => {
           console.log('Utlagg updated: ' + utlaggData);
-        // TBD
-        //  this.utlagg = this.utlagg.map(u => u.id === utlaggData.id ? utlaggData : u);
+          // TBD
+          //  this.utlagg = this.utlagg.map(u => u.id === utlaggData.id ? utlaggData : u);
         }
       });
   }

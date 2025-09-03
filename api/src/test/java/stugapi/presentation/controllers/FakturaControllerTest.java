@@ -10,7 +10,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,6 +20,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import stugapi.application.domain.model.Faktura;
 import stugapi.application.domain.model.FakturaEnhet;
 import stugapi.application.service.FakturaService;
+import stugapi.config.SecurityConfig;
+import stugapi.infrastructure.entities.FakturaEntity;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
 import stugapi.presentation.dto.FakturaDto;
 import stugapi.presentation.dto.FakturaDto.FakturaDtoBuilder;
@@ -37,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(FakturaController.class)
+@Import(SecurityConfig.class)
 class FakturaControllerTest {
 
   public static final String BASE_URL = "/api/v1/faktura";
@@ -55,6 +60,7 @@ class FakturaControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
   void whenPostFaktura_thenCreateFaktura() throws Exception {
 
     Instant issueDate = Instant.now();
@@ -108,6 +114,7 @@ class FakturaControllerTest {
 
 
   @Test
+  @WithMockUser(roles = "admin_user")
   void whenDeleteFaktura_thenDeleteFaktura() throws Exception {
     mvc.perform(MockMvcRequestBuilders
       .delete(BASE_URL + "/12345678-1234-1234-1234-123456789012")
@@ -118,6 +125,18 @@ class FakturaControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  void whenDeleteFaktura_withNonAdminUser_thenForbidden() throws Exception {
+    mvc.perform(MockMvcRequestBuilders
+        .delete(BASE_URL + "/12345678-1234-1234-1234-123456789012")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(MockMvcResultMatchers.status()
+        .isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "base_user")
   void whenGetFaktura_thenReturnFaktura() throws Exception {
     var id = UUID.randomUUID().toString();
     Instant duedate = Instant.now().plus(Period.ofDays(30));
@@ -145,6 +164,7 @@ class FakturaControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetAllFaktura_thenReturnAllFaktura() throws Exception {
     Instant duedate = Instant.now().plus(Period.ofDays(30));
     Instant dueDate2 = Instant.now().plus(Period.ofDays(90));
@@ -185,6 +205,7 @@ class FakturaControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "admin_user")
   public void whenDeleteAllFaktura_thenNoContentIsReturned() throws Exception {
     mvc.perform(MockMvcRequestBuilders
       .delete(BASE_URL + "/" + UUID.randomUUID())
@@ -194,24 +215,40 @@ class FakturaControllerTest {
         .isNoContent());
   }
 
+@Test
+@WithMockUser(roles = "base_user")
+public void whenDeleteAllFaktura_withNonAdminUser_thenForbidden() throws Exception {
+  mvc.perform(MockMvcRequestBuilders
+      .delete(BASE_URL + "/" + UUID.randomUUID())
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON))
+    .andExpect(MockMvcResultMatchers.status()
+      .isForbidden());
+}
+
   @Test
+  @WithMockUser(roles = "admin_user")
   public void whenPutFaktura_thenUpdateFaktura() throws Exception {
     Instant dueDate = Instant.now().plus(Period.ofDays(30));
     var id = UUID.randomUUID().toString();
     FakturaDto inputUpdateFaktura = FakturaDto.builder()
+      .id(id)
       .invoiceNumber("Test invoice number")
       .clientName("Test client name")
       .dueDate(dueDate)
       .items(List.of(
         createArendeEnhetBuilder()
+          .id(UUID.randomUUID().toString())
+          .description("Test description")
+          .price(1000.00)
+          .quantity(2)
           .build()
       ))
-      .totalAmount(1000.00)
       .status("SENT")
       .build();
 
-    Faktura outputUpdatedFaktura = Faktura.fromFakturaDto(inputUpdateFaktura)
-      .id(id)
+    Faktura outputUpdatedFaktura = Faktura.fromFakturaEntity(FakturaEntity.fromFaktura(Faktura.fromFakturaDto(inputUpdateFaktura)
+        .build()).build())
       .build();
 
     given(fakturaService.update(id, inputUpdateFaktura)).willReturn(outputUpdatedFaktura);
@@ -227,12 +264,42 @@ class FakturaControllerTest {
       .andExpect(MockMvcResultMatchers.jsonPath("$.clientName").value("Test client name"))
       .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$.dueDate").value(outputUpdatedFaktura.dueDate().toString()))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.totalAmount").value(1000.00));
+      .andExpect(MockMvcResultMatchers.jsonPath("$.totalAmount").value(2000.00));
 
     verify(fakturaService).update(id, inputUpdateFaktura);
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  public void whenPutFaktura_withNonAdminUser_thenForbidden() throws Exception {
+    Instant dueDate = Instant.now().plus(Period.ofDays(30));
+    var id = UUID.randomUUID().toString();
+    FakturaDto inputUpdateFaktura = FakturaDto.builder()
+      .id(id)
+      .invoiceNumber("Test invoice number")
+      .clientName("Test client name")
+      .dueDate(dueDate)
+      .items(List.of(
+        createArendeEnhetBuilder()
+          .id(UUID.randomUUID().toString())
+          .description("Test description")
+          .price(1000.00)
+          .quantity(2)
+          .build()
+      ))
+      .status("SENT")
+      .build();
+
+    mvc.perform(MockMvcRequestBuilders
+        .put(BASE_URL + "/{id}", id)
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(inputUpdateFaktura)))
+      .andExpect(MockMvcResultMatchers.status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetById_nonExistingFaktura_thenReturn404() throws Exception {
 
     String nonExistingId = "non-existing-id";
@@ -253,6 +320,7 @@ class FakturaControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidClientNameCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andClientNameIsNullOrBlankOrNotBetween3And100Characters_thenReturn400(String clientName, String expectedError) throws Exception {
 
     // Given
@@ -299,6 +367,7 @@ class FakturaControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
   void whenCreate_dueDateIsNull_thenReturn400() throws Exception {
     // Given
     FakturaDto invalidInput = createFakturaDtoBuilder()
@@ -320,6 +389,7 @@ class FakturaControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidFakturaEnhetDescriptionCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_itemsDescriptionIsNullOrEmptyOrNotMatchValidString_thenReturn400(String description, String expectedError) throws Exception {
 
     // Given
@@ -364,6 +434,7 @@ class FakturaControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidFakturaEnhetQuantityCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andFakturaIsNullOrEmptyOrNotMatchValidString_thenReturn400(Integer quantity, String expectedError) throws Exception {
 
     // Given
@@ -399,6 +470,7 @@ class FakturaControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidFakturaEnhetPriceCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andFakturaIsNullOrEmptyOrNotMatchValidPrice_thenReturn400(Double price, String expectedError) throws Exception {
     // Given
     FakturaDto invalidInput = createFakturaDtoBuilder()
@@ -430,6 +502,7 @@ class FakturaControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidTypeCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andStatusNullOrEmptyOrNotMatchValidString_thenReturn400(String status, String expectedError) throws Exception {
 
     // Given

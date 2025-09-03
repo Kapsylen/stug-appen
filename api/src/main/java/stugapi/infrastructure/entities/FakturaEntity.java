@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import stugapi.application.domain.model.Faktura;
+import stugapi.application.domain.model.FakturaEnhet;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
 
 import java.time.Instant;
@@ -65,7 +66,11 @@ public class FakturaEntity {
       .dueDate(faktura.dueDate())
       .items(faktura.items() != null
         ? faktura.items().stream().map(FakturaEnhetEntity::toFakturaEnhetEntity).toList() : List.of())
-      .totalAmount(faktura.totalAmount())
+      .totalAmount(subTotalAmount(faktura.items() != null ? faktura.items() : List.of()))
       .status(faktura.status());
+  }
+
+  private static Double subTotalAmount(List<FakturaEnhet> fakturaEnheter) {
+    return fakturaEnheter.stream().mapToDouble(FakturaEnhet::total).sum();
   }
 }

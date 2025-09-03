@@ -8,16 +8,14 @@ import {
   signal
 } from '@angular/core';
 import {Kontakt, NewKontakt} from '../model/kontakt';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {TokenService} from './token.service';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({providedIn: 'root'})
 export class KontaktService {
 
   private kontakter = signal<Kontakt[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8081/api/v1';
+  private baseUrl = 'http://localhost:8081/api/v1/kontakt';
   private destroyRef = inject(DestroyRef);
-  private tokenService = inject(TokenService);
 
   constructor(
     private httpClient: HttpClient,
@@ -25,23 +23,16 @@ export class KontaktService {
   ) {
     runInInjectionContext(this.injector, () => {
       effect(() => {
-        const token = this.tokenService.fetchToken();
-        if (token) {
-          this.fetchKontakter();
-        }
+        this.fetchKontakter();
       });
     });
   }
 
   fetchKontakter() {
-    const token = this.tokenService.fetchToken();
-    const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token?.access_token}`);
     const subscription = this.httpClient
-      .get<Kontakt[]>(this.baseUrl + '/kontakt', {
+      .get<Kontakt[]>(this.baseUrl, {
         observe: 'body',
-        responseType: 'json',
-        headers: headers
+        responseType: 'json'
       })
       .subscribe({
         next: (kontakterData) => {

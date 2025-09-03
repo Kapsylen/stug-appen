@@ -9,14 +9,17 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.method.P;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import stugapi.application.domain.model.Utlagg;
 import stugapi.application.service.UtlaggService;
+import stugapi.config.SecurityConfig;
 import stugapi.presentation.dto.UtlaggDto;
 import stugapi.presentation.dto.UtlaggDto.UtlaggDtoBuilder;
 
@@ -34,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(UtlaggController.class)
+@Import(SecurityConfig.class)
 public class UtlaggControllerTest {
 
   public static final String BASE_URL = "/api/v1/utlagg";
@@ -52,6 +56,7 @@ public class UtlaggControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
   public void whenPostUtlagg_thenCreateUtlagg() throws Exception {
 
     Instant outlayDate = Instant.now();
@@ -77,6 +82,7 @@ public class UtlaggControllerTest {
 
 
   @Test
+  @WithMockUser(roles = "admin_user")
   public void whenDeleteUtlagg_thenDeleteUtlagg() throws Exception {
     mvc.perform(MockMvcRequestBuilders
         .delete(BASE_URL + "/" + UUID.randomUUID())
@@ -87,6 +93,18 @@ public class UtlaggControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  public void whenDeleteUtlagg_thenForbidden() throws Exception {
+    mvc.perform(MockMvcRequestBuilders
+        .delete(BASE_URL + "/" + UUID.randomUUID())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status()
+        .isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetUtlagg_thenReturnUtlagg() throws Exception {
     Instant outlayDate = Instant.now();
     String id = UUID.randomUUID().toString();
@@ -109,6 +127,7 @@ public class UtlaggControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetAllUtlagg_thenReturnAllUtlagg() throws Exception {
     Instant outlayDate = Instant.now();
     Utlagg utlagg1 = Utlagg.fromUtlaggDto(createUtlaggDtoBuilder()
@@ -146,6 +165,7 @@ public class UtlaggControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "admin_user")
   public void whenDeleteAllUtlagg_thenNoContentIsReturned() throws Exception {
     mvc.perform(MockMvcRequestBuilders
         .delete(BASE_URL)
@@ -158,6 +178,18 @@ public class UtlaggControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  public void whenDeleteAllUtlagg_thenForbidden() throws Exception {
+    mvc.perform(MockMvcRequestBuilders
+        .delete(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status()
+        .isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "admin_user")
   public void whenPutUtlagg_thenUpdateUtlagg() throws Exception {
     Instant outlayDate = Instant.now();
     Double price = 2000.00;
@@ -187,8 +219,33 @@ public class UtlaggControllerTest {
     verify(utlaggService).update(id, inputUtlagg);
   }
 
+  @Test
+  @WithMockUser(roles = "base_user")
+  public void whenPutUtlagg_thenForbidden() throws Exception {
+    Instant outlayDate = Instant.now();
+    Double price = 2000.00;
+    String id = UUID.randomUUID().toString();
+    UtlaggDto inputUtlagg = createUtlaggDtoBuilder().build();
+
+    Utlagg outputUtlagg = Utlagg.fromUtlaggDto(inputUtlagg)
+      .id(id)
+      .outlayDate(outlayDate)
+      .price(price)
+      .build();
+
+    given(utlaggService.update(id, inputUtlagg)).willReturn(outputUtlagg);
+
+    mvc.perform(MockMvcRequestBuilders
+        .put(BASE_URL + "/{id}", id)
+        .content(mapper.writeValueAsBytes(inputUtlagg))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isForbidden());
+  }
+
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidTitleCases")
+  @WithMockUser(roles = "base_user")
   public void whenPostUtlagg_thenInvalidTitle(String title, String expectedError) throws Exception {
     // Given
 
@@ -220,6 +277,7 @@ public class UtlaggControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidDescriptionCases")
+  @WithMockUser(roles = "base_user")
   public void whenPostUtlagg_thenInvalidDescription(String description, String expectedError) throws Exception {
     // Given
 
@@ -251,6 +309,7 @@ public class UtlaggControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidOutlayDateCases")
+  @WithMockUser(roles = "base_user")
   public void whenPostUtlagg_thenInvalidOutlayDate(Instant outlayDate, String expectedError) throws Exception {
     // Given
 
@@ -280,6 +339,7 @@ public class UtlaggControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidPriceCases")
+  @WithMockUser(roles = "base_user")
   public void whenPostUtlagg_thenInvalidPrice(Double price, String expectedError) throws Exception {
     // Given
 

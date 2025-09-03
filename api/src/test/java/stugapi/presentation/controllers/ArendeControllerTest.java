@@ -1,5 +1,6 @@
 package stugapi.presentation.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,15 +9,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import stugapi.application.domain.model.Arende;
 import stugapi.application.domain.model.ArendeStatus;
 import stugapi.application.service.ArendeService;
+import stugapi.config.SecurityConfig;
 import stugapi.infrastructure.entities.enums.Prioritet;
 import stugapi.infrastructure.entities.enums.Status;
 import stugapi.infrastructure.entities.enums.Typ;
@@ -38,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static stugapi.application.domain.model.Arende.fromArendeDto;
 
 @WebMvcTest(ArendeController.class)
+@Import(SecurityConfig.class)
 public class ArendeControllerTest {
 
   @Autowired
@@ -57,6 +64,7 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
   public void whenPostArende_thenCreateArende() throws Exception {
 
     Instant createdAt = Instant.now();
@@ -94,6 +102,8 @@ public class ArendeControllerTest {
     given(arendeService.saveArende(input)).willReturn(output);
 
     mvc.perform(post(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+
         .content(mapper.writeValueAsString(input))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
@@ -125,6 +135,7 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "admin_user")
   public void whenDeleteArende_thenDeleteArende() throws Exception {
     mvc.perform(delete(BASE_URL + "/" + UUID.randomUUID())
         .contentType(MediaType.APPLICATION_JSON)
@@ -134,6 +145,17 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  public void whenDeleteArende_thenForbidden() throws Exception {
+    mvc.perform(delete(BASE_URL + "/" + UUID.randomUUID())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status()
+        .isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "admin_user")
   public void whenPutArende_thenUpdateArende() throws Exception {
     String id = UUID.randomUUID().toString();
     Instant createdAt = Instant.now();
@@ -232,6 +254,44 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(username = "base_user")
+  public void whenPutArende_forbidden() throws Exception {
+    String id = UUID.randomUUID().toString();
+    Instant createdAt = Instant.now();
+    Instant updatedAt = Instant.now();
+
+    ArendeDto inputUpdateArende = ArendeDto.builder()
+      .title("Heating System Failure")
+      .description("No heat output from radiators, temperature dropping")
+      .type(Typ.UTILITY.name())
+      .priority(Prioritet.HIGH.name())
+      .status(Status.IN_PROGRESS.name())
+      .reportedBy("Maria Svensson")
+      .assignedTo("John Doe")
+      .location("Entire Cottage")
+      .estimatedCost(8000.0)
+      .startTime(createdAt)
+      .requiresContractor(true)
+      .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
+      .updates(List.of(ArendeStatusDto.builder()
+        .updatedBy("Maria Svensson")
+        .message("Replaced damaged pipe and repaired floor")
+        .build()))
+      .tags(List.of("heating", "urgent"))
+      .createdAt(createdAt)
+      .updatedAt(updatedAt)
+      .build();
+
+    mvc.perform(MockMvcRequestBuilders
+        .put(BASE_URL + "/{id}", id)
+        .content(mapper.writeValueAsString(inputUpdateArende))
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetArende_thenReturnArende() throws Exception {
     String id = UUID.randomUUID().toString();
     Instant createdAt = Instant.now();
@@ -293,6 +353,7 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetAllArende_thenReturnAllArende() throws Exception {
     String id1 = UUID.randomUUID().toString();
     String id2 = UUID.randomUUID().toString();
@@ -430,6 +491,7 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "admin_user")
   public void whenDeleteAllArenden_thenReturnEmptyList() throws Exception {
     given(arendeService.findAll()).willReturn(List.of());
     mvc.perform(delete(BASE_URL)
@@ -438,9 +500,20 @@ public class ArendeControllerTest {
       .andExpect(status().isNoContent());
   }
 
+  @Test
+  @WithMockUser(roles = "base_user")
+  public void whenDeleteArende_forbidden() throws Exception {
+    given(arendeService.findAll()).willReturn(List.of());
+    mvc.perform(delete(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isForbidden());
+  }
+
   // Unhappy cases
 
   @Test
+  @WithMockUser(roles = "base_user")
   void whenGetById_nonExistingArende_thenReturn404() throws Exception {
     // Given
     String nonExistingId = "non-existing-id";
@@ -460,6 +533,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidTitleCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andTitleIsNullOrBlankOrNotBetween3And100Characters_thenReturn400(String title, String expectedError) throws Exception {
 
     // Given
@@ -507,6 +581,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidDescriptionCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andDescriptionIsNullOrBlankOrExceeds1000Characters_thenReturn400(String description, String expectedError) throws Exception {
 
     // Given
@@ -550,6 +625,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidTypeCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andTypeNullOrEmptyOrNotMatchValidString_thenReturn400(String type, String expectedError) throws Exception {
 
     // Given
@@ -591,6 +667,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidPriorityCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andPriorityIsNullOrEmptyOrNotMatchValidString_thenReturn400(String priority, String expectedError) throws Exception {
 
     // Given
@@ -636,6 +713,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidStatusCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andStatusIsNullOrEmptyOrNotMatchValidString_thenReturn400(String status, String expectedError) throws Exception {
 
     // Given
@@ -681,6 +759,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidReportedByCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andReportedByIsNullOrEmptyOrNotBetween3And100Characters_thenReturn400(String reportedBy, String expectedError) throws Exception {
 
     // Given
@@ -734,6 +813,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidAssignedToCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andAssignedToyIsNullOrEmptyOrNotBetween3And100Characters_thenReturn400(String assignedTo, String expectedError) throws Exception {
 
     // Given
@@ -787,6 +867,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidEstimatedCostCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andEstimatedCostIsInvalid_thenReturn400(Double estimatedCost, String expectedError) throws Exception {
     ArendeDto invalidInput = createArendeDtoBuilder()
       .estimatedCost(estimatedCost)
@@ -816,6 +897,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidMessageCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andMessageIsNullOrBlankOrZeroOrExceeds1000Characters_thenReturn400(String message, String expectedError) throws Exception {
 
     // Given
@@ -863,6 +945,7 @@ public class ArendeControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidUpdatedByCases")
+  @WithMockUser(roles = "base_user")
   void whenCreate_andUpdatedByIsNullOrBlankOrNotBetween3And30Characters_thenReturn400(String updatedBy, String expectedError) throws Exception {
 
     // Given
@@ -921,6 +1004,7 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "admin_user")
   void whenUpdate_withNonExistingId_thenReturn404() throws Exception {
     // Given
     String nonExistingId = "non-existing-id";
@@ -962,6 +1046,42 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(username = "base_user")
+  void whenUpdate_withNonAdminUser_thenForbidden() throws Exception {
+    String nonExistingId = "non-existing-id";
+    ArendeDto inputUpdateArende = ArendeDto.builder()
+      .title("Heating System Failure")
+      .description("No heat output from radiators, temperature dropping")
+      .type(Typ.UTILITY.name())
+      .priority(Prioritet.HIGH.name())
+      .status(Status.IN_PROGRESS.name())
+      .reportedBy("Maria Svensson")
+      .assignedTo("John Doe")
+      .location("Entire Cottage")
+      .estimatedCost(8000.0)
+      .startTime(Instant.now())
+      .requiresContractor(true)
+      .contractorInfo("Heating Expert SE, Tel: 070-987-6543")
+      .updates(List.of(ArendeStatusDto.builder()
+        .updatedBy("Maria Svensson")
+        .status(Status.INVESTIGATING.name())
+        .timestamp(Instant.now())
+        .message("Emergency call placed to heating specialist")
+        .build()))
+      .tags(List.of("heating", "urgent"))
+      .build();
+    when(arendeService.update(anyString(), any(ArendeDto.class)))
+      .thenThrow(new EntityNotFoundException("Cannot update non-existing arende"));
+
+    // When & Then
+    mvc.perform(put(BASE_URL + "/{id}", nonExistingId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(inputUpdateArende)))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "admin_user")
   void whenDelete_withNonExistingId_thenReturn404() throws Exception {
     // Given
     String nonExistingId = "non-existing-id";
@@ -980,6 +1100,20 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  void whenDelete_withNonAdminUser_thenForbidden() throws Exception {
+    // Given
+    String nonExistingId = "non-existing-id";
+    doThrow(new EntityNotFoundException("Cannot delete non-existing arende"))
+      .when(arendeService).deleteById(nonExistingId);
+
+    // When & Then
+    mvc.perform(delete(BASE_URL + "/{id}", nonExistingId))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "admin_user")
   void whenInternalServerError_thenReturn500() throws Exception {
     // Given
     when(arendeService.findAll())
@@ -997,6 +1131,7 @@ public class ArendeControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "admin_user")
   void whenMethodArgumentNotValid_thenReturn400() throws Exception {
     // Given
     String emptyJson = "{}";

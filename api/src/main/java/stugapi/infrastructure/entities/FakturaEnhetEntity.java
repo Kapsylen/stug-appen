@@ -39,7 +39,7 @@ public class FakturaEnhetEntity {
       .description(item.description())
       .quantity(item.quantity())
       .price(item.price())
-      .total(item.total())
+      .total(item.quantity() * item.price())
       .build();
   }
 }

@@ -39,7 +39,7 @@ public class FakturaController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @PreAuthorize("hasAnyRole('admin_user','base_user')")
+  @PreAuthorize("hasRole('admin_user')")
   public FakturaDto updateFaktura(@PathVariable String id, @Valid @RequestBody FakturaDto updateFaktura) {
     return toFakturaDtoBuilder(fakturaService.update(id, updateFaktura))
       .build();

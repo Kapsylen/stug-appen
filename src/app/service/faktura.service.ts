@@ -9,15 +9,13 @@ import {
 } from '@angular/core';
 import {Faktura, NewFaktura} from '../model/faktura';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {TokenService} from './token.service';
 
 @Injectable({providedIn: 'root'})
 export class FakturaService {
 
-  private fakturor =  signal<Faktura[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8081/api/v1';
+  private fakturor = signal<Faktura[] | undefined>(undefined);
+  private baseUrl = 'http://localhost:8081/api/v1/faktura';
   private destroyRef = inject(DestroyRef);
-  private tokenService = inject(TokenService);
 
   constructor(
     private httpClient: HttpClient,
@@ -25,25 +23,20 @@ export class FakturaService {
   ) {
     runInInjectionContext(this.injector, () => {
       effect(() => {
-        const token = this.tokenService.fetchToken();
-        if (token) {
-          this.fetchFakturor();
-        }
+        this.fetchFakturor();
       });
     });
   }
 
   fetchFakturor() {
-    const token = this.tokenService.fetchToken();
     const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token?.access_token}`);
     const subscription = this.httpClient
-      .get<Faktura[]>(this.baseUrl + '/faktura', {
+      .get<Faktura[]>(this.baseUrl, {
         observe: 'body',
         responseType: 'json',
         headers: headers
       })
-    .subscribe({
+      .subscribe({
         next: (fakturorData) => {
           this.fakturor.set(fakturorData);
         }
@@ -87,8 +80,8 @@ export class FakturaService {
       .subscribe({
         next: (fakturaData) => {
           console.log('Fakturor updated: ' + fakturaData);
-        // TBD
-        //  this.fakturor = this.fakturor.map(f => f.id === fakturaData.id ? fakturaData : f);
+          // TBD
+          //  this.fakturor = this.fakturor.map(f => f.id === fakturaData.id ? fakturaData : f);
         }
       });
   }

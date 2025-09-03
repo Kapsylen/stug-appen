@@ -1,6 +1,5 @@
 import {Arende, NewArende} from '../model/arenden';
 import {
-  afterNextRender,
   DestroyRef,
   effect,
   inject,
@@ -9,16 +8,14 @@ import {
   runInInjectionContext,
   signal
 } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {TokenService} from './token.service';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({providedIn: 'root'})
 export class ArendeService {
 
   private arenden = signal<Arende[] | undefined>(undefined);
-  private destroyRef =inject(DestroyRef);
-  private baseUrl = 'http://localhost:8081/api/v1';
-  private tokenService = inject(TokenService);
+  private destroyRef = inject(DestroyRef);
+  private baseUrl = 'http://localhost:8081/api/v1/arende';
 
   constructor(
     private httpClient: HttpClient,
@@ -26,25 +23,17 @@ export class ArendeService {
   ) {
     runInInjectionContext(this.injector, () => {
       effect(() => {
-        const token = this.tokenService.fetchToken();
-        if (token) {
-          this.fetchArende();
-        }
+        this.fetchArende();
       });
     });
 
   }
 
   fetchArende() {
-    const token = this.tokenService.fetchToken();
-    const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token?.access_token}`);
-
     const subscription = this.httpClient
-      .get<Arende[]>(this.baseUrl + '/arende', {
+      .get<Arende[]>(this.baseUrl, {
         observe: 'body',
-        responseType: 'json',
-        headers: headers
+        responseType: 'json'
       })
       .subscribe({
         next: (arendenData) => {

@@ -28,13 +28,14 @@ public class KontaktController {
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PreAuthorize("hasAnyRole('admin_user')")
   public void deleteKontakt(@PathVariable String id) {
     kontaktService.delete(id);
   }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @PreAuthorize("hasRole('admin_user')")
+  @PreAuthorize("hasAnyRole('admin_user','base_user')")
   public KontaktDto getKontakt(@PathVariable String id) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.find(id))
       .build();
@@ -42,7 +43,7 @@ public class KontaktController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @PreAuthorize("hasAnyRole('admin_user','base_user')")
+  @PreAuthorize("hasAnyRole('admin_user')")
   public KontaktDto updateKontakt(@PathVariable String id, @RequestBody KontaktDto updateKontakt) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.update(id, updateKontakt))
       .build();

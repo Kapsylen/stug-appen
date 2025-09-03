@@ -4,6 +4,7 @@ import lombok.Builder;
 import stugapi.infrastructure.entities.FakturaEntity;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
 import stugapi.presentation.dto.FakturaDto;
+import stugapi.presentation.dto.FakturaEnhetDto;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,7 +32,6 @@ public record Faktura(
         .map(FakturaEnhet::toFakturaEnhet)
         .toList() : List.of()
       )
-      .totalAmount(fakturaDto.totalAmount())
       .status(FakturaStatus.valueOf(fakturaDto.status()));
   }
 

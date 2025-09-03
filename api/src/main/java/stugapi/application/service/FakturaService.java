@@ -27,7 +27,6 @@ import static stugapi.infrastructure.entities.FakturaEntity.fromFaktura;
 public class FakturaService {
 
   private final FakturaRepository fakturaRepository;
-  private final FakturaEnhetRepository fakturaEnhetRepository;
 
   /**
    * Saves a Faktura entity by transforming a FakturaDto into the domain model and then
@@ -38,13 +37,11 @@ public class FakturaService {
    */
 
   public Faktura saveFaktura(FakturaDto fakturaDto) {
-   Faktura faktura =  fromFakturaEntity(fakturaRepository
+   return fromFakturaEntity(fakturaRepository
       .save(fromFaktura(fromFakturaDto(fakturaDto)
         .build())
         .build()))
       .build();
-   return faktura;
-
   }
 
   /**

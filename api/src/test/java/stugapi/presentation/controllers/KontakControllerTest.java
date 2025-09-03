@@ -9,13 +9,16 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import stugapi.application.domain.model.Kontakt;
 import stugapi.application.service.KontaktService;
+import stugapi.config.SecurityConfig;
 import stugapi.presentation.dto.KontaktDto;
 import stugapi.presentation.dto.KontaktDto.KontaktDtoBuilder;
 
@@ -30,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(KontaktController.class)
+@Import(SecurityConfig.class)
 public class KontakControllerTest {
 
   public static final String BASE_URL = "/api/v1/kontakt";
@@ -49,6 +53,7 @@ public class KontakControllerTest {
 
 
   @Test
+  @WithMockUser(roles = "base_user")
   public void whenPostKontak_thenCreateKontak() throws Exception {
 
     KontaktDto inputKontakt = createKontaktBuilder()
@@ -77,7 +82,8 @@ public class KontakControllerTest {
   }
 
   @Test
-  public void whenDeleteKontak_thenDeleteKontak() throws Exception {
+  @WithMockUser(roles = "admin_user")
+  public void whenDeleteKontakt_thenDeleteKontak() throws Exception {
     mvc.perform(MockMvcRequestBuilders
       .delete(BASE_URL + "/" + UUID.randomUUID())
       .contentType(MediaType.APPLICATION_JSON)
@@ -87,6 +93,18 @@ public class KontakControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  public void whenDeleteKontakt_thenForbidden() throws Exception {
+    mvc.perform(MockMvcRequestBuilders
+        .delete(BASE_URL + "/" + UUID.randomUUID())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(MockMvcResultMatchers.status()
+        .isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetKontakt_thenReturnKontakt() throws Exception {
     var id = UUID.randomUUID().toString();
     Kontakt outputKontakt = Kontakt.fromKontaktDto(createKontaktBuilder().build()).build();
@@ -109,10 +127,10 @@ public class KontakControllerTest {
   }
 
   @Test
-  public void whenDeleteKontakt_thenNoContentIsReturned() throws Exception {
-    var id = UUID.randomUUID().toString();
+  @WithMockUser(roles = "admin_user")
+  public void whenDeleteKontakts_thenNoContentIsReturned() throws Exception {
     mvc.perform(MockMvcRequestBuilders
-      .delete(BASE_URL + "/{id}", id)
+      .delete(BASE_URL)
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON))
       .andExpect(MockMvcResultMatchers.status()
@@ -120,6 +138,18 @@ public class KontakControllerTest {
   }
 
   @Test
+  @WithMockUser(roles = "base_user")
+  public void whenDeleteKontakts_thenForbidden() throws Exception {
+    mvc.perform(MockMvcRequestBuilders
+        .delete(BASE_URL)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(MockMvcResultMatchers.status()
+        .isForbidden());
+  }
+
+  @Test
+  @WithMockUser(roles = "admin_user")
   public void whenUpdateKontakt_thenKontaktIsUpdated() throws Exception {
     ObjectMapper mapper = new ObjectMapper();
     var id = UUID.randomUUID().toString();
@@ -155,8 +185,38 @@ public class KontakControllerTest {
     verify(kontaktService).update(id, inputUpdateKontakt);
   }
 
+  @Test
+  @WithMockUser(roles = "base_user")
+  public void whenUpdateKontakt_thenForbidden() throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    var id = UUID.randomUUID().toString();
+
+    KontaktDto inputUpdateKontakt = createKontaktBuilder().build();
+
+    Kontakt kontaktUpdatedOutput = Kontakt.builder()
+      .name(inputUpdateKontakt.name())
+      .category(inputUpdateKontakt.category())
+      .phone(inputUpdateKontakt.phone())
+      .email(inputUpdateKontakt.email())
+      .address(inputUpdateKontakt.address())
+      .notes(inputUpdateKontakt.notes())
+      .status(Kontakt.KontaktStatus.fromString(inputUpdateKontakt.status()))
+      .build();
+
+    given(kontaktService.update(id, inputUpdateKontakt)).willReturn(kontaktUpdatedOutput);
+
+    mvc.perform(MockMvcRequestBuilders
+        .put(BASE_URL + "/{id}", id)
+        .content(mapper.writeValueAsBytes(inputUpdateKontakt))
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(MockMvcResultMatchers.status()
+        .isForbidden());
+  }
+
 
   @Test
+  @WithMockUser(roles = "base_user")
   public void whenGetAllKontakt_thenReturnAllKontakt() throws Exception {
 
     Kontakt kontakt1 = Kontakt.fromKontaktDto(createKontaktBuilder().build()).build();
@@ -206,6 +266,7 @@ public class KontakControllerTest {
 
   @ParameterizedTest(name = "[{index} {0}]")
   @MethodSource("invalidNameCases")
+  @WithMockUser(roles = "base_user")
   public void whenCreate_nameIsNullOrBlankOrInvalid_thenReturn400(String name, String expectedError) throws Exception {
 
     // Given
@@ -250,6 +311,7 @@ public class KontakControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidCompanyCases")
+  @WithMockUser(roles = "base_user")
   public void whenCreate_companyIsNullOrBlankOrInvalid_thenReturn400(String company, String expectedError) throws Exception {
     // Given
 
@@ -286,6 +348,7 @@ public class KontakControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidPhoneCases")
+  @WithMockUser(roles = "base_user")
   public void whenCreate_phoneIsNullOrBlankOrInvalid_thenReturn400(String phone, String expectedError) throws Exception {
     // Given
 
@@ -338,6 +401,7 @@ public class KontakControllerTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidEmailCases")
+  @WithMockUser(roles = "base_user")
   public void whenCreate_emailIsNullOrBlankOrInvalid_thenReturn400(String email, String expectedError) throws Exception {
     // Given
 
@@ -411,6 +475,7 @@ private static Stream<Arguments> invalidEmailCases() {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("invalidStatusCases")
+  @WithMockUser(roles = "base_user")
   public void whenCreate_statusIsNullOrBlankOrInvalid_thenReturn400(String status, String expectedError) throws Exception {
     // Given
 

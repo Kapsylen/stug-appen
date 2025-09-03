@@ -19,7 +19,7 @@ public record FakturaEnhet(
       .description(enhet.description())
       .quantity(enhet.quantity())
       .price(enhet.price())
-      .total(enhet.total())
+      .total(enhet.quantity() * enhet.price())
       .build();
   }
 

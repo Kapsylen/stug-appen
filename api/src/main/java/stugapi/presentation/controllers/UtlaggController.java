@@ -45,7 +45,7 @@ public class UtlaggController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @PreAuthorize("hasAnyRole('admin_user','base_user')")
+  @PreAuthorize("hasRole('admin_user')")
   public UtlaggDto updateUtlagg(@PathVariable String id, @RequestBody UtlaggDto updateUtlagg) {
     return toUtlaggDtoBuilder(utlaggService.update(id, updateUtlagg))
       .build();
