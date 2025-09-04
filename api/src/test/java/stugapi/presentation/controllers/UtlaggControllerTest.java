@@ -107,7 +107,7 @@ public class UtlaggControllerTest {
   @WithMockUser(roles = "base_user")
   public void whenGetUtlagg_thenReturnUtlagg() throws Exception {
     Instant outlayDate = Instant.now();
-    String id = UUID.randomUUID().toString();
+    UUID id = UUID.randomUUID();
     UtlaggDto inputUtlagg = createUtlaggDtoBuilder()
       .id(id)
       .outlayDate(outlayDate)
@@ -193,7 +193,7 @@ public class UtlaggControllerTest {
   public void whenPutUtlagg_thenUpdateUtlagg() throws Exception {
     Instant outlayDate = Instant.now();
     Double price = 2000.00;
-    String id = UUID.randomUUID().toString();
+    UUID id = UUID.randomUUID();
     UtlaggDto inputUtlagg = createUtlaggDtoBuilder().build();
 
     Utlagg outputUtlagg = Utlagg.fromUtlaggDto(inputUtlagg)
@@ -224,7 +224,7 @@ public class UtlaggControllerTest {
   public void whenPutUtlagg_thenForbidden() throws Exception {
     Instant outlayDate = Instant.now();
     Double price = 2000.00;
-    String id = UUID.randomUUID().toString();
+    UUID id = UUID.randomUUID();
     UtlaggDto inputUtlagg = createUtlaggDtoBuilder().build();
 
     Utlagg outputUtlagg = Utlagg.fromUtlaggDto(inputUtlagg)

@@ -54,9 +54,9 @@ public class UtlaggService {
    * @return The updated Utlagg domain object
    * @throws RuntimeException if the Utlagg with the provided id is not found
    */
-  public Utlagg update(String id, UtlaggDto updateUtlagg) {
+  public Utlagg update(UUID id, UtlaggDto updateUtlagg) {
     var utlaggBuilder = Utlagg.fromUtlaggEntity(utlaggRepository
-      .findById(UUID.fromString(id))
+      .findById(id)
       .orElseThrow(RuntimeException::new));
 
     utlaggBuilder.title(updateUtlagg.title())

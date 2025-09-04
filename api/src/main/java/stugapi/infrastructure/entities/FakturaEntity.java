@@ -59,7 +59,6 @@ public class FakturaEntity {
 
   public static FakturaEntityBuilder fromFaktura(Faktura faktura) {
     return FakturaEntity.builder()
-      .id(faktura.id() != null ? UUID.fromString(faktura.id()) : null)
       .invoiceNumber(faktura.invoiceNumber() != null ? faktura.invoiceNumber() : "Invoice-number-" + Instant.now())
       .clientName(faktura.clientName())
       .issueDate(faktura.issueDate())

@@ -35,16 +35,16 @@ public class UtlaggServiceTest {
       .description("new kitchen wiring")
       .build();
 
-    UtlaggDto utlaggDto = UtlaggDto.fromUtlagg(Utlagg.fromUtlaggEntity(utlaggEntity).build());
+    UtlaggDto utlaggDto = UtlaggDto.fromUtlagg(Utlagg.fromUtlaggEntity(utlaggEntity).id(id).build());
 
-    when(utlaggRepository.save(utlaggEntity)).thenReturn(utlaggEntity);
+    when(utlaggRepository.save(any(UtlaggEntity.class))).thenReturn(utlaggEntity);
 
     Utlagg utlagg = utlaggService.saveUtlagg(utlaggDto);
 
     assertEquals(utlaggEntity.getTitle(), utlagg.title());
     assertEquals(utlaggEntity.getDescription(), utlagg.description());
     assertEquals(utlaggEntity.getOutlayDate(), utlagg.outlayDate());
-    assertEquals(utlaggEntity.getId(), UUID.fromString(utlagg.id()));
+    assertEquals(utlaggEntity.getId(), utlagg.id());
   }
 
   @Test
@@ -70,23 +70,23 @@ public class UtlaggServiceTest {
       .build();
 
     UtlaggDto updateUtlaggDto = UtlaggDto.builder()
-      .id(id.toString())
+      .id(id)
       .title("Gardening")
       .outlayDate(savedUtlaggEntity.getOutlayDate())
       .description("lawn maintenance")
       .price(1500.00)
       .build();
 
-    UtlaggEntity updatedUtlaggEntity = UtlaggEntity.fromUtlagg(Utlagg.fromUtlaggDto(updateUtlaggDto).build()).build();
+    UtlaggEntity updatedUtlaggEntity = UtlaggEntity.fromUtlagg(Utlagg.fromUtlaggDto(updateUtlaggDto).build()).id(id).build();
 
     when(utlaggRepository.findById(id)).thenReturn(java.util.Optional.of(savedUtlaggEntity));
     when(utlaggRepository.save(any(UtlaggEntity.class))).thenReturn(updatedUtlaggEntity);
 
-    Utlagg updatedUtlagg = utlaggService.update(id.toString(), updateUtlaggDto);
+    Utlagg updatedUtlagg = utlaggService.update(id, updateUtlaggDto);
 
     assertEquals(updatedUtlaggEntity.getTitle(), updatedUtlagg.title());
     assertEquals(updatedUtlaggEntity.getDescription(), updatedUtlagg.description());
     assertEquals(updatedUtlaggEntity.getOutlayDate(), updatedUtlagg.outlayDate());
-    assertEquals(updatedUtlaggEntity.getId(), UUID.fromString(updatedUtlagg.id()));
+    assertEquals(updatedUtlaggEntity.getId(), updatedUtlagg.id());
   }
 }

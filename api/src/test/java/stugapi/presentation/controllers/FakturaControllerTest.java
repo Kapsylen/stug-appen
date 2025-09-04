@@ -72,13 +72,13 @@ class FakturaControllerTest {
       .build();
 
     Faktura output = Faktura.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .invoiceNumber(input.invoiceNumber())
       .clientName(input.clientName())
       .dueDate(input.dueDate())
       .items(List.of(
         FakturaEnhet.builder()
-          .id(UUID.randomUUID().toString())
+          .id(UUID.randomUUID())
           .description(input.items().getFirst().description())
           .price(input.items().getFirst().price())
           .quantity(input.items().getFirst().quantity())
@@ -138,7 +138,7 @@ class FakturaControllerTest {
   @Test
   @WithMockUser(roles = "base_user")
   void whenGetFaktura_thenReturnFaktura() throws Exception {
-    var id = UUID.randomUUID().toString();
+    var id = UUID.randomUUID();
     Instant duedate = Instant.now().plus(Period.ofDays(30));
     var output = Faktura.builder()
       .invoiceNumber("Test invoice number")
@@ -230,7 +230,7 @@ public void whenDeleteAllFaktura_withNonAdminUser_thenForbidden() throws Excepti
   @WithMockUser(roles = "admin_user")
   public void whenPutFaktura_thenUpdateFaktura() throws Exception {
     Instant dueDate = Instant.now().plus(Period.ofDays(30));
-    var id = UUID.randomUUID().toString();
+    var id = UUID.randomUUID();
     FakturaDto inputUpdateFaktura = FakturaDto.builder()
       .id(id)
       .invoiceNumber("Test invoice number")
@@ -238,7 +238,7 @@ public void whenDeleteAllFaktura_withNonAdminUser_thenForbidden() throws Excepti
       .dueDate(dueDate)
       .items(List.of(
         createArendeEnhetBuilder()
-          .id(UUID.randomUUID().toString())
+          .id(UUID.randomUUID())
           .description("Test description")
           .price(1000.00)
           .quantity(2)
@@ -259,9 +259,8 @@ public void whenDeleteAllFaktura_withNonAdminUser_thenForbidden() throws Excepti
       .contentType(MediaType.APPLICATION_JSON)
       .content(mapper.writeValueAsString(inputUpdateFaktura)))
       .andExpect(MockMvcResultMatchers.status().isOk())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
-      .andExpect(MockMvcResultMatchers.jsonPath("$.invoiceNumber").value("Test invoice number"))
-      .andExpect(MockMvcResultMatchers.jsonPath("$.clientName").value("Test client name"))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.invoiceNumber").value(inputUpdateFaktura.invoiceNumber()))
+      .andExpect(MockMvcResultMatchers.jsonPath("$.clientName").value(inputUpdateFaktura.clientName()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.issueDate").isNotEmpty())
       .andExpect(MockMvcResultMatchers.jsonPath("$.dueDate").value(outputUpdatedFaktura.dueDate().toString()))
       .andExpect(MockMvcResultMatchers.jsonPath("$.totalAmount").value(2000.00));
@@ -273,7 +272,7 @@ public void whenDeleteAllFaktura_withNonAdminUser_thenForbidden() throws Excepti
   @WithMockUser(roles = "base_user")
   public void whenPutFaktura_withNonAdminUser_thenForbidden() throws Exception {
     Instant dueDate = Instant.now().plus(Period.ofDays(30));
-    var id = UUID.randomUUID().toString();
+    var id = UUID.randomUUID();
     FakturaDto inputUpdateFaktura = FakturaDto.builder()
       .id(id)
       .invoiceNumber("Test invoice number")
@@ -281,7 +280,7 @@ public void whenDeleteAllFaktura_withNonAdminUser_thenForbidden() throws Excepti
       .dueDate(dueDate)
       .items(List.of(
         createArendeEnhetBuilder()
-          .id(UUID.randomUUID().toString())
+          .id(UUID.randomUUID())
           .description("Test description")
           .price(1000.00)
           .quantity(2)
@@ -302,7 +301,7 @@ public void whenDeleteAllFaktura_withNonAdminUser_thenForbidden() throws Excepti
   @WithMockUser(roles = "base_user")
   public void whenGetById_nonExistingFaktura_thenReturn404() throws Exception {
 
-    String nonExistingId = "non-existing-id";
+    UUID nonExistingId = UUID.randomUUID();
 
     when(fakturaService.find(nonExistingId))
       .thenThrow(new EntityNotFoundException("Faktura not found with id: " + nonExistingId));

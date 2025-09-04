@@ -49,8 +49,8 @@ public class FakturaService {
    *
    * @param id the unique identifier of the Faktura to delete, represented as a string
    */
-  public void delete(String id) {
-    fakturaRepository.deleteById(UUID.fromString(id));
+  public void delete(UUID id) {
+    fakturaRepository.deleteById(id);
   }
 
   /**
@@ -60,9 +60,9 @@ public class FakturaService {
    * @param id the ID of the Faktura to update
    * @return the updated Faktura object
    */
-  public Faktura update(String id, FakturaDto updateFaktura) {
+  public Faktura update(UUID id, FakturaDto updateFaktura) {
     FakturaBuilder fakturaBuilder = fromFakturaEntity(fakturaRepository
-      .findById(UUID.fromString(id))
+      .findById(id)
       .orElseThrow(RuntimeException::new));
 
     fakturaBuilder.invoiceNumber(updateFaktura.invoiceNumber())
@@ -83,10 +83,10 @@ public class FakturaService {
    * @return the Faktura instance corresponding to the provided identifier
    * @throws RuntimeException if the Faktura with the given identifier is not found
    */
-  public Faktura find(String id) {
+  public Faktura find(UUID id) {
     return fromFakturaEntity(fakturaRepository
-      .findById(UUID.fromString(id))
-      .orElseThrow(() ->  new FakturaNotFoundException(id)))
+      .findById(id)
+      .orElseThrow(() ->  new FakturaNotFoundException(id.toString())))
       .build();
   }
 

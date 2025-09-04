@@ -6,6 +6,7 @@ import lombok.Builder;
 import stugapi.application.domain.model.Utlagg;
 
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * Represents a data transfer object for "Utlagg" (an outlay or expense).
@@ -25,7 +26,7 @@ import java.time.Instant;
  */
 @Builder
 public record UtlaggDto(
-  String id,
+  UUID id,
   @NotNull(message = "Title is required")
   @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
   String title,

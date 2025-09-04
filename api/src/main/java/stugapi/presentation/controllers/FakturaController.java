@@ -10,6 +10,7 @@ import stugapi.application.service.FakturaService;
 import stugapi.presentation.dto.FakturaDto;
 
 import java.util.List;
+import java.util.UUID;
 
 import static stugapi.presentation.dto.FakturaDto.toFakturaDtoBuilder;
 
@@ -33,14 +34,14 @@ public class FakturaController {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @PreAuthorize("hasRole('admin_user')")
-  public void deleteFaktura(@PathVariable String id) {
+  public void deleteFaktura(@PathVariable UUID id) {
     fakturaService.delete(id);
   }
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('admin_user')")
-  public FakturaDto updateFaktura(@PathVariable String id, @Valid @RequestBody FakturaDto updateFaktura) {
+  public FakturaDto updateFaktura(@PathVariable UUID id, @Valid @RequestBody FakturaDto updateFaktura) {
     return toFakturaDtoBuilder(fakturaService.update(id, updateFaktura))
       .build();
   }
@@ -48,7 +49,7 @@ public class FakturaController {
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasAnyRole('admin_user','base_user')")
-  public FakturaDto getFaktura(@PathVariable String id) {
+  public FakturaDto getFaktura(@PathVariable UUID id) {
     return toFakturaDtoBuilder(fakturaService.find(id))
       .build();
   }

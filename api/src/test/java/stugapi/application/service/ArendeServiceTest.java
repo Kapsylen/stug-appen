@@ -39,7 +39,7 @@ public class ArendeServiceTest {
     UUID id = UUID.randomUUID();
 
     ArendeStatusDto arendeStatus1 = ArendeStatusDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .message("Plumber contacted, arriving tomorrow morning")
       .updatedBy("Test Reporter")
       .timestamp(Instant.now())
@@ -48,7 +48,7 @@ public class ArendeServiceTest {
     Instant startTime = Instant.now();
 
     ArendeDto arendeDtoInput = ArendeDto.builder()
-      .id(id.toString())
+      .id(id)
       .title("Water Leak in Bathroom")
       .description("Water leaking from pipe under sink, causing floor damage")
       .type(Typ.DAMAGE.name())
@@ -68,7 +68,7 @@ public class ArendeServiceTest {
       .createdAt(startTime)
       .build();
 
-    ArendeEntity savedArendeEntity = fromArende(fromArendeDto(arendeDtoInput).build()).build();
+    ArendeEntity savedArendeEntity = fromArende(fromArendeDto(arendeDtoInput).build()).id(id).build();
     when(arendeRepository.save(any(ArendeEntity.class))).thenReturn(savedArendeEntity);
 
     ArendeDto newArendeDto = ArendeDto.toArendeDtoBuilder(Arende.fromArendeEntity(savedArendeEntity).build()).build();
@@ -106,7 +106,7 @@ public class ArendeServiceTest {
     ArendeEntity existingArende = ArendeEntity.builder().id(id).build();
     when(arendeRepository.findById(id)).thenReturn(Optional.of(existingArende));
 
-    arendeService.deleteById(id.toString());
+    arendeService.deleteById(id);
 
     doNothing().when(arendeRepository).deleteById(id);
 
@@ -116,12 +116,12 @@ public class ArendeServiceTest {
   @Test
   void update_InvalidId_ShouldThrowException() {
     // Arrange
-    String invalidId = UUID.randomUUID().toString();
+    UUID invalidId = UUID.randomUUID();
     ArendeDto updateDto = ArendeDto.builder()
       .title("Updated Title")
       .build();
 
-    when(arendeRepository.findById(UUID.fromString(invalidId))).thenReturn(Optional.empty());
+    when(arendeRepository.findById(invalidId)).thenReturn(Optional.empty());
 
     // Act & Assert
     assertThrows(RuntimeException.class, () -> arendeService.update(invalidId, updateDto));
@@ -133,13 +133,13 @@ public class ArendeServiceTest {
   void whenUpdateArende_thenArendeIsUpdated() {
     UUID id = UUID.randomUUID();
     ArendeStatusDto arendeStatus1 = ArendeStatusDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .message("Plumber contacted, arriving tomorrow morning")
       .status("in_progress")
       .updatedBy("Test Reporter")
       .build();
     ArendeStatusDto arendeStatus2 = ArendeStatusDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .message("Repair completed, water pressure tested")
       .updatedBy("Plumber AB")
       .status("resolved")
@@ -149,7 +149,7 @@ public class ArendeServiceTest {
     Instant resolvedTime = startTime.plus(Period.ofDays(7));
 
     ArendeDto arendeDtoInput = ArendeDto.builder()
-      .id(id.toString())
+      .id(id)
       .title("Water Leak in Bathroom")
       .description("Water leaking from pipe under sink, causing floor damage")
       .type(Typ.DAMAGE.name())
@@ -173,7 +173,7 @@ public class ArendeServiceTest {
     ArendeEntity savedArendeEntity = fromArende(fromArendeDto(arendeDtoInput).build()).build();
 
     ArendeDto updateArendeDto = ArendeDto.builder()
-      .id(id.toString())
+      .id(id)
       .title(savedArendeEntity.getTitle())
       .description(savedArendeEntity.getDescription())
       .type(savedArendeEntity.getType().name())
@@ -203,7 +203,7 @@ public class ArendeServiceTest {
 
     // When
 
-    Arende updatedArende = arendeService.update(id.toString(), updateArendeDto);
+    Arende updatedArende = arendeService.update(id, updateArendeDto);
 
     // Then
 
@@ -245,14 +245,14 @@ public class ArendeServiceTest {
     UUID id = UUID.randomUUID();
 
     ArendeStatusDto arendeStatus1 = ArendeStatusDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .message("Plumber contacted, arriving tomorrow morning")
       .status("in_progress")
       .updatedBy("Test Reporter")
       .build();
 
     ArendeDto arendeDtoInput = ArendeDto.builder()
-      .id(id.toString())
+      .id(id)
       .title("Water Leak in Bathroom")
       .description("Water leaking from pipe under sink, causing floor damage")
       .type(Typ.DAMAGE.name())
@@ -298,27 +298,27 @@ public class ArendeServiceTest {
   void whenFindAllArende_thenArendeListIsReturned() {
 
     ArendeStatusDto arendeStatus1Arende1 = ArendeStatusDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .message("Plumber contacted, arriving tomorrow morning")
       .status("in_progress")
       .updatedBy("Test Reporter")
       .build();
     ArendeStatusDto arendeStatus2Arende1 = ArendeStatusDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .message("Repair completed, water pressure tested")
       .updatedBy("Plumber AB")
       .status("resolved")
       .build();
 
     ArendeStatusDto arendeStatus1Arende2 = ArendeStatusDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .message("Emergency call placed to heating specialist")
       .status("in_progress")
       .updatedBy("Test Reporter")
       .build();
 
     ArendeDto arendeDtoInput1 = ArendeDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .title("Water Leak in Bathroom")
       .description("Water leaking from pipe under sink, causing floor damage")
       .type(Typ.DAMAGE.name())
@@ -337,7 +337,7 @@ public class ArendeServiceTest {
       .build();
 
     ArendeDto arendeDtoInput2 = ArendeDto.builder()
-      .id(UUID.randomUUID().toString())
+      .id(UUID.randomUUID())
       .title("Heating System Failure")
       .description("No heat output from radiators, temperature dropping")
       .type(Typ.UTILITY.name())

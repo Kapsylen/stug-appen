@@ -48,7 +48,6 @@ public class KontaktEntity {
 
     public static KontaktEntityBuilder fromKontakt(Kontakt kontakt) {
         return KontaktEntity.builder()
-                .id(kontakt.id() != null ? UUID.fromString(kontakt.id()) : null)
                 .name(kontakt.name())
                 .company(kontakt.company())
                 .category(kontakt.category())

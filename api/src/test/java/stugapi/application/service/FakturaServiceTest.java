@@ -1,10 +1,12 @@
 package stugapi.application.service;
 
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import stugapi.application.domain.model.Faktura;
+import stugapi.application.domain.model.FakturaEnhet;
 import stugapi.infrastructure.entities.FakturaEnhetEntity;
 import stugapi.infrastructure.entities.FakturaEntity;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
@@ -83,7 +85,7 @@ public class FakturaServiceTest {
     assertEquals(savedFakturaEntity.getItems().getLast().getQuantity(), faktura.items().getLast().quantity());
     assertEquals(savedFakturaEntity.getItems().getLast().getTotal(), faktura.items().getLast().total());
 
-    assertEquals(savedFakturaEntity.getId(), UUID.fromString(faktura.id()));
+    assertEquals(savedFakturaEntity.getId(), faktura.id());
 
     verify(fakturaRepository).save(any(FakturaEntity.class));
     verifyNoMoreInteractions(fakturaRepository);
@@ -95,7 +97,7 @@ public class FakturaServiceTest {
 
     doNothing().when(fakturaRepository).deleteById(id);
 
-    fakturaService.delete(id.toString());
+    fakturaService.delete(id);
 
     verify(fakturaRepository, times(1)).deleteById(id);
     verifyNoMoreInteractions(fakturaRepository);
@@ -106,57 +108,60 @@ public class FakturaServiceTest {
     UUID id = UUID.randomUUID();
     Instant issueDate = Instant.now();
     Instant duedate = Instant.now().plus(Period.ofDays(30));
+    List<FakturaEnhetEntity> items = List.of(
+      FakturaEnhetEntity.builder()
+        .id(UUID.randomUUID())
+        .description("Cottage Rental - High Season (2 weeks)")
+        .quantity(14)
+        .price(1200.00)
+        .total(16800.00)
+        .build(),
+      FakturaEnhetEntity.builder()
+        .id(UUID.randomUUID())
+        .description("Final Cleaning Service")
+        .quantity(1)
+        .price(1500.00)
+        .total(1500.00)
+        .build());
     FakturaEntity savedFakturaEntity = FakturaEntity.builder()
       .id(id)
       .clientName("Summer Family Rentals")
       .issueDate(issueDate)
       .dueDate(duedate)
-      .items(
-        List.of(
-          FakturaEnhetEntity.builder()
-            .id(UUID.randomUUID())
-            .description("Cottage Rental - High Season (2 weeks)")
-            .quantity(14)
-            .price(1200.00)
-            .total(16800.00)
-            .build(),
-          FakturaEnhetEntity.builder()
-            .id(UUID.randomUUID())
-            .description("Final Cleaning Service")
-            .quantity(1)
-            .price(1500.00)
-            .total(1500.00)
-            .build()))
+      .items(items)
       .totalAmount(18300.00)
       .status(FakturaStatus.SENT)
       .build();
 
+    List<FakturaEnhetDto> updatedItems = List.of(
+      FakturaEnhetDto.builder()
+        .id(UUID.randomUUID())
+        .description("Cottage Rental - High Season (2 weeks)")
+        .quantity(14)
+        .price(1200.00)
+        .total(16800.00)
+        .build(),
+      FakturaEnhetDto.builder()
+        .id(UUID.randomUUID())
+        .description("Final Cleaning Service")
+        .quantity(2)
+        .price(1500.00)
+        .total(3000.00)
+        .build());
+
     FakturaDto updateFakturaDto = FakturaDto.builder()
-      .id(id.toString())
+      .id(id)
       .clientName("Summer Family Rentals")
       .issueDate(issueDate)
       .dueDate(duedate)
-      .items(
-        List.of(
-          FakturaEnhetDto.builder()
-            .id(UUID.randomUUID().toString())
-            .description("Cottage Rental - High Season (2 weeks)")
-            .quantity(14)
-            .price(1200.00)
-            .total(16800.00)
-            .build(),
-          FakturaEnhetDto.builder()
-            .id(UUID.randomUUID().toString())
-            .description("Final Cleaning Service")
-            .quantity(2)
-            .price(1500.00)
-            .total(3000.00)
-            .build()))
+      .items(updatedItems)
       .totalAmount(19800.00)
       .status(FakturaStatus.PAID.name())
       .build();
 
-    FakturaEntity updatedFakturaEntity = FakturaEntity.fromFaktura(Faktura.fromFakturaDto(updateFakturaDto).build()).build();
+    FakturaEntity updatedFakturaEntity = FakturaEntity.fromFaktura(Faktura.fromFakturaDto(updateFakturaDto).build())
+      .items(updatedItems.stream().map(FakturaEnhet::toFakturaEnhet).toList().stream().map(FakturaEnhetEntity::toFakturaEnhetEntity).toList())
+      .id(id).build();
 
     // Given
 
@@ -165,7 +170,7 @@ public class FakturaServiceTest {
 
     // When
 
-    Faktura updatedFaktura = fakturaService.update(id.toString(), updateFakturaDto);
+    Faktura updatedFaktura = fakturaService.update(id, updateFakturaDto);
 
     // Then
 

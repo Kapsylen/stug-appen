@@ -57,11 +57,10 @@ public class ArendeService {
    *
    * @param id the unique identifier of the entry to be deleted, represented as a string
    */
-  public void deleteById(String id) {
-    UUID arendeId = parseUuid(id);
-    arendeRepository.findById(arendeId)
+  public void deleteById(UUID id) {
+    arendeRepository.findById(id)
       .orElseThrow(() -> new ArendeNotFoundException("No ArendeEntity found with ID: " + id));
-    arendeRepository.deleteById(arendeId);
+    arendeRepository.deleteById(id);
   }
 
 
@@ -75,9 +74,9 @@ public class ArendeService {
    * @return the updated Arende object after persistence
    * @throws RuntimeException if no ArendeEntity is found with the provided ID
    */
-  public Arende update(String id, ArendeDto updateArende) {
+  public Arende update(UUID id, ArendeDto updateArende) {
     ArendeBuilder arendeBuilder = fromArendeEntity(arendeRepository
-      .findById(UUID.fromString(id))
+      .findById(id)
       .orElseThrow(() -> new ArendeNotFoundException("No ArendeEntity found with ID: " + id)));
 
     try {

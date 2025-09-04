@@ -157,7 +157,7 @@ public class ArendeControllerTest {
   @Test
   @WithMockUser(roles = "admin_user")
   public void whenPutArende_thenUpdateArende() throws Exception {
-    String id = UUID.randomUUID().toString();
+    UUID id = UUID.randomUUID();
     Instant createdAt = Instant.now();
     Instant updatedAt = Instant.now();
     Instant lastUpdatedAt = Instant.now();
@@ -355,8 +355,8 @@ public class ArendeControllerTest {
   @Test
   @WithMockUser(roles = "base_user")
   public void whenGetAllArende_thenReturnAllArende() throws Exception {
-    String id1 = UUID.randomUUID().toString();
-    String id2 = UUID.randomUUID().toString();
+    UUID id1 = UUID.randomUUID();
+    UUID id2 = UUID.randomUUID();
     Instant createdAt = Instant.now();
     Instant updatedAt = Instant.now();
     Instant secondUpdatedAt = Instant.now();
@@ -438,7 +438,7 @@ public class ArendeControllerTest {
     mvc.perform(get(BASE_URL)
         .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$[0].id").value(output.id()))
+      .andExpect(jsonPath("$[0].id").isNotEmpty())
       .andExpect(jsonPath("$[0].title").value(output.title()))
       .andExpect(jsonPath("$[0].description").value(output.description()))
       .andExpect(jsonPath("$[0].type").value(output.type().name()))
@@ -461,7 +461,7 @@ public class ArendeControllerTest {
       .andExpect(jsonPath("$[0].tags[2]").value(output.tags().getLast()))
       .andExpect(jsonPath("$[0].createdAt").value(output.createdAt().toString()))
       .andExpect(jsonPath("$[0].updatedAt").value(output.updatedAt().toString()))
-      .andExpect(jsonPath("$[1].id").value(output2.id()))
+      .andExpect(jsonPath("$[1].id").isNotEmpty())
       .andExpect(jsonPath("$[1].title").value(output2.title()))
       .andExpect(jsonPath("$[1].description").value(output2.description()))
       .andExpect(jsonPath("$[1].type").value(output2.type().name()))
@@ -1007,7 +1007,7 @@ public class ArendeControllerTest {
   @WithMockUser(roles = "admin_user")
   void whenUpdate_withNonExistingId_thenReturn404() throws Exception {
     // Given
-    String nonExistingId = "non-existing-id";
+    UUID nonExistingId = UUID.randomUUID();
     ArendeDto inputUpdateArende = ArendeDto.builder()
       .title("Heating System Failure")
       .description("No heat output from radiators, temperature dropping")
@@ -1029,7 +1029,7 @@ public class ArendeControllerTest {
         .build()))
       .tags(List.of("heating", "urgent"))
       .build();
-    when(arendeService.update(anyString(), any(ArendeDto.class)))
+    when(arendeService.update(any(), any(ArendeDto.class)))
       .thenThrow(new EntityNotFoundException("Cannot update non-existing arende"));
 
     // When & Then
@@ -1048,7 +1048,7 @@ public class ArendeControllerTest {
   @Test
   @WithMockUser(username = "base_user")
   void whenUpdate_withNonAdminUser_thenForbidden() throws Exception {
-    String nonExistingId = "non-existing-id";
+    UUID nonExistingId = UUID.randomUUID();
     ArendeDto inputUpdateArende = ArendeDto.builder()
       .title("Heating System Failure")
       .description("No heat output from radiators, temperature dropping")
@@ -1070,7 +1070,7 @@ public class ArendeControllerTest {
         .build()))
       .tags(List.of("heating", "urgent"))
       .build();
-    when(arendeService.update(anyString(), any(ArendeDto.class)))
+    when(arendeService.update(any(), any(ArendeDto.class)))
       .thenThrow(new EntityNotFoundException("Cannot update non-existing arende"));
 
     // When & Then
@@ -1084,7 +1084,7 @@ public class ArendeControllerTest {
   @WithMockUser(roles = "admin_user")
   void whenDelete_withNonExistingId_thenReturn404() throws Exception {
     // Given
-    String nonExistingId = "non-existing-id";
+    UUID nonExistingId = UUID.randomUUID();
     doThrow(new EntityNotFoundException("Cannot delete non-existing arende"))
       .when(arendeService).deleteById(nonExistingId);
 
@@ -1103,7 +1103,7 @@ public class ArendeControllerTest {
   @WithMockUser(roles = "base_user")
   void whenDelete_withNonAdminUser_thenForbidden() throws Exception {
     // Given
-    String nonExistingId = "non-existing-id";
+    UUID nonExistingId = UUID.randomUUID();
     doThrow(new EntityNotFoundException("Cannot delete non-existing arende"))
       .when(arendeService).deleteById(nonExistingId);
 

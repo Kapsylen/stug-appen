@@ -4,13 +4,15 @@ import lombok.Builder;
 import stugapi.infrastructure.entities.FakturaEnhetEntity;
 import stugapi.presentation.dto.FakturaEnhetDto;
 
+import java.util.UUID;
+
 @Builder
 public record FakturaEnhet(
-    String id,
-    String description,
-    Integer quantity,
-    Double price,
-    Double total
+  UUID id,
+  String description,
+  Integer quantity,
+  Double price,
+  Double total
 ) {
 
   public static FakturaEnhet toFakturaEnhet(FakturaEnhetDto enhet) {
@@ -25,7 +27,7 @@ public record FakturaEnhet(
 
   public static FakturaEnhet toFakturaEnhet(FakturaEnhetEntity entity) {
     return FakturaEnhet.builder()
-      .id(entity.getId().toString())
+      .id(entity.getId())
       .description(entity.getDescription())
       .quantity(entity.getQuantity())
       .price(entity.getPrice())

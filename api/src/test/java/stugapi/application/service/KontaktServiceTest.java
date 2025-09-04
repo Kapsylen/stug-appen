@@ -84,7 +84,7 @@ public class KontaktServiceTest {
       .build();
 
     KontaktDto updateFakturaDto = KontaktDto.builder()
-      .id(id.toString())
+      .id(id)
       .name("Erik Andersson")
       .category("Electrician")
       .phone("+46-70-123-4567")

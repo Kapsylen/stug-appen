@@ -8,10 +8,11 @@ import stugapi.presentation.dto.FakturaEnhetDto;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 public record Faktura(
-  String id,
+  UUID id,
   String invoiceNumber,
   String clientName,
   Instant issueDate,
@@ -37,7 +38,7 @@ public record Faktura(
 
   public static FakturaBuilder fromFakturaEntity(FakturaEntity fakturaEntity) {
     return Faktura.builder()
-      .id(fakturaEntity.getId().toString())
+      .id(fakturaEntity.getId())
       .invoiceNumber(fakturaEntity.getInvoiceNumber())
       .clientName(fakturaEntity.getClientName())
       .issueDate(fakturaEntity.getIssueDate())

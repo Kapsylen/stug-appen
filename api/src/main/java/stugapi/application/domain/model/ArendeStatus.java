@@ -5,10 +5,11 @@ import stugapi.infrastructure.entities.ArendeStatusEntity;
 import stugapi.presentation.dto.ArendeStatusDto;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Builder
 public record ArendeStatus(
-    String id,
+    UUID id,
     Instant timestamp,
     String message,
     String updatedBy,
@@ -36,7 +37,7 @@ public record ArendeStatus(
 
   public static ArendeStatus toArendeStatus(ArendeStatusEntity arendeStatusEntity) {
     return ArendeStatus.builder()
-      .id(arendeStatusEntity.getId().toString())
+      .id(arendeStatusEntity.getId())
       .timestamp(arendeStatusEntity.getTimestamp())
       .message(arendeStatusEntity.getMessage())
       .updatedBy(arendeStatusEntity.getUpdatedBy())

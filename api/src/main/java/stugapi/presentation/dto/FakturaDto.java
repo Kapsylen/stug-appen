@@ -9,13 +9,14 @@ import stugapi.application.domain.model.FakturaEnhet;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * Represents a data transfer object for an invoice (Faktura).
  * This class encapsulates the details of an invoice and includes functionality
  * to convert a domain model Faktura to a FakturaDto.
- *
+ * <p>
  * Fields:
  * - id: Unique identifier of the invoice.
  * - invoiceNumber: Invoice number associated with the invoice.
@@ -25,35 +26,35 @@ import java.util.stream.Collectors;
  * - items: List of items (FakturaEnhetDto) associated with the invoice.
  * - totalAmount: Total amount of the invoice.
  * - status: The current status of the invoice as a string.
- *
+ * <p>
  * This record uses the Lombok @Builder annotation to facilitate object creation.
  */
 @Builder
 public record FakturaDto(
-    String id,
-    String invoiceNumber,
+  UUID id,
+  String invoiceNumber,
 
-    @NotNull(message = "Client name is required")
-    @Size(min = 2, max = 100, message = "Client name must be between 2 and 100 characters")
-    String clientName,
+  @NotNull(message = "Client name is required")
+  @Size(min = 2, max = 100, message = "Client name must be between 2 and 100 characters")
+  String clientName,
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    Instant issueDate,
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  Instant issueDate,
 
-    @NotNull(message = "Due date is required")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    Instant dueDate,
+  @NotNull(message = "Due date is required")
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  Instant dueDate,
 
-    @NotNull(message = "Items list cannot be null")
-    @Size(min = 1, message = "At least one item is required")
-    @Valid
-    List<FakturaEnhetDto> items,
+  @NotNull(message = "Items list cannot be null")
+  @Size(min = 1, message = "At least one item is required")
+  @Valid
+  List<FakturaEnhetDto> items,
 
-    Double totalAmount,
+  Double totalAmount,
 
-    @NotNull(message = "Status is required")
-    @Pattern(regexp = "^(PAID|OVERDUE|SENT|DRAFT)$", message = "Status must be either PAID, OVERDUE, SENT or DRAFT")
-    String status
+  @NotNull(message = "Status is required")
+  @Pattern(regexp = "^(PAID|OVERDUE|SENT|DRAFT)$", message = "Status must be either PAID, OVERDUE, SENT or DRAFT")
+  String status
 
 ) {
   public static FakturaDtoBuilder toFakturaDtoBuilder(Faktura faktura) {

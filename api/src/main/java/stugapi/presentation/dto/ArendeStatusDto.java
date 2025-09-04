@@ -7,21 +7,22 @@ import lombok.Builder;
 import stugapi.application.domain.model.ArendeStatus;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Builder
 public record ArendeStatusDto(
-    String id,
-    Instant timestamp,
-    @NotNull(message = "Message is required")
-    @Size(min= 3, max = 1000, message = "Message must be between 3 and 1000 characters")
-    String message,
-    @NotNull(message = "UpdatedBy is required")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]{3,20}$",
-      message = "UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long.")
-    String updatedBy,
-    String status
+  UUID id,
+  Instant timestamp,
+  @NotNull(message = "Message is required")
+  @Size(min = 3, max = 1000, message = "Message must be between 3 and 1000 characters")
+  String message,
+  @NotNull(message = "UpdatedBy is required")
+  @Pattern(regexp = "^[a-zA-Z0-9 ]{3,20}$",
+    message = "UpdatedBy must contain only letters, numbers, spaces and between 3 and 20 characters long.")
+  String updatedBy,
+  String status
 ) {
-  public static ArendeStatusDto toArendeStatusDto (ArendeStatus arendeStatus){
+  public static ArendeStatusDto toArendeStatusDto(ArendeStatus arendeStatus) {
     return ArendeStatusDto.builder()
       .id(arendeStatus.id())
       .timestamp(Instant.now())

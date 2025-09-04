@@ -5,10 +5,11 @@ import stugapi.infrastructure.entities.UtlaggEntity;
 import stugapi.presentation.dto.UtlaggDto;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Builder
 public record Utlagg (
-  String id,
+  UUID id,
   String title,
   String description,
   Instant outlayDate,
@@ -16,7 +17,7 @@ public record Utlagg (
 ){
   public static UtlaggBuilder fromUtlaggEntity(UtlaggEntity utlagg) {
     return Utlagg.builder()
-      .id(utlagg.getId().toString())
+      .id(utlagg.getId())
       .title(utlagg.getTitle())
       .description(utlagg.getDescription())
       .outlayDate(utlagg.getOutlayDate())

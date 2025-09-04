@@ -9,12 +9,13 @@ import stugapi.presentation.dto.ArendeDto;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 import static stugapi.application.domain.model.ArendeStatus.toArendeStatus;
 
 @Builder
 public record Arende(
-  String id,
+  UUID id,
   String title,
   String description,
   Typ type,
@@ -62,7 +63,7 @@ public record Arende(
 
   public static ArendeBuilder fromArendeEntity(ArendeEntity arendeEntity) {
     return builder()
-      .id(arendeEntity.getId().toString())
+      .id(arendeEntity.getId())
       .title(arendeEntity.getTitle())
       .description(arendeEntity.getDescription())
       .type(arendeEntity.getType())

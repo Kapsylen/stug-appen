@@ -35,7 +35,6 @@ public class FakturaEnhetEntity {
 
   public static FakturaEnhetEntity toFakturaEnhetEntity(FakturaEnhet item) {
     return FakturaEnhetEntity.builder()
-      .id(item.id() != null ? UUID.fromString(item.id()) : null)
       .description(item.description())
       .quantity(item.quantity())
       .price(item.price())

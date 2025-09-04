@@ -9,6 +9,7 @@ import stugapi.application.service.UtlaggService;
 import stugapi.presentation.dto.UtlaggDto;
 
 import java.util.List;
+import java.util.UUID;
 
 import static stugapi.presentation.dto.UtlaggDto.toUtlaggDtoBuilder;
 
@@ -46,7 +47,7 @@ public class UtlaggController {
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('admin_user')")
-  public UtlaggDto updateUtlagg(@PathVariable String id, @RequestBody UtlaggDto updateUtlagg) {
+  public UtlaggDto updateUtlagg(@PathVariable UUID id, @RequestBody UtlaggDto updateUtlagg) {
     return toUtlaggDtoBuilder(utlaggService.update(id, updateUtlagg))
       .build();
   }

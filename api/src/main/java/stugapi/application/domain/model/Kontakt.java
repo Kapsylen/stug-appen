@@ -4,41 +4,43 @@ import lombok.Builder;
 import stugapi.infrastructure.entities.KontaktEntity;
 import stugapi.presentation.dto.KontaktDto;
 
+import java.util.UUID;
+
 @Builder
 public record Kontakt(
-    String id,
-    String name,
-    String company,
-    String category,
-    String phone,
-    String email,
-    String address,
-    String notes,
-    KontaktStatus status
+  UUID id,
+  String name,
+  String company,
+  String category,
+  String phone,
+  String email,
+  String address,
+  String notes,
+  KontaktStatus status
 ) {
 
-    /**
-     * Creates a builder instance from a KontaktDto
-     *
-     * @param kontaktDto The DTO to convert
-     * @return A builder instance populated with DTO data
-     */
-    public static KontaktBuilder fromKontaktDto(KontaktDto kontaktDto) {
-        return Kontakt.builder()
-            .id(kontaktDto.id())
-            .name(kontaktDto.name())
-            .company(kontaktDto.company())
-            .category(kontaktDto.category())
-            .phone(kontaktDto.phone())
-            .email(kontaktDto.email())
-            .address(kontaktDto.address())
-            .notes(kontaktDto.notes())
-            .status(KontaktStatus.fromString(kontaktDto.status()));
-    }
+  /**
+   * Creates a builder instance from a KontaktDto
+   *
+   * @param kontaktDto The DTO to convert
+   * @return A builder instance populated with DTO data
+   */
+  public static KontaktBuilder fromKontaktDto(KontaktDto kontaktDto) {
+    return Kontakt.builder()
+      .id(kontaktDto.id())
+      .name(kontaktDto.name())
+      .company(kontaktDto.company())
+      .category(kontaktDto.category())
+      .phone(kontaktDto.phone())
+      .email(kontaktDto.email())
+      .address(kontaktDto.address())
+      .notes(kontaktDto.notes())
+      .status(KontaktStatus.fromString(kontaktDto.status()));
+  }
 
   public static KontaktBuilder fromKontaktEntity(KontaktEntity kontaktEntity) {
     return Kontakt.builder()
-      .id(kontaktEntity.getId().toString())
+      .id(kontaktEntity.getId())
       .name(kontaktEntity.getName())
       .company(kontaktEntity.getCompany())
       .category(kontaktEntity.getCategory())
@@ -50,10 +52,10 @@ public record Kontakt(
   }
 
   public enum KontaktStatus {
-        ACTIVE, INACTIVE;
+    ACTIVE, INACTIVE;
 
-        public static KontaktStatus fromString(String status) {
-            return valueOf(status.toUpperCase());
-        }
+    public static KontaktStatus fromString(String status) {
+      return valueOf(status.toUpperCase());
     }
+  }
 }

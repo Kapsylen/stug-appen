@@ -10,6 +10,7 @@ import stugapi.application.service.ArendeService;
 import stugapi.presentation.dto.ArendeDto;
 
 import java.util.List;
+import java.util.UUID;
 
 import static stugapi.presentation.dto.ArendeDto.toArendeDtoBuilder;
 
@@ -33,7 +34,7 @@ public class ArendeController {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @PreAuthorize("hasRole('admin_user')")
-  public void deleteArende(@PathVariable String id) {
+  public void deleteArende(@PathVariable UUID id) {
     arendeService.deleteById(id);
   }
 
@@ -48,7 +49,7 @@ public class ArendeController {
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('admin_user')")
-  public ArendeDto updateArende(@PathVariable String id, @Valid @RequestBody ArendeDto updateArende) {
+  public ArendeDto updateArende(@PathVariable UUID id, @Valid @RequestBody ArendeDto updateArende) {
     return toArendeDtoBuilder(arendeService.update(id, updateArende))
       .build();
   }
