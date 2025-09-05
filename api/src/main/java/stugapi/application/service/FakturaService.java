@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import stugapi.application.domain.model.Faktura;
 import stugapi.application.domain.model.Faktura.FakturaBuilder;
 import stugapi.infrastructure.entities.FakturaEntity;
-import stugapi.infrastructure.repositories.FakturaEnhetRepository;
 import stugapi.infrastructure.repositories.FakturaRepository;
 import stugapi.presentation.dto.FakturaDto;
 import stugapi.presentation.error.FakturaNotFoundException;
@@ -50,6 +49,9 @@ public class FakturaService {
    * @param id the unique identifier of the Faktura to delete, represented as a string
    */
   public void delete(UUID id) {
+    fakturaRepository
+      .findById(id)
+      .orElseThrow(() ->  new FakturaNotFoundException(String.format("No Faktura found with ID: %s", id)));
     fakturaRepository.deleteById(id);
   }
 
@@ -86,7 +88,7 @@ public class FakturaService {
   public Faktura find(UUID id) {
     return fromFakturaEntity(fakturaRepository
       .findById(id)
-      .orElseThrow(() ->  new FakturaNotFoundException(id.toString())))
+      .orElseThrow(() ->  new FakturaNotFoundException(String.format("No Faktura found with ID: %s", id))))
       .build();
   }
 

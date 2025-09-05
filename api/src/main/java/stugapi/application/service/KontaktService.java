@@ -7,6 +7,7 @@ import stugapi.application.domain.model.Kontakt.KontaktBuilder;
 import stugapi.infrastructure.entities.KontaktEntity;
 import stugapi.infrastructure.repositories.KontaktRepository;
 import stugapi.presentation.dto.KontaktDto;
+import stugapi.presentation.error.KontaktNotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +43,8 @@ public class KontaktService {
    * @param id The unique identifier of the Kontakt to delete. This must be a valid UUID represented as a string.
    */
   public void delete(String id) {
+    kontaktRepository.findById(UUID.fromString(id))
+      .orElseThrow(() -> new KontaktNotFoundException("No Kontakt found with ID: " + id));
     kontaktRepository.deleteById(UUID.fromString(id));
   }
 
@@ -86,7 +89,7 @@ public class KontaktService {
   public Kontakt find(String id) {
     return Kontakt.fromKontaktEntity(kontaktRepository
       .findById(UUID.fromString(id))
-      .orElseThrow(RuntimeException::new))
+      .orElseThrow(() -> new KontaktNotFoundException("No Kontakt found with ID: " + id)))
       .build();
   }
 

@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(EntityNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)  // Explicitly set HTTP status
-  @ResponseBody  // Explicitly mark for response body serialization
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ResponseBody
   public ErrorResponse handleEntityNotFoundException(EntityNotFoundException ex) {
     log.error("Entity not found exception occurred: {}", ex.getMessage());
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(InvalidArendeIdException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)  // Explicitly set HTTP status
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public ErrorResponse handleInvalidArendeIdException(InvalidArendeIdException ex, WebRequest request) {
     log.error("Invalid arende id exception occurred: {}", ex.getMessage());
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)  // Explicitly set HTTP status
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
     log.error("Validation exception occurred: {}", ex.getMessage());
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)  // Explicitly set HTTP status
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public ErrorResponse handleConstraintViolationException(ConstraintViolationException ex) {
     log.error("Constraint violation exception occurred: {}", ex.getMessage());
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(AuthenticationException.class)
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)  // Explicitly set HTTP status
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
   @ResponseBody
   public ErrorResponse handleAuthenticationException(AuthenticationException ex) {
     log.error("Authentication exception occurred: {}", ex.getMessage());
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(AccessDeniedException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)  // Explicitly set HTTP status
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   @ResponseBody
   public ErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
     log.error("Access denied exception occurred: {}", ex.getMessage());
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // Explicitly set HTTP status
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
   public ErrorResponse handleAllUncaughtException(Exception ex) {
     log.error("An unexpected error occurred: {}", ex.getMessage());

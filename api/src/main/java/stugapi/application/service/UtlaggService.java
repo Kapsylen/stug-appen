@@ -7,6 +7,7 @@ import stugapi.application.domain.model.Utlagg;
 import stugapi.infrastructure.entities.UtlaggEntity;
 import stugapi.infrastructure.repositories.UtlaggRepository;
 import stugapi.presentation.dto.UtlaggDto;
+import stugapi.presentation.error.UtlaggNotFoundException;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +44,8 @@ public class UtlaggService {
    * @param id The unique identifier of the entity to delete
    */
   public void delete(String id) {
+    utlaggRepository.findById(UUID.fromString(id))
+      .orElseThrow(() -> new UtlaggNotFoundException("No Utlagg found with ID: " + id));
     utlaggRepository.deleteById(UUID.fromString(id));
   }
 
@@ -75,12 +78,12 @@ public class UtlaggService {
    * @param id The unique identifier of the Utlagg to be retrieved. This must be
    *           a valid UUID represented as a string.
    * @return The corresponding Utlagg object if found.
-   * @throws RuntimeException if no Utlagg is found with the specified identifier.
+   * @throws UtlaggNotFoundException if no Utlagg is found with the specified identifier.
    */
   public Utlagg find(String id) {
     return Utlagg.fromUtlaggEntity(utlaggRepository
       .findById(UUID.fromString(id))
-      .orElseThrow(RuntimeException::new))
+      .orElseThrow(() -> new UtlaggNotFoundException("No Utlagg found with ID: " + id)))
       .build();
   }
 

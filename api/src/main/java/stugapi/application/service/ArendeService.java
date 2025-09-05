@@ -149,12 +149,4 @@ public class ArendeService {
   public void deleteAll() {
     arendeRepository.deleteAll();
   }
-
-  private UUID parseUuid(String id) {
-    try {
-      return UUID.fromString(id);
-    } catch (IllegalArgumentException e) {
-      throw new InvalidArendeIdException("Invalid Arende ID format: " + id, e);
-    }
-  }
 }
