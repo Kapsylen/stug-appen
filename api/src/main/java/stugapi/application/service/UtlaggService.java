@@ -43,10 +43,10 @@ public class UtlaggService {
    *
    * @param id The unique identifier of the entity to delete
    */
-  public void delete(String id) {
-    utlaggRepository.findById(UUID.fromString(id))
+  public void delete(UUID id) {
+    utlaggRepository.findById(id)
       .orElseThrow(() -> new UtlaggNotFoundException("No Utlagg found with ID: " + id));
-    utlaggRepository.deleteById(UUID.fromString(id));
+    utlaggRepository.deleteById(id);
   }
 
   /**
@@ -80,9 +80,9 @@ public class UtlaggService {
    * @return The corresponding Utlagg object if found.
    * @throws UtlaggNotFoundException if no Utlagg is found with the specified identifier.
    */
-  public Utlagg find(String id) {
+  public Utlagg find(UUID id) {
     return Utlagg.fromUtlaggEntity(utlaggRepository
-      .findById(UUID.fromString(id))
+      .findById(id)
       .orElseThrow(() -> new UtlaggNotFoundException("No Utlagg found with ID: " + id)))
       .build();
   }

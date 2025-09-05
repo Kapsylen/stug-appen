@@ -9,6 +9,7 @@ import stugapi.application.service.KontaktService;
 import stugapi.presentation.dto.KontaktDto;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/kontakt")
@@ -29,7 +30,7 @@ public class KontaktController {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @PreAuthorize("hasAnyRole('admin_user')")
-  public void deleteKontakt(@PathVariable String id) {
+  public void deleteKontakt(@PathVariable UUID id) {
     kontaktService.delete(id);
   }
 
@@ -44,7 +45,7 @@ public class KontaktController {
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasAnyRole('admin_user')")
-  public KontaktDto updateKontakt(@PathVariable String id, @RequestBody KontaktDto updateKontakt) {
+  public KontaktDto updateKontakt(@PathVariable String id, @Valid @RequestBody KontaktDto updateKontakt) {
     return KontaktDto.toKontaktDtoBuilder(kontaktService.update(id, updateKontakt))
       .build();
   }

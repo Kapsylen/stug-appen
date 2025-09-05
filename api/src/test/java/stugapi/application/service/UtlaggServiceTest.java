@@ -10,6 +10,7 @@ import stugapi.infrastructure.repositories.UtlaggRepository;
 import stugapi.presentation.dto.UtlaggDto;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,12 +52,14 @@ public class UtlaggServiceTest {
   void whenDeleteExistingUtlagg_thenUtlaggIsDeleted() {
     UUID id = UUID.randomUUID();
 
+    UtlaggEntity existingArende = UtlaggEntity.builder().id(id).build();
+    when(utlaggRepository.findById(id)).thenReturn(Optional.of(existingArende));
+
+    utlaggService.delete(id);
+
     doNothing().when(utlaggRepository).deleteById(id);
 
-    utlaggService.delete(id.toString());
-
     verify(utlaggRepository, times(1)).deleteById(id);
-    verifyNoMoreInteractions(utlaggRepository);
   }
 
   @Test

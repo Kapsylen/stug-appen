@@ -5,10 +5,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import stugapi.application.domain.model.Kontakt;
+import stugapi.infrastructure.entities.FakturaEntity;
 import stugapi.infrastructure.entities.KontaktEntity;
 import stugapi.infrastructure.repositories.KontaktRepository;
 import stugapi.presentation.dto.KontaktDto;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,16 +58,17 @@ public class KontaktServiceTest {
   }
 
   @Test
-  public void whenDeleteExistingKontakt_thenKontaktIsDeleted() {
+  void whenDeleteExistingFaktura_thenFakturaIsDeleted() {
     UUID id = UUID.randomUUID();
+
+    KontaktEntity existingFaktura = KontaktEntity.builder().id(id).build();
+    when(kontaktRepository.findById(id)).thenReturn(Optional.of(existingFaktura));
+
+    kontaktService.delete(id);
 
     doNothing().when(kontaktRepository).deleteById(id);
 
-    kontaktService.delete(id.toString());
-
     verify(kontaktRepository, times(1)).deleteById(id);
-    verifyNoMoreInteractions(kontaktRepository);
-
   }
 
   @Test

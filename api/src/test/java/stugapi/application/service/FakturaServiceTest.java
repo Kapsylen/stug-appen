@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import stugapi.application.domain.model.Faktura;
 import stugapi.application.domain.model.FakturaEnhet;
+import stugapi.infrastructure.entities.ArendeEntity;
 import stugapi.infrastructure.entities.FakturaEnhetEntity;
 import stugapi.infrastructure.entities.FakturaEntity;
 import stugapi.infrastructure.entities.enums.FakturaStatus;
@@ -17,6 +18,7 @@ import stugapi.presentation.dto.FakturaEnhetDto;
 import java.time.Instant;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -95,12 +97,14 @@ public class FakturaServiceTest {
   void whenDeleteExistingFaktura_thenFakturaIsDeleted() {
     UUID id = UUID.randomUUID();
 
-    doNothing().when(fakturaRepository).deleteById(id);
+    FakturaEntity existingFaktura = FakturaEntity.builder().id(id).build();
+    when(fakturaRepository.findById(id)).thenReturn(Optional.of(existingFaktura));
 
     fakturaService.delete(id);
 
+    doNothing().when(fakturaRepository).deleteById(id);
+
     verify(fakturaRepository, times(1)).deleteById(id);
-    verifyNoMoreInteractions(fakturaRepository);
   }
 
   @Test

@@ -42,10 +42,10 @@ public class KontaktService {
    *
    * @param id The unique identifier of the Kontakt to delete. This must be a valid UUID represented as a string.
    */
-  public void delete(String id) {
-    kontaktRepository.findById(UUID.fromString(id))
+  public void delete(UUID id) {
+    kontaktRepository.findById(id)
       .orElseThrow(() -> new KontaktNotFoundException("No Kontakt found with ID: " + id));
-    kontaktRepository.deleteById(UUID.fromString(id));
+    kontaktRepository.deleteById(id);
   }
 
   /**

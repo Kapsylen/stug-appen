@@ -110,7 +110,7 @@ public class ArendeServiceTest {
 
     doNothing().when(arendeRepository).deleteById(id);
 
-    verify(arendeRepository, times(1)).deleteById(any(UUID.class));
+    verify(arendeRepository, times(1)).deleteById(id);
   }
 
   @Test

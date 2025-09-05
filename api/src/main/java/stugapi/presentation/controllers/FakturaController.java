@@ -25,7 +25,7 @@ public class FakturaController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   @PreAuthorize("hasAnyRole('admin_user','base_user')")
-  public FakturaDto createFaktura(@RequestBody  @Valid FakturaDto fakturaDto) {
+  public FakturaDto createFaktura(@RequestBody @Valid FakturaDto fakturaDto) {
     log.info("createFaktura: {}", fakturaDto);
     return toFakturaDtoBuilder(fakturaService.saveFaktura(fakturaDto))
       .build();

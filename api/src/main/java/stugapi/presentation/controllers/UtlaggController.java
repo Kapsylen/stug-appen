@@ -32,14 +32,14 @@ public class UtlaggController {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @PreAuthorize("hasRole('admin_user')")
-  public void deleteUtlagg(@PathVariable String id) {
+  public void deleteUtlagg(@PathVariable UUID id) {
     utlaggService.delete(id);
   }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasAnyRole('admin_user','base_user')")
-  public UtlaggDto getUtlagg(@PathVariable String id) {
+  public UtlaggDto getUtlagg(@PathVariable UUID id) {
     return toUtlaggDtoBuilder(utlaggService.find(id))
       .build();
   }
@@ -47,7 +47,7 @@ public class UtlaggController {
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('admin_user')")
-  public UtlaggDto updateUtlagg(@PathVariable UUID id, @RequestBody UtlaggDto updateUtlagg) {
+  public UtlaggDto updateUtlagg(@PathVariable UUID id, @Valid @RequestBody UtlaggDto updateUtlagg) {
     return toUtlaggDtoBuilder(utlaggService.update(id, updateUtlagg))
       .build();
   }
