@@ -8,12 +8,12 @@ The setup includes an exported realm named **`keycloak-angular-sandbox`**, preco
 
 - **Admin**
 
-  - **Username**: `admin`
+  - **Username**: `admin_user`
   - **Password**: `admin`
 
 - **John Doe**
-  - **Username**: `johndoe`
-  - **Password**: `qwerty@123`
+  - **Username**: `test_user`
+  - **Password**: `test`
 
 ## Requirements
 
