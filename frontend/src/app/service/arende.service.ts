@@ -15,7 +15,7 @@ export class ArendeService {
 
   private arenden = signal<Arende[] | undefined>(undefined);
   private destroyRef = inject(DestroyRef);
-  private baseUrl = 'http://localhost:8081/api/v1/arende';
+  private baseUrl = 'http://localhost:8181/api/v1/arende';
 
   constructor(
     private httpClient: HttpClient,

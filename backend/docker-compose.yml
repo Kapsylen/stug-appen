@@ -1,0 +1,48 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2.0
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/:/opt/keycloak/data/import:ro
+    entrypoint: '/opt/keycloak/bin/kc.sh start-dev --import-realm'
+  db:
+    image: postgres:15
+    container_name: stug-api-db
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppassword
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    networks:
+      - app-net
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    image: openjdk:21-jdk-slim
+    container_name: stug-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/appdb
+      - SPRING_DATASOURCE_USERNAME=appuser
+      - SPRING_DATASOURCE_PASSWORD=apppassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "8181:8181"
+    depends_on:
+      - db
+      - keycloak
+    networks:
+      - app-net
+
+
+

@@ -14,7 +14,7 @@ import {HttpClient} from '@angular/common/http';
 export class KontaktService {
 
   private kontakter = signal<Kontakt[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8081/api/v1/kontakt';
+  private baseUrl = 'http://localhost:8181/api/v1/kontakt';
   private destroyRef = inject(DestroyRef);
 
   constructor(

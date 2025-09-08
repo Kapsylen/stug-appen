@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -62,7 +62,12 @@
       <artifactId>hibernate-validator</artifactId>
       <version>8.0.1.Final</version>
     </dependency>
-    <dependency>
+	  <dependency>
+		  <groupId>org.postgresql</groupId>
+		  <artifactId>postgresql</artifactId>
+		  <scope>runtime</scope>
+	  </dependency>
+	  <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>

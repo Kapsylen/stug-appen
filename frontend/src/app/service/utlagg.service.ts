@@ -14,7 +14,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 export class UtlaggService {
 
   private utlagg = signal<Utlagg[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8081/api/v1/utlagg';
+  private baseUrl = 'http://localhost:8181/api/v1/utlagg';
   private destroyRef = inject(DestroyRef);
 
   constructor(

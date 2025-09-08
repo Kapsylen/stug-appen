@@ -14,7 +14,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 export class FakturaService {
 
   private fakturor = signal<Faktura[] | undefined>(undefined);
-  private baseUrl = 'http://localhost:8081/api/v1/faktura';
+  private baseUrl = 'http://localhost:8181/api/v1/faktura';
   private destroyRef = inject(DestroyRef);
 
   constructor(
