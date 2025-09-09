@@ -7,12 +7,14 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - "8080:8080"
+    networks:
+      - app-net
     volumes:
-      - ./config/:/opt/keycloak/data/import:ro
+      - ./keycloak-config/:/opt/keycloak/data/import:ro
     entrypoint: '/opt/keycloak/bin/kc.sh start-dev --import-realm'
-  db:
+  postgres-db:
     image: postgres:15
-    container_name: stug-api-db
+    container_name: stug-db
     environment:
       POSTGRES_USER: appuser
       POSTGRES_PASSWORD: apppassword
@@ -24,14 +26,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  app:
+  backend:
     image: openjdk:21-jdk-slim
     container_name: stug-api
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/appdb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/appdb
       - SPRING_DATASOURCE_USERNAME=appuser
       - SPRING_DATASOURCE_PASSWORD=apppassword
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
@@ -39,10 +41,29 @@ services:
     ports:
       - "8181:8181"
     depends_on:
-      - db
+      - postgres-db
       - keycloak
     networks:
       - app-net
+  frontend:
+    image: node:20.19-slim
+    container_name: stug-appen
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - '4200:4200'
+    volumes:
+      - ./frontend:/stug-appen
+    environment:
+      - NODE_ENV=development
+      - ROLLUP_SKIP_NODEJS=true
 
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
 
 
