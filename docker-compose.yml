@@ -27,7 +27,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    image: openjdk:21-jdk-slim
     container_name: stug-api
     build:
       context: ./backend
@@ -46,19 +45,17 @@ services:
     networks:
       - app-net
   frontend:
-    image: node:20.19-slim
     container_name: stug-appen
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - '4200:4200'
-    volumes:
-      - ./frontend:/stug-appen
+      - "80:80"
     environment:
       - NODE_ENV=development
       - ROLLUP_SKIP_NODEJS=true
-
+    networks:
+      - app-net
 networks:
   app-net:
     driver: bridge
