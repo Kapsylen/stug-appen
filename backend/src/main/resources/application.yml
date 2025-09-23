@@ -3,23 +3,25 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost/realms/keycloak-angular-sandbox
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost/realms/keycloak-angular-sandbox}
+          jwk-set-uri: ${OAUTH2_JWK_SET_URI:${OAUTH2_ISSUER_URI:http://localhost/realms/keycloak-angular-sandbox}/protocol/openid-connect/certs}
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/appdb
-    username: appuser
-    password: apppassword
+    url: ${DATASOURCE_URL:jdbc:postgresql://postgres-service:5432/appdb}
+    username: ${DATASOURCE_USERNAME:appuser}
+    password: ${DATASOURCE_PASSWORD:apppassword}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${JPA_HIBERNATE_DDL:auto}
+    show-sql: ${JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
 
 jwt:
   auth:
     converter:
-      resource-id: stug-api-client
-      principle-attribute: preferred_username
-
+      resource-id: ${JWT_RESOURCE_ID:stug-api-client}
+      principle-attribute: ${JWT_PRINCIPAL_ATTRIBUTE:preferred_username}
 
 server:
-  port: 8181
+  port: ${SERVER_PORT:8181}
