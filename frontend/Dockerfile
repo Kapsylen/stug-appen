@@ -1,5 +1,6 @@
-FROM node:20-alpine AS build
+FROM bitnami/node AS build
 # Add build arguments
+ARG IMAGE_TAG=stug-web
 WORKDIR /frontend
 COPY package*.json ./
 RUN npm install
