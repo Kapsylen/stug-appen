@@ -4,7 +4,7 @@ stages:
   - deploy
 
 variables:
-  IMAGE_TAG: "docker.io/svesk/stug-appen:stug-api"
+  IMAGE_TAG: "docker.io/your-user/stug-appen:stug-api"
 
 build:
   stage: build
