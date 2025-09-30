@@ -14,4 +14,5 @@ COPY --from=build /frontend/dist/stug-appen/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 USER 1001
 EXPOSE 80
-
+# Run nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]

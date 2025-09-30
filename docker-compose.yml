@@ -31,6 +31,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+      tags:
+      - svesk/stug-appen:stug-api
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/appdb
       - SPRING_DATASOURCE_USERNAME=appuser
@@ -45,10 +49,14 @@ services:
     networks:
       - app-net
   frontend:
-    container_name: stug-appen
+    container_name: stug-web
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+      tags:
+        - svesk/stug-appen:stug-web
     ports:
       - "80:80"
     environment:
