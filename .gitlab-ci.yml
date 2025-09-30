@@ -4,17 +4,16 @@ stages:
   - deploy
 
 variables:
-  IMAGE_TAG: "docker.io/your-user/stug-appen:stug-api"
+  IMAGE_TAG: "docker.io/your-user/stug-appen:stug-api-latest"
 
 build:
   stage: build
   image: maven:3.8.6-jdk-17
-  before_script:
+  script:
     - echo "Cloning repo..."
     - git clone --branch "$CI_COMMIT_REF_NAME" "$CI_REPOSITORY_URL" app
     - cd app/stug-appen/backend
-  script:
-    - echo "Building with Maven..."
+    - echo "Building Maven project..."
     - mvn clean package -DskipTests
   artifacts:
     paths:
@@ -39,10 +38,9 @@ deploy:
   stage: deploy
   image: bitnami/kubectl:latest
   script:
-    - echo "Applying deployment..."
+    - echo "Deploying app to OpenShift..."
     - |
+      # Use environment variables for cluster API and token
       kubectl --token "$KUBE_TOKEN" --server "$KUBE_SERVER" apply -f k8s/deployment.yaml
     - echo "Updating image in deployment..."
-    - kubectl patch deployment stug-api -n sebsve24330-dev -p '{"spec":{"template":{"spec":{"containers":[{"name":"container","image":"'"$IMAGE_TAG"'"}]}}}}'
-    - echo "Unpausing deployment..."
-    - kubectl patch deployment stug-api -n sebsve24330-dev -p '{"spec":{"paused": false}}' --type=merge
+      kubectl patch deployment stug-api -n sebsve24330-dev -p '{"spec":{"template":{"spec":{"containers":[{"name":"container","image":"'"$IMAGE_TAG"'"}]}}}}'
