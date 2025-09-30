@@ -30,7 +30,6 @@ build:
     - git clone --branch "$CI_COMMIT_REF_NAME" "$REPOSITORY_URL" app
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
     - cd app/backend
-    - pwd
     - ls -la
     - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin
     - docker build -t "$CI_REGISTRY":"$IMAGE_TAG" .
