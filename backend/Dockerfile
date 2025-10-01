@@ -1,6 +1,6 @@
 # 1. Build stage: compile Java app with Maven
 FROM maven:latest AS build
-WORKDIR .
+WORKDIR /backend
 COPY . .
 RUN mvn clean package -DskipTests
 
