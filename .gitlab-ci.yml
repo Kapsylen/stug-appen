@@ -1,18 +1,42 @@
 stages:
+  - clone
   - build
   - push
-  - deploy
 
 variables:
   CI_REGISTRY: "docker.io/svesk/stug-appen"
   CI_REGISTRY_USER: "svesk"
   CI_REGISTRY_PASSWORD: "Sebb24330!!?"
   IMAGE_TAG: "stug-api"
-  CI_COMMIT_REF_NAME: "master"
   REPOSITORY_URL: "https://github.com/Kapsylen/stug-appen.git"
+  BRANCH: "master"
+
+clone:
+  stage: clone
+  script:
+    - echo "Cloning repository..."
+    - git clone --branch "$BRANCH" "$REPOSITORY_URL" app
+  artifacts:
+    paths:
+      - app
 
 build:
   stage: build
+  image: maven:latest
+  dependencies:
+    - clone
+  script:
+    - cd backend
+    - echo "Listing directory contents..."
+    - ls -la
+    - echo "Building Maven project..."
+    - mvn clean package -DskipTests
+  artifacts:
+    paths:
+      - backend/target/*.jar
+
+docker:
+  stage: push
   image: docker:24
   services:
     - name: docker:dind
@@ -20,17 +44,12 @@ build:
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-
-  before_script:
-    - echo "This job runs when pushing to master"
-  only:
-    - master
-
+  dependencies:
+    - build
   script:
-    - git clone --branch "$CI_COMMIT_REF_NAME" "$REPOSITORY_URL" app
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-    - cd app/backend
-    - ls -la
-    - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin
+    - cd backend
+    - echo "Building Docker image..."
     - docker build -t "$CI_REGISTRY":"$IMAGE_TAG" .
+    - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin
+    - echo "Pushing Docker image..."
     - docker push "$CI_REGISTRY":"$IMAGE_TAG"
