@@ -9,13 +9,16 @@ variables:
   CI_REGISTRY_PASSWORD: "Sebb24330!!?"
   IMAGE_TAG: "stug-api"
   REPOSITORY_URL: "https://github.com/Kapsylen/stug-appen.git"
-  BRANCH: "master"
+  CI_COMMIT_BRANCH: "master"
 
 clone:
   stage: clone
   script:
     - echo "Cloning repository..."
-    - git clone --branch "$BRANCH" "$REPOSITORY_URL" app
+    - git clone --branch "$CI_COMMIT_BRANCH" "$REPOSITORY_URL" app
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: always
   artifacts:
     paths:
       - app
