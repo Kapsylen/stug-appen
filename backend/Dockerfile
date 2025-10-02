@@ -9,7 +9,7 @@ FROM eclipse-temurin:21-jre-alpine
 VOLUME /tmp
 
 # Copy the jar from the build stage
-COPY --from=build /app/target/api-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /target/api-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8181
 ENTRYPOINT ["java", "-jar", "app.jar"]
