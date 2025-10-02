@@ -3,12 +3,19 @@ stages:
   - build_and_push
 
 variables:
-  CI_REGISTRY: "docker.io"
   REPO_URL: "https://github.com/Kapsylen/stug-appen.git"
   REPO_BRANCH: "master"
-  IMAGE_NAME: "$CI_REGISTRY/svesk/stug-appen:$IMAGE_TAG"
+  CI_REGISTRY: "docker.io/svesk/stug-appen"
+  IMAGE_NAME: "$CI_REGISTRY:$IMAGE_TAG"
   APP_DIR: "app/backend"
   IMAGE_TAG: "stug-api"
+
+#  REPO_URL: "https://github.com/Kapsylen/stug-appen.git"
+#  REPO_BRANCH: "master"
+#  CI_REGISTRY: "docker.io/svesk/stug-appen"
+#  IMAGE_NAME: "$CI_REGISTRY:$IMAGE_TAG"
+#  APP_DIR: "frontend"
+#  IMAGE_TAG: "stug-web"
 
 clone:
   stage: git_clone
@@ -33,11 +40,13 @@ build:
     DOCKER_TLS_CERTDIR: ""
   dependencies:
     - clone
+  before_script:
+    - echo "Logging into Docker registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin
   script:
     - echo "Building Docker image..."
     - cd $APP_DIR
     - docker build -t "$IMAGE_NAME" .
-    - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin
     - docker push "$IMAGE_NAME"
   only:
     - master
