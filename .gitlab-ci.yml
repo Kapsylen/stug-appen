@@ -23,7 +23,7 @@ clone:
     - echo "Cloning repository..."
     - git clone --branch "$REPO_BRANCH" "$REPO_URL" app
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$REPO_BRANCH == "master"'
       when: always
   artifacts:
     paths:
