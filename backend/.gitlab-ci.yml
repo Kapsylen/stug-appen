@@ -1,19 +1,20 @@
 stages:
-  - clone
-  - build
-  - push
+  - git_clone
+  - build_and_push
 
 variables:
-  CI_REGISTRY: "docker.io/svesk/stug-appen"
+  CI_REGISTRY: "docker.io"
+  REPO_URL: "https://github.com/Kapsylen/stug-appen.git"
+  REPO_BRANCH: "master"
+  IMAGE_NAME: "$CI_REGISTRY/svesk/stug-appen:$IMAGE_TAG"
+  APP_DIR: "app/backend"
   IMAGE_TAG: "stug-api"
-  REPOSITORY_URL: "https://github.com/Kapsylen/stug-appen.git"
-  CI_COMMIT_BRANCH: "master"
 
 clone:
-  stage: clone
+  stage: git_clone
   script:
     - echo "Cloning repository..."
-    - git clone --branch "$CI_COMMIT_BRANCH" "$REPOSITORY_URL" app
+    - git clone --branch "$REPO_BRANCH" "$REPO_URL" app
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: always
@@ -22,20 +23,7 @@ clone:
       - app
 
 build:
-  stage: build
-  image: maven:latest
-  dependencies:
-    - clone
-  script:
-    - cd backend
-    - echo "Building Maven project..."
-    - mvn clean package -DskipTests
-  artifacts:
-    paths:
-      - backend/target/*.jar
-
-docker:
-  stage: push
+  stage: build_and_push
   image: docker:24
   services:
     - name: docker:dind
@@ -44,13 +32,12 @@ docker:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
   dependencies:
-    - build
-  before_script:
-    - echo "Logging into Docker registry..."
-    - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin
+    - clone
   script:
-    - cd backend
     - echo "Building Docker image..."
-    - docker build -t "$CI_REGISTRY":"$IMAGE_TAG" .
-    - echo "Pushing Docker image..."
-    - docker push "$CI_REGISTRY":"$IMAGE_TAG"
+    - cd $APP_DIR
+    - docker build -t "$IMAGE_NAME" .
+    - echo "$CI_REGISTRY_PASSWORD" | docker login --username "$CI_REGISTRY_USER" --password-stdin
+    - docker push "$IMAGE_NAME"
+  only:
+    - master
