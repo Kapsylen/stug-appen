@@ -6,7 +6,7 @@ trigger-backend:
   rules:
     - changes:
         - backend/**/*
-    - when: never
+    - when: always
   trigger:
     project: stug-appen/backend
     branch: master
@@ -16,7 +16,7 @@ trigger-frontend:
   rules:
     - changes:
         - frontend/**/*
-    - when: never
+    - when: always
   trigger:
     project: stug-appen/frontend
     branch: master
