@@ -13,7 +13,7 @@ services:
       - ./keycloak-config/:/opt/keycloak/data/import:ro
     entrypoint: '/opt/keycloak/bin/kc.sh start-dev --import-realm'
   postgres-db:
-    image: postgres:15
+    image: docker.io/postgres:15
     container_name: stug-db
     environment:
       POSTGRES_USER: appuser
