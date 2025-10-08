@@ -1,0 +1,15 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: stug-api-config
+  namespace: default
+data:
+  OAUTH2_ISSUER_URI: 'http://keykloak-service/realms/keycloak-angular-sandbox'
+  OAUTH2_JWK_SET_URI: $(OAUTH2_ISSUER_URI)/protocol/openid-connect/certs
+  JPA_SHOW_SQL: 'true'
+  DATASOURCE_USERNAME: appuser
+  DATASOURCE_PASSWORD: apppassword
+  DATASOURCE_URL: 'jdbc:postgresql://postgres-service:5432/appdb'
+  HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+  JPA_HIBERNATE_DDL: update
+  SERVER_PORT: '8181'

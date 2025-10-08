@@ -1,0 +1,60 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: postgresdb
+  namespace: default
+  labels:
+    postgresdb: ''
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresdb
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: postgresdb
+    spec:
+      volumes:
+        - name: postgres-data
+          emptyDir: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: stug-db
+          env:
+            - name: POSTGRESQL_ADMIN_PASSWORD
+              value: admin
+            - name: POSTGRESQL_USER
+              value: appuser
+            - name: POSTGRESQL_PASSWORD
+              value: apppassword
+            - name: POSTGRESQL_DATABASE
+              value: appdb
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          terminationMessagePolicy: File
+          envFrom:
+            - secretRef:
+                name: redhat-secret
+          image: postgres:15
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  paused: true
+  progressDeadlineSeconds: 600
+
