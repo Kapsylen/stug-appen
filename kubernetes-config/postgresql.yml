@@ -54,4 +54,6 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
+  # Run following script to create appdb database
+  # kubectl exec -it <pod-name> -- psql -U appuser -d postgres -c "CREATE DATABASE appdb;"
 

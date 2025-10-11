@@ -30,7 +30,7 @@ spec:
             - '-c'
             - >-
               /opt/keycloak/bin/kc.sh start --import-realm
-              --https-cipher-suite=ALL
+              --https-cipher-suites=ALL
           env:
             - name: KEYCLOAK_USER
               value: admin
@@ -64,7 +64,7 @@ spec:
           envFrom:
             - secretRef:
                 name: redhat-secret
-          image: 'quay.io/keycloak/keycloak:26.2.0'
+          image: 'quay.io/keycloak/keycloak:20.0.3'
         - name: keycloak-ssl
           image: busybox
           command:

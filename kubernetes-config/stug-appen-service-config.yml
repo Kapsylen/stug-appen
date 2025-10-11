@@ -1,0 +1,60 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: keycloak
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-service
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: postgresdb
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: stug-api
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 8181
+      targetPort: 8181
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: stug-api
