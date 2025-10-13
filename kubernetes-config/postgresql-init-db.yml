@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: init-sql
+          configMap:
+            name: postgres-init-db
+      initContainers:
+        - name: create-db
+          image: postgres:14
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: db-password
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: db-user
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |
+              # Vänta 30 sekunder för PostgreSQL att starta
+              sleep 30
+
+              # Vänta på att databasen är redo
+              until pg_isready -h postgres -p 5432 -U $(PGUSER); do
+                echo "Väntar på PostgreSQL..."
+                sleep 5
+              done
+
+              # Kör initieringsskriptet
+              psql -U $(PGUSER) -d postgres -f /sql/init-db.sql
+          volumeMounts:
+            - name: init-sql
+              mountPath: /sql
+      containers:
+        - name: postgres
+          image: postgres:14
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: db-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: db-password
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+# Inkludera konfigurationen för Secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secrets
+  namespace: default
+type: Opaque
+data:
+  db-user: YXBwdXNlcg==
+  db-password: YXBwcGFzc3dvcmQ=
+
+# Inkludera konfigurationen för PersistentVolumeClaim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

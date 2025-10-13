@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: stug-api
+  namespace: default
+spec:
+  ports:
+    - protocol: TCP
+      port: 8181
+      targetPort: 8181
+      nodePort: 30080 # Choose a port between 30000-32767
+  type: NodePort
+  selector:
+    app: stug-api

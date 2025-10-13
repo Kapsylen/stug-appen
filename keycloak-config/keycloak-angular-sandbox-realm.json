@@ -743,18 +743,18 @@
       "clientId": "keycloak-angular",
       "name": "Keycloak Angular Sandbox",
       "description": "",
-      "rootUrl": "http://localhost",
+      "rootUrl": "http://localhost:4200",
       "adminUrl": "",
-      "baseUrl": "http://localhost",
+      "baseUrl": "http://localhost:4200",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost*"
+        "http://localhost:4200/*"
       ],
       "webOrigins": [
-        "http://localhost"
+        "http://localhost:4200"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -769,7 +769,7 @@
       "attributes": {
         "access.token.lifespan": "60",
         "standard.token.exchange.enabled": "false",
-        "post.logout.redirect.uris": "http://localhost*",
+        "post.logout.redirect.uris": "http://localhost:4200/*",
         "frontchannel.logout.session.required": "true",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false",
@@ -917,18 +917,18 @@
       "clientId": "stug-api-client",
       "name": "Stug API client",
       "description": "Stug API client",
-      "rootUrl": "http://localhost",
-      "adminUrl": "http://localhost",
-      "baseUrl": "http://localhost",
+      "rootUrl": "http://localhost:4200",
+      "adminUrl": "http://localhost:4200",
+      "baseUrl": "http://localhost:4200",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost*"
+        "http://localhost:4200/*"
       ],
       "webOrigins": [
-        "http://localhost"
+        "http://localhost:4200"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -945,7 +945,7 @@
         "oidc.ciba.grant.enabled": "false",
         "backchannel.logout.session.required": "true",
         "standard.token.exchange.enabled": "false",
-        "post.logout.redirect.uris": "http://localhost*",
+        "post.logout.redirect.uris": "http://localhost:4200/*",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
       },

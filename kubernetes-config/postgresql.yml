@@ -22,12 +22,16 @@ spec:
           terminationMessagePath: /dev/termination-log
           name: stug-db
           env:
-            - name: POSTGRES_ADMIN_PASSWORD
-              value: admin
             - name: POSTGRES_USER
-              value: appuser
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: db-user
             - name: POSTGRES_PASSWORD
-              value: apppassword
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: db-password
             - name: POSTGRES_DATABASE
               value: appdb
           ports:
@@ -38,10 +42,7 @@ spec:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
           terminationMessagePolicy: File
-          envFrom:
-            - secretRef:
-                name: redhat-secret
-          image: docker.io/library/postgres:13
+          image: postgres:13
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst

@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-init-job
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - name: postgres-init
+          image: postgres:14
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: db-password
+          command: ["psql"]
+          args: ["-U", "appuser", "-d", "postgres", "-c", "CREATE DATABASE IF NOT EXISTS appdb;"]
+      restartPolicy: Never
+  backoffLimit: 4
+

@@ -58,3 +58,24 @@ spec:
   sessionAffinity: None
   selector:
     app: stug-api
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: stug-web
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 5400
+      targetPort: 5400
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: stug-web

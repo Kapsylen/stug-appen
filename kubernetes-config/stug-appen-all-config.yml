@@ -30,7 +30,7 @@ spec:
             - '-c'
             - >-
               /opt/keycloak/bin/kc.sh start --import-realm
-              --https-cipher-suite=ALL
+              --https-cipher-suites=ALL
           env:
             - name: KEYCLOAK_USER
               value: admin
@@ -64,7 +64,7 @@ spec:
           envFrom:
             - secretRef:
                 name: redhat-secret
-          image: 'quay.io/keycloak/keycloak:26.2.0'
+          image: 'quay.io/keycloak/keycloak:20.0.3'
         - name: keycloak-ssl
           image: busybox
           command:
@@ -2738,3 +2738,67 @@ data:
         "policies": []
       }
     }
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: keycloak
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-service
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: postgresdb
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: stug-api
+  namespace: default
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - protocol: TCP
+      port: 8181
+      targetPort: 8181
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: stug-api
+

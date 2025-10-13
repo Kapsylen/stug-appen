@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-db
+  namespace: default
+data:
+  init-db.sql: |
+    DO
+    $$
+    BEGIN
+       IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'appdb') THEN
+          EXECUTE 'CREATE DATABASE appdb';
+       END IF;
+    END
+    $$;
+
+

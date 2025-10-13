@@ -32,6 +32,7 @@ services:
       dockerfile: Dockerfile
       platforms:
         - linux/amd64
+        - linux/arm64
       tags:
       - svesk/stug-appen:stug-api
     environment:
@@ -57,7 +58,7 @@ services:
       tags:
         - stug-web
     ports:
-      - "80:80"
+      - "4200:4200"
     environment:
       - NODE_ENV=development
       - ROLLUP_SKIP_NODEJS=true
